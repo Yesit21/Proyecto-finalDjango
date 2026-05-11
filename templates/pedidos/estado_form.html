@@ -1,0 +1,14 @@
+{% extends 'base/base.html' %}
+{% block title %}Actualizar Estado{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm max-w-lg mx-auto">
+    <h1 class="text-3xl font-semibold mb-4">Actualizar estado del pedido</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>{{ form.estado.label_tag }}{{ form.estado }}</div>
+        <button type="submit" class="btn-primary">Guardar</button>
+        <a href="{% url 'pedidos:detalle' pedido.id %}" class="btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
