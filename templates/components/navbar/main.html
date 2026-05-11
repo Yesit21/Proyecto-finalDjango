@@ -1,0 +1,57 @@
+{% load static %}
+<nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center space-x-8">
+                <a href="{% url 'dashboard:home' %}" class="text-2xl font-bold text-red-500">
+                    Restaurante
+                </a>
+                
+                {% if user.is_authenticated %}
+                <div class="hidden md:flex space-x-4">
+                    <a href="{% url 'menu:lista' %}" class="nav-link">Menú</a>
+                    
+                    {% if user.rol == 'cliente' %}
+                        <a href="{% url 'pedidos:carrito' %}" class="nav-link">Carrito</a>
+                        <a href="{% url 'pedidos:mis_pedidos' %}" class="nav-link">Mis Pedidos</a>
+                        <a href="{% url 'reservas:mis_reservas' %}" class="nav-link">Mis Reservas</a>
+                    {% endif %}
+                    
+                    {% if user.rol in 'mesero,administrador' %}
+                        <a href="{% url 'pedidos:lista' %}" class="nav-link">Pedidos</a>
+                        <a href="{% url 'reservas:lista' %}" class="nav-link">Reservas</a>
+                    {% endif %}
+                    
+                    {% if user.rol == 'administrador' %}
+                        <a href="{% url 'inventario:lista' %}" class="nav-link">Inventario</a>
+                        <a href="{% url 'dashboard:reportes' %}" class="nav-link">Reportes</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <span class="text-sm">{{ user.username }}</span>
+                    <a href="{% url 'usuarios:perfil' %}" class="btn-secondary">Perfil</a>
+                    <a href="{% url 'usuarios:logout' %}" class="btn-primary">Salir</a>
+                {% else %}
+                    <a href="{% url 'usuarios:login' %}" class="btn-secondary">Iniciar Sesión</a>
+                    <a href="{% url 'usuarios:registro' %}" class="btn-primary">Registrarse</a>
+                {% endif %}
+                
+                <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+.nav-link {
+    @apply text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200;
+}
+</style>
