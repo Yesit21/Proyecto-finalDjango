@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Crear Reserva{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Crear Nueva Reserva</h1>
+
+        <form method="post" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 rounded">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mb-6">
+                <label for="{{ form.fecha_reserva.id_for_label }}" class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                    {{ form.fecha_reserva.label }}
+                </label>
+                {{ form.fecha_reserva }}
+                {% if form.fecha_reserva.errors %}
+                <div class="text-red-500 text-sm mt-2">
+                    {% for error in form.fecha_reserva.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label for="{{ form.cantidad_personas.id_for_label }}" class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                    {{ form.cantidad_personas.label }}
+                </label>
+                {{ form.cantidad_personas }}
+                {% if form.cantidad_personas.errors %}
+                <div class="text-red-500 text-sm mt-2">
+                    {% for error in form.cantidad_personas.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label for="{{ form.observaciones.id_for_label }}" class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                    {{ form.observaciones.label }}
+                </label>
+                {{ form.observaciones }}
+                {% if form.observaciones.errors %}
+                <div class="text-red-500 text-sm mt-2">
+                    {% for error in form.observaciones.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="flex space-x-4">
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                    Crear Reserva
+                </button>
+                <a href="{% url 'reservas:lista' %}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
