@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Mi Perfil</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <div class="card text-center">
+                {% if usuario.foto %}
+                    <img src="{{ usuario.foto.url }}" alt="{{ usuario.username }}" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                {% else %}
+                    <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                        <span class="text-4xl text-gray-600 dark:text-gray-300">{{ usuario.username.0|upper }}</span>
+                    </div>
+                {% endif %}
+                
+                <h2 class="text-xl font-semibold">{{ usuario.nombre_completo }}</h2>
+                <p class="text-gray-600 dark:text-gray-400">@{{ usuario.username }}</p>
+                
+                <div class="mt-4">
+                    <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold
+                        {% if usuario.rol == 'administrador' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                        {% elif usuario.rol == 'mesero' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                        {% else %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% endif %}">
+                        {{ usuario.get_rol_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="md:col-span-2">
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">Información Personal</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Email</label>
+                        <p class="text-lg">{{ usuario.email }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Teléfono</label>
+                        <p class="text-lg">{{ usuario.telefono|default:"No especificado" }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Dirección</label>
+                        <p class="text-lg">{{ usuario.direccion|default:"No especificada" }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Miembro desde</label>
+                        <p class="text-lg">{{ usuario.date_joined|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-6">
+                <h3 class="text-xl font-semibold mb-4">Seguridad</h3>
+                <a href="{% url 'usuarios:password_reset' %}" class="btn-secondary">
+                    Cambiar Contraseña
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
