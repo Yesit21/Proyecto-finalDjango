@@ -14,7 +14,7 @@ from .services.usuario_service import UsuarioService
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('dashboard:home')
+        return redirect('usuarios:perfil')
     
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -37,7 +37,7 @@ def login_view(request):
                     next_url = request.GET.get('next')
                     if next_url:
                         return redirect(next_url)
-                    return redirect('dashboard:home')
+                    return redirect('usuarios:perfil')
                 else:
                     messages.error(request, 'Tu cuenta está desactivada')
             else:
@@ -49,7 +49,7 @@ def login_view(request):
 
 def registro_view(request):
     if request.user.is_authenticated:
-        return redirect('dashboard:home')
+        return redirect('usuarios:perfil')
     
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -62,7 +62,7 @@ def registro_view(request):
             
             login(request, user)
             messages.success(request, 'Registro exitoso. Bienvenido!')
-            return redirect('dashboard:home')
+            return redirect('usuarios:perfil')
     else:
         form = RegistroForm()
     

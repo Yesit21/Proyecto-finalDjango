@@ -24,7 +24,17 @@
   }
   
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500;
+  }
+  
+  /* Forzar estilos en modo oscuro para inputs con autocomplete */
+  .input-field:-webkit-autofill {
+    -webkit-text-fill-color: #111827 !important;
+  }
+  
+  .dark .input-field:-webkit-autofill {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px #1f2937 inset !important;
   }
   
   .table-row {
