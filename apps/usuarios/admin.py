@@ -1,4 +1,5 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from .models import Usuario
@@ -82,3 +83,12 @@ class UsuarioAdmin(BaseUserAdmin):
         count = queryset.update(activo=False)
         self.message_user(request, f'{count} usuario(s) desactivado(s)')
     desactivar_usuarios.short_description = 'Desactivar usuarios seleccionados'
+=======
+from django.contrib.auth.admin import UserAdmin
+from .models import Usuario
+
+
+@admin.register(Usuario)
+class UsuarioAdmin(UserAdmin):
+    pass
+>>>>>>> 39418a775c31a7f8bd147b2090d267aec03ff655

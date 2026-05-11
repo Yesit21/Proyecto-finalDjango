@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="grid gap-6 lg:grid-cols-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <p class="text-sm uppercase text-gray-500">Pedidos últimos 30 días</p>
+            <p class="text-4xl font-semibold kpi-value" data-value="{{ total_pedidos }}">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <p class="text-sm uppercase text-gray-500">Ingresos</p>
+            <p class="text-4xl font-semibold kpi-value" data-value="{{ ingresos }}">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <p class="text-sm uppercase text-gray-500">Promedio por pedido</p>
+            <p class="text-4xl font-semibold kpi-value" data-value="{{ promedio_por_pedido }}">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <p class="text-sm uppercase text-gray-500">Productos bajos</p>
+            <p class="text-4xl font-semibold kpi-value" data-value="{{ productos_bajos }}">0</p>
+        </div>
+    </div>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h2 class="text-2xl font-semibold mb-4">Ventas por día</h2>
+            <canvas id="sales-chart" data-chart='{"labels": {{ etiquetas_ventas|safe }}, "data": {{ datos_ventas|safe }}, "type": "line"}'></canvas>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h2 class="text-2xl font-semibold mb-4">Pedidos por estado</h2>
+            <canvas id="orders-chart" data-chart='{"labels": {{ etiquetas_pedidos|safe }}, "data": {{ datos_pedidos|safe }}, "type": "pie"}'></canvas>
+        </div>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h2 class="text-2xl font-semibold mb-4">Productos más vendidos</h2>
+            <canvas id="products-chart" data-chart='{"labels": {{ etiquetas_platos|safe }}, "data": {{ datos_platos|safe }}, "type": "bar"}'></canvas>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+            <h2 class="text-2xl font-semibold mb-4">Tus ventas</h2>
+            <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                <p>Total de ventas en 30 días: <strong>{{ total_pedidos }}</strong></p>
+                <p>Ingreso total: <strong>${{ ingresos }}</strong></p>
+                <p>Promedio por pedido: <strong>${{ promedio_por_pedido }}</strong></p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -33,11 +33,9 @@
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
                     <span class="text-sm">{{ user.username }}</span>
-                    <a href="{% url 'usuarios:perfil' %}" class="btn-secondary">Perfil</a>
                     <a href="{% url 'usuarios:logout' %}" class="btn-primary">Salir</a>
                 {% else %}
                     <a href="{% url 'usuarios:login' %}" class="btn-secondary">Iniciar Sesión</a>
-                    <a href="{% url 'usuarios:registro' %}" class="btn-primary">Registrarse</a>
                 {% endif %}
                 
                 <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
