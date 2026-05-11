@@ -1,0 +1,97 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Reportes - Restaurante{% endblock %}
+
+{% block content %}
+<h1>Reportes y Estadísticas</h1>
+
+<div class="card">
+    <h2>Ventas del Día</h2>
+    <p class="stat">${{ ventas_diarias }}</p>
+</div>
+
+<div class="card">
+    <h2>Platos Más Vendidos (Últimos 30 días)</h2>
+    <canvas id="platosChart"></canvas>
+    <table>
+        <thead>
+            <tr>
+                <th>Plato</th>
+                <th>Cantidad Vendida</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plato in platos_vendidos %}
+                <tr>
+                    <td>{{ plato.plato__nombre }}</td>
+                    <td>{{ plato.total_vendido }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Ingresos Mensuales</h2>
+    <canvas id="ingresosChart"></canvas>
+</div>
+
+{% if ingredientes_bajo_stock %}
+<div class="card">
+    <h2>Ingredientes con Stock Bajo</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ingrediente</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingrediente in ingredientes_bajo_stock %}
+                <tr>
+                    <td>{{ ingrediente.nombre }}</td>
+                    <td>{{ ingrediente.stock_actual }}</td>
+                    <td>{{ ingrediente.stock_minimo }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const platosData = {{ platos_vendidos_json|safe }};
+const ingresosData = {{ ingresos_mensuales_json|safe }};
+
+const platosCtx = document.getElementById('platosChart').getContext('2d');
+new Chart(platosCtx, {
+    type: 'bar',
+    data: {
+        labels: platosData.map(p => p.plato__nombre),
+        datasets: [{
+            label: 'Cantidad Vendida',
+            data: platosData.map(p => p.total_vendido),
+            backgroundColor: '#e74c3c'
+        }]
+    }
+});
+
+const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
+new Chart(ingresosCtx, {
+    type: 'line',
+    data: {
+        labels: ingresosData.map(i => i.fecha),
+        datasets: [{
+            label: 'Ingresos Diarios',
+            data: ingresosData.map(i => i.ingreso),
+            borderColor: '#e74c3c',
+            fill: false
+        }]
+    }
+});
+</script>
+{% endblock %}

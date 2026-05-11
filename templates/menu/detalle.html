@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ plato.nombre }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    {% if plato.imagen %}
+        <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" style="max-width: 500px;">
+    {% endif %}
+    <h1>{{ plato.nombre }}</h1>
+    <p>{{ plato.descripcion }}</p>
+    <p><strong>Precio:</strong> ${{ plato.precio }}</p>
+    <p><strong>Categoría:</strong> {{ plato.categoria.nombre }}</p>
+    <p><strong>Tiempo de preparación:</strong> {{ plato.tiempo_preparacion }} minutos</p>
+    <p><strong>Estado:</strong> 
+        {% if plato.disponible %}
+            <span class="badge badge-success">Disponible</span>
+        {% else %}
+            <span class="badge badge-danger">No disponible</span>
+        {% endif %}
+    </p>
+    
+    {% if user.is_authenticated and user.rol == 'cliente' and plato.disponible %}
+        <a href="{% url 'pedidos:agregar_carrito' plato.id %}" class="btn">Agregar al Carrito</a>
+    {% endif %}
+    
+    {% if user.rol == 'administrador' %}
+        <a href="{% url 'menu:editar' plato.id %}" class="btn btn-secondary">Editar</a>
+        <a href="{% url 'menu:eliminar' plato.id %}" class="btn" style="background-color: #dc3545;">Eliminar</a>
+    {% endif %}
+    
+    <a href="{% url 'menu:lista' %}" class="btn btn-secondary">Volver al Menú</a>
+</div>
+{% endblock %}

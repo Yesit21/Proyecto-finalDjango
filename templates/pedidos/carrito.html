@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<h1>Mi Carrito</h1>
+
+{% if carrito.items.all %}
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Plato</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito.items.all %}
+                    <tr>
+                        <td>{{ item.plato.nombre }}</td>
+                        <td>${{ item.plato.precio }}</td>
+                        <td>
+                            <form method="post" action="{% url 'pedidos:actualizar_carrito' item.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" style="width: 60px;">
+                                <button type="submit" class="btn btn-secondary">Actualizar</button>
+                            </form>
+                        </td>
+                        <td>${{ item.subtotal }}</td>
+                        <td>
+                            <a href="{% url 'pedidos:eliminar_carrito' item.id %}" class="btn" style="background-color: #dc3545;">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Total: ${{ carrito.total }}</h3>
+        <a href="{% url 'pedidos:crear' %}" class="btn">Proceder al Pago</a>
+    </div>
+{% else %}
+    <div class="card">
+        <p>Tu carrito está vacío</p>
+        <a href="{% url 'menu:lista' %}" class="btn">Ver Menú</a>
+    </div>
+{% endif %}
+{% endblock %}
