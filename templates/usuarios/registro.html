@@ -3,6 +3,33 @@
 {% block title %}Registro{% endblock %}
 
 {% block content %}
+<style>
+    /* Forzar estilos en modo oscuro */
+    .dark input[type="text"],
+    .dark input[type="password"],
+    .dark input[type="email"],
+    .dark input[type="tel"] {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border-color: #4b5563 !important;
+    }
+    
+    .dark input[type="text"]::placeholder,
+    .dark input[type="password"]::placeholder,
+    .dark input[type="email"]::placeholder,
+    .dark input[type="tel"]::placeholder {
+        color: #9ca3af !important;
+    }
+    
+    .dark input:-webkit-autofill,
+    .dark input:-webkit-autofill:hover,
+    .dark input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0 1000px #1f2937 inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
+
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-2xl w-full space-y-8">
         <div>
