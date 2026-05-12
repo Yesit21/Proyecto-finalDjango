@@ -68,35 +68,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    
-    <!-- Script del tema inline para evitar problemas de caché -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar el botón de toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    // Alternar la clase 'dark' en el elemento html
-                    const isDark = document.documentElement.classList.toggle('dark');
-                    
-                    // Guardar en localStorage
-                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                    
-                    console.log('Tema cambiado a:', isDark ? 'oscuro' : 'claro');
-                });
-            }
-            
-            // Auto-ocultar alertas
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 300);
-                }, 5000);
-            });
-        });
-    </script>
+    <script src="{% static 'js/main.js' %}" defer></script>
     
     {% block extra_js %}{% endblock %}
 </body>
