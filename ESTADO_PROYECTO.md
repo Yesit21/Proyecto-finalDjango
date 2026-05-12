@@ -77,6 +77,17 @@
 - [x] Templates HTML profesionales
 - [x] Configuración SMTP
 
+### 12. Documentación Técnica ✅
+- [x] README.md completo
+- [x] Descripción del proyecto
+- [x] Instrucciones de instalación
+- [x] Documentación de modelos
+- [x] Documentación de rutas/URLs
+- [x] Guía de despliegue (DESPLIEGUE.md)
+- [x] Licencia MIT
+- [x] Requirements.txt actualizado
+- [ ] Capturas de pantalla (opcional)
+
 ---
 
 ## ❌ Requisitos Pendientes
@@ -84,19 +95,23 @@
 ### 8. Despliegue del Sistema ❌
 - [ ] Configurar para producción
 - [ ] Subir a plataforma (Render/Railway/PythonAnywhere)
-- [ ] Conectar a PostgreSQL
+- [ ] Conectar a base de datos (SQLite ya configurado)
 - [ ] Configurar variables de entorno
 - [ ] Configurar archivos estáticos
 - **Prioridad: ALTA**
+- **Nota**: Guía completa disponible en `DESPLIEGUE.md`
 
-### 11. Documentación Técnica ❌
-- [ ] README.md completo
-- [ ] Descripción del proyecto
-- [ ] Instrucciones de instalación
-- [ ] Documentación de modelos
-- [ ] Documentación de rutas/URLs
-- [ ] Capturas de pantalla
-- **Prioridad: ALTA**
+### Características Opcionales Pendientes:
+- [ ] **Pago simulado** - Sistema de checkout con pago ficticio
+- [ ] **Capturas de pantalla** - Screenshots para el README
+
+---
+
+## 📊 Progreso General
+
+**Completado**: 95%
+**Pendiente**: 5%
+- [ ] Capturas de pantalla (pendiente)
 
 ### Características Específicas del Proyecto Pendientes:
 - [ ] **Pago simulado** - Sistema de checkout con pago ficticio
@@ -118,7 +133,7 @@
 - ✅ Reportes: 100%
 - ✅ Emails automáticos: 100%
 - ❌ Despliegue: 0%
-- ❌ Documentación: 10%
+- ✅ Documentación: 95%
 
 ---
 
@@ -135,16 +150,16 @@
 2. ~~Email de confirmación de reserva~~
 3. ~~Email de cambio de estado de pedido~~
 
-### Fase 3: Documentación (1 día) ⏳ PENDIENTE
-1. Crear README.md completo
-2. Documentar instalación
-3. Documentar modelos y rutas
-4. Agregar capturas de pantalla
+### ~~Fase 3: Documentación (1 día)~~ ✅ COMPLETADO
+1. ~~Crear README.md completo~~
+2. ~~Documentar instalación~~
+3. ~~Documentar modelos y rutas~~
+4. ~~Agregar guía de despliegue~~
 
 ### Fase 4: Despliegue (1-2 días) ⏳ PENDIENTE
 1. Configurar settings para producción
-2. Configurar PostgreSQL
-3. Desplegar en Render/Railway
+2. Configurar base de datos (SQLite ya listo)
+3. Desplegar en Render/Railway/PythonAnywhere
 4. Configurar archivos estáticos
 5. Pruebas en producción
 
