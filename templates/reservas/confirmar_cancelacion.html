@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Cancelar Reserva #{{ object.id }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="mb-6 text-sm">
+            <ol class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <li><a href="{% url 'reservas:lista' %}" class="hover:text-amber-600">Mis Reservas</a></li>
+                <li>/</li>
+                <li><a href="{% url 'reservas:detalle' object.pk %}" class="hover:text-amber-600">Reserva #{{ object.id }}</a></li>
+                <li>/</li>
+                <li class="text-gray-900 dark:text-white font-semibold">Cancelar</li>
+            </ol>
+        </nav>
+
+        <!-- Card de Confirmación -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <!-- Header con Advertencia -->
+            <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
+                <div class="flex items-center gap-4 text-white">
+                    <div class="bg-white/20 p-3 rounded-full">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Confirmar Cancelación</h1>
+                        <p class="text-red-100">Esta acción no se puede deshacer</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="p-8">
+                <!-- Mensaje de Advertencia -->
+                <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div>
+                            <p class="font-semibold text-red-800 dark:text-red-200 mb-2">¿Estás seguro de que deseas cancelar esta reserva?</p>
+                            <p class="text-sm text-red-700 dark:text-red-300">
+                                Una vez cancelada, no podrás recuperar esta reserva. Si deseas volver a reservar, deberás crear una nueva reserva.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles de la Reserva -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Detalles de la Reserva a Cancelar</h3>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 space-y-4">
+                        <!-- Número de Reserva -->
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-600">
+                            <span class="text-gray-600 dark:text-gray-400">Número de Reserva:</span>
+                            <span class="font-bold text-gray-900 dark:text-white text-lg">#{{ object.id }}</span>
+                        </div>
+
+                        <!-- Fecha y Hora -->
+                        <div class="flex items-center gap-3">
+                            <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-lg">
+                                <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Fecha y Hora</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ object.fecha_reserva|date:"d/m/Y H:i" }} hrs</p>
+                            </div>
+                        </div>
+
+                        <!-- Cantidad de Personas -->
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Cantidad de Personas</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ object.cantidad_personas }} persona{{ object.cantidad_personas|pluralize }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Estado Actual -->
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-600">
+                            <span class="text-gray-600 dark:text-gray-400">Estado Actual:</span>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold
+                                {% if object.estado == 'confirmada' %}
+                                    bg-green-100 text-green-800
+                                {% else %}
+                                    bg-yellow-100 text-yellow-800
+                                {% endif %}">
+                                {{ object.get_estado_display }}
+                            </span>
+                        </div>
+
+                        <!-- Observaciones -->
+                        {% if object.observaciones %}
+                        <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Observaciones:</p>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ object.observaciones }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Información Adicional -->
+                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div class="text-sm text-blue-700 dark:text-blue-200">
+                            <p class="font-semibold mb-1">Información:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Recibirás un email de confirmación de la cancelación</li>
+                                <li>Si deseas hacer una nueva reserva, puedes crearla desde "Mis Reservas"</li>
+                                <li>Para cancelaciones con menos de 2 horas de anticipación, contacta directamente al restaurante</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Confirmación -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" 
+                                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Sí, Cancelar Reserva
+                        </button>
+                        <a href="{% url 'reservas:detalle' object.pk %}" 
+                           class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                            No, Volver Atrás
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ayuda -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                ¿Necesitas ayuda? 
+                <a href="#" class="text-amber-600 hover:text-amber-700 font-semibold">Contacta con nosotros</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

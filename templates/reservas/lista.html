@@ -1,0 +1,157 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Mis Reservas{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Mis Reservas</h1>
+                <p class="text-gray-600 dark:text-gray-400">Gestiona tus reservas de mesa</p>
+            </div>
+            <a href="{% url 'reservas:crear' %}" 
+               class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Nueva Reserva
+            </a>
+        </div>
+
+        {% if reservas %}
+        <!-- Grid de Reservas -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for reserva in reservas %}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                <!-- Header de la Card -->
+                <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-white font-bold text-lg">Reserva #{{ reserva.id }}</h3>
+                            <p class="text-amber-100 text-sm">{{ reserva.fecha_reserva|date:"d/m/Y" }}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold
+                            {% if reserva.estado == 'confirmada' %}
+                                bg-green-100 text-green-800
+                            {% elif reserva.estado == 'pendiente' %}
+                                bg-yellow-100 text-yellow-800
+                            {% else %}
+                                bg-red-100 text-red-800
+                            {% endif %}">
+                            {{ reserva.get_estado_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Contenido de la Card -->
+                <div class="p-6">
+                    <!-- Fecha y Hora -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Fecha y Hora</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ reserva.fecha_reserva|date:"d/m/Y H:i" }} hrs</p>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad de Personas -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Personas</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ reserva.cantidad_personas }} persona{{ reserva.cantidad_personas|pluralize }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    {% if reserva.observaciones %}
+                    <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Observaciones:</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">{{ reserva.observaciones|truncatewords:15 }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Acciones -->
+                    <div class="flex gap-2 mt-4">
+                        <a href="{% url 'reservas:detalle' reserva.pk %}" 
+                           class="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200">
+                            Ver Detalle
+                        </a>
+                        {% if reserva.estado != 'cancelada' %}
+                        <a href="{% url 'reservas:actualizar' reserva.pk %}" 
+                           class="flex-1 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200">
+                            Editar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="mt-8 flex justify-center">
+            <nav class="flex items-center gap-2">
+                {% if page_obj.has_previous %}
+                <a href="?page=1" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Primera
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Anterior
+                </a>
+                {% endif %}
+
+                <span class="px-4 py-2 bg-amber-600 text-white rounded-lg">
+                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Siguiente
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Última
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Estado Vacío -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
+            <div class="max-w-md mx-auto">
+                <div class="bg-amber-100 dark:bg-amber-900 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-12 h-12 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">No tienes reservas</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    Aún no has realizado ninguna reserva. ¡Crea tu primera reserva ahora!
+                </p>
+                <a href="{% url 'reservas:crear' %}" 
+                   class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Crear Primera Reserva
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
