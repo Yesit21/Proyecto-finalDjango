@@ -27,7 +27,5 @@ export const themeManager = {
         
         // Guardar en localStorage
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
-        console.log('Tema cambiado a:', isDark ? 'oscuro' : 'claro');
     }
 };
