@@ -19,7 +19,7 @@ class PDFService:
         data = [['Plato', 'Cantidad', 'Precio', 'Subtotal']]
         for item in pedido.items.all():
             data.append([
-                item.plato.nombre,
+                item.nombre,  # Corregido: usar item.nombre en lugar de item.plato.nombre
                 str(item.cantidad),
                 f'${item.precio_unitario}',
                 f'${item.subtotal}'

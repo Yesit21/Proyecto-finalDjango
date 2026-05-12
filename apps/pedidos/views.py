@@ -31,13 +31,26 @@ def lista_pedidos(request):
 @login_required
 def agregar_carrito(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
+    
+    # Validar que el producto tenga stock disponible
+    if producto.stock_actual <= 0:
+        messages.error(request, f'{producto.nombre} no tiene stock disponible.')
+        return redirect('pedidos:lista')
+    
     cart = _get_cart(request)
     item = cart.get(str(producto.id), {
         'nombre': producto.nombre,
         'precio': str(producto.precio),
         'cantidad': 0,
     })
-    item['cantidad'] += 1
+    
+    # Validar que no se exceda el stock disponible
+    nueva_cantidad = item['cantidad'] + 1
+    if nueva_cantidad > producto.stock_actual:
+        messages.warning(request, f'Solo hay {producto.stock_actual} unidades disponibles de {producto.nombre}.')
+        return redirect('pedidos:carrito')
+    
+    item['cantidad'] = nueva_cantidad
     cart[str(producto.id)] = item
     _save_cart(request, cart)
     messages.success(request, f'Agregado {producto.nombre} al carrito.')
@@ -82,6 +95,22 @@ def realizar_pedido(request):
         messages.warning(request, 'El carrito está vacío.')
         return redirect('pedidos:carrito')
 
+    # Validar stock antes de crear el pedido
+    errores_stock = []
+    for producto_id, item in cart.items():
+        producto = Producto.objects.filter(pk=int(producto_id)).first()
+        if producto:
+            if producto.stock_actual < item['cantidad']:
+                errores_stock.append(
+                    f"{item['nombre']}: solo hay {producto.stock_actual} unidades disponibles (solicitaste {item['cantidad']})"
+                )
+    
+    if errores_stock:
+        for error in errores_stock:
+            messages.error(request, error)
+        return redirect('pedidos:carrito')
+
+    # Crear el pedido
     pedido = Pedido.objects.create(cliente=request.user)
     total = Decimal('0.00')
 
@@ -99,8 +128,9 @@ def realizar_pedido(request):
             precio_unitario=precio,
         )
 
+        # Descontar stock (ahora validado)
         if producto:
-            producto.stock_actual = max(producto.stock_actual - cantidad, 0)
+            producto.stock_actual -= cantidad
             producto.save(update_fields=['stock_actual'])
 
         total += subtotal
@@ -108,7 +138,7 @@ def realizar_pedido(request):
     pedido.total = total
     pedido.save(update_fields=['total'])
     request.session.pop(CART_SESSION_KEY, None)
-    messages.success(request, 'Pedido realizado con éxito.')
+    messages.success(request, f'Pedido #{pedido.id} realizado con éxito.')
     return redirect('pedidos:mis_pedidos')
 
 

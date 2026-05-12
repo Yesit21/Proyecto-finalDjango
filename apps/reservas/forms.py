@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 from .models import Reserva
 
 class ReservaForm(forms.ModelForm):
@@ -27,4 +28,21 @@ class ReservaForm(forms.ModelForm):
                 }
             ),
         }
+    
+    def clean_fecha_reserva(self):
+        """Validar que la fecha de reserva no sea en el pasado"""
+        fecha = self.cleaned_data.get('fecha_reserva')
+        if fecha and fecha < timezone.now():
+            raise forms.ValidationError('No puedes hacer una reserva en una fecha pasada.')
+        return fecha
+    
+    def clean_cantidad_personas(self):
+        """Validar que la cantidad de personas esté en el rango permitido"""
+        cantidad = self.cleaned_data.get('cantidad_personas')
+        if cantidad and cantidad < 1:
+            raise forms.ValidationError('Debe incluir al menos 1 persona.')
+        if cantidad and cantidad > 20:
+            raise forms.ValidationError('El máximo es 20 personas por reserva.')
+        return cantidad
+
 
