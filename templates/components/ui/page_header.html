@@ -1,0 +1,14 @@
+<div class="page-header">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+            {% if breadcrumb_template %}{% include breadcrumb_template %}{% endif %}
+            <h1 class="page-title">{{ title }}</h1>
+            {% if subtitle %}<p class="page-subtitle">{{ subtitle }}</p>{% endif %}
+        </div>
+        {% if actions_template %}
+        <div class="page-actions">
+            {% include actions_template %}
+        </div>
+        {% endif %}
+    </div>
+</div>
