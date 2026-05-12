@@ -1,60 +1,74 @@
 {% load static %}
-<nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
-    <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center h-16">
-            <div class="flex items-center space-x-8">
-                <a href="{% url 'usuarios:login' %}" class="text-2xl font-bold text-red-500">
-                    Restaurante
+{% url 'dashboard:home' as dashboard_home_url %}
+{% url 'usuarios:perfil' as usuarios_perfil_url %}
+{% url 'usuarios:logout' as usuarios_logout_url %}
+{% url 'usuarios:login' as usuarios_login_url %}
+{% url 'usuarios:registro' as usuarios_registro_url %}
+{% url 'menu:lista' as menu_lista_url %}
+{% url 'pedidos:carrito' as pedidos_carrito_url %}
+{% url 'pedidos:mis_pedidos' as pedidos_mis_pedidos_url %}
+{% url 'reservas:mis_reservas' as reservas_mis_reservas_url %}
+{% url 'pedidos:lista' as pedidos_lista_url %}
+{% url 'reservas:lista' as reservas_lista_url %}
+{% url 'inventario:lista' as inventario_lista_url %}
+{% url 'dashboard:reportes' as dashboard_reportes_url %}
+
+<nav class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/70">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <button id="sidebar-toggle" type="button" class="btn-ghost px-3 md:hidden" aria-label="Abrir menú">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+
+                <a href="{% if dashboard_home_url %}{{ dashboard_home_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white">
+                        <span class="text-sm font-bold">R</span>
+                    </span>
+                    <span class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">Sistema de Restaurante</span>
                 </a>
-                
+
                 {% if user.is_authenticated %}
-                <div class="hidden md:flex space-x-4">
-                    <a href="#" class="nav-link">Menú</a>
-                    
+                <div class="hidden items-center gap-1 md:flex">
+                    {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link">Menú</a>{% endif %}
+
                     {% if user.rol == 'cliente' %}
-                        <a href="#" class="nav-link">Carrito</a>
-                        <a href="#" class="nav-link">Mis Pedidos</a>
-                        <a href="#" class="nav-link">Mis Reservas</a>
+                        {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link">Carrito</a>{% endif %}
+                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link">Mis pedidos</a>{% endif %}
+                        {% if reservas_mis_reservas_url %}<a href="{{ reservas_mis_reservas_url }}" class="nav-link">Mis reservas</a>{% endif %}
                     {% endif %}
-                    
-                    {% if user.rol in 'mesero,administrador' %}
-                        <a href="#" class="nav-link">Pedidos</a>
-                        <a href="#" class="nav-link">Reservas</a>
+
+                    {% if user.rol == 'mesero' or user.rol == 'administrador' %}
+                        {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link">Pedidos</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link">Reservas</a>{% endif %}
                     {% endif %}
-                    
+
                     {% if user.rol == 'administrador' %}
-                        <a href="#" class="nav-link">Inventario</a>
-                        <a href="#" class="nav-link">Reportes</a>
+                        {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link">Inventario</a>{% endif %}
+                        {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link">Reportes</a>{% endif %}
                     {% endif %}
                 </div>
                 {% endif %}
             </div>
-            
-            <div class="flex items-center space-x-4">
+
+            <div class="flex items-center gap-2">
                 {% if user.is_authenticated %}
-                    <span class="text-sm">{{ user.username }}</span>
-                    <a href="{% url 'usuarios:logout' %}" class="btn-primary">Salir</a>
+                    <span class="hidden text-sm text-gray-600 dark:text-gray-300 sm:inline">{{ user.username }}</span>
+                    <a href="{% if usuarios_perfil_url %}{{ usuarios_perfil_url }}{% else %}#{% endif %}" class="btn-ghost">Perfil</a>
+                    <a href="{% if usuarios_logout_url %}{{ usuarios_logout_url }}{% else %}#{% endif %}" class="btn-primary">Salir</a>
                 {% else %}
-                    <a href="{% url 'usuarios:login' %}" class="btn-secondary">Iniciar Sesión</a>
+                    <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
+                    <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
                 {% endif %}
-                
-                <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <!-- Icono de Sol (se muestra en modo oscuro) -->
-                    <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                    </svg>
-                    <!-- Icono de Luna (se muestra en modo claro) -->
-                    <svg id="theme-toggle-dark-icon" class="w-6 h-6 block dark:hidden text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+
+                <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Cambiar tema">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                     </svg>
                 </button>
             </div>
         </div>
     </div>
 </nav>
-
-<style>
-.nav-link {
-    @apply text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200;
-}
-</style>

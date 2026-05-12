@@ -11,16 +11,44 @@
 }
 
 @layer components {
+  .nav-link {
+    @apply inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
   .btn-primary {
-    @apply bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200;
+    @apply btn bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
   }
   
   .btn-secondary {
-    @apply bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition duration-200;
+    @apply btn bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-300 dark:text-gray-200 dark:hover:bg-gray-800;
   }
   
   .card {
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-200;
+  }
+
+  .card-header {
+    @apply mb-4 flex items-center justify-between gap-4;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-gray-100;
+  }
+
+  .card-subtitle {
+    @apply mt-1 text-sm text-gray-500 dark:text-gray-400;
   }
   
   .input-field {
@@ -35,6 +63,74 @@
   .dark .input-field:-webkit-autofill {
     -webkit-text-fill-color: #ffffff !important;
     -webkit-box-shadow: 0 0 0 1000px #1f2937 inset !important;
+  }
+
+  .form-label {
+    @apply mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200;
+  }
+
+  .form-help {
+    @apply mt-1 text-xs text-gray-500 dark:text-gray-400;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .badge-success {
+    @apply badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300;
+  }
+
+  .alert {
+    @apply rounded-lg border p-4 shadow-sm transition-opacity bg-white dark:bg-gray-800;
+  }
+
+  .alert-success {
+    @apply alert border-green-200 dark:border-green-900/50;
+  }
+
+  .alert-error {
+    @apply alert border-red-200 dark:border-red-900/50;
+  }
+
+  .alert-warning {
+    @apply alert border-yellow-200 dark:border-yellow-900/50;
+  }
+
+  .alert-info {
+    @apply alert border-blue-200 dark:border-blue-900/50;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white transition;
+  }
+
+  .sidebar-link-active {
+    @apply bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white;
+  }
+
+  .table {
+    @apply w-full text-left text-sm;
+  }
+
+  .table-head {
+    @apply bg-gray-50 dark:bg-gray-900/30;
+  }
+
+  .table-th {
+    @apply px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300;
+  }
+
+  .table-td {
+    @apply px-4 py-3 text-gray-800 dark:text-gray-100;
   }
   
   .table-row {
