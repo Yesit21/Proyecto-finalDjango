@@ -1,10 +1,11 @@
 ﻿import json
 from datetime import timedelta
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.db.models import Avg, Count, F, Sum
 from django.db.models.functions import TruncDate
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from apps.inventario.models import Producto
 from apps.pedidos.models import Pedido, PedidoItem
@@ -14,7 +15,8 @@ from apps.pedidos.models import Pedido, PedidoItem
 def home(request):
     # Solo meseros y administradores pueden ver el dashboard
     if request.user.rol not in ['mesero', 'administrador']:
-        raise PermissionDenied("No tienes permiso para acceder al dashboard.")
+        messages.warning(request, 'No tienes permiso para acceder al dashboard.')
+        return redirect(reverse('menu:lista'))
     
     now = timezone.now()
     fecha_inicio = now - timedelta(days=30)
@@ -62,7 +64,8 @@ def home(request):
 def reporte_panel(request):
     # Solo administradores pueden ver reportes
     if request.user.rol != 'administrador':
-        raise PermissionDenied("No tienes permiso para acceder a los reportes.")
+        messages.warning(request, 'No tienes permiso para acceder a los reportes.')
+        return redirect(reverse('dashboard:home'))
     
     fecha_desde = request.GET.get('desde')
     fecha_hasta = request.GET.get('hasta')

@@ -25,7 +25,11 @@
                 </button>
                 {% endif %}
 
+                {% if user.rol == 'cliente' %}
+                <a href="{% if menu_lista_url %}{{ menu_lista_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+                {% else %}
                 <a href="{% if dashboard_home_url %}{{ dashboard_home_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+                {% endif %}
                     <span class="brand-mark">
                         <span class="text-sm font-bold">R</span>
                     </span>
