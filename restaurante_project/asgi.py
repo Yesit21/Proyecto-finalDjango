@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 ASGI config for restaurante_project project.
 
@@ -14,10 +13,4 @@ from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'restaurante_project.settings')
 
-=======
-﻿import os
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
->>>>>>> 39418a775c31a7f8bd147b2090d267aec03ff655
 application = get_asgi_application()
