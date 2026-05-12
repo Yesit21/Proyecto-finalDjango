@@ -9,22 +9,22 @@
                 
                 {% if user.is_authenticated %}
                 <div class="hidden md:flex space-x-4">
-                    <a href="#" class="nav-link">Menú</a>
+                    <a href="{% url 'menu:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Menú</a>
                     
                     {% if user.rol == 'cliente' %}
-                        <a href="#" class="nav-link">Carrito</a>
-                        <a href="#" class="nav-link">Mis Pedidos</a>
-                        <a href="#" class="nav-link">Mis Reservas</a>
+                        <a href="{% url 'pedidos:carrito' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Carrito</a>
+                        <a href="{% url 'pedidos:mis_pedidos' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Pedidos</a>
+                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Reservas</a>
                     {% endif %}
                     
                     {% if user.rol in 'mesero,administrador' %}
-                        <a href="#" class="nav-link">Pedidos</a>
-                        <a href="#" class="nav-link">Reservas</a>
+                        <a href="{% url 'pedidos:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Pedidos</a>
+                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reservas</a>
                     {% endif %}
                     
                     {% if user.rol == 'administrador' %}
-                        <a href="#" class="nav-link">Inventario</a>
-                        <a href="#" class="nav-link">Reportes</a>
+                        <a href="{% url 'inventario:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Inventario</a>
+                        <a href="{% url 'dashboard:reportes' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reportes</a>
                     {% endif %}
                 </div>
                 {% endif %}
@@ -32,10 +32,10 @@
             
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
-                    <span class="text-sm">{{ user.username }}</span>
-                    <a href="{% url 'usuarios:logout' %}" class="btn-primary">Salir</a>
+                    <a href="{% url 'usuarios:perfil' %}" class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors">{{ user.username }}</a>
+                    <a href="{% url 'usuarios:logout' %}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Salir</a>
                 {% else %}
-                    <a href="{% url 'usuarios:login' %}" class="btn-secondary">Iniciar Sesión</a>
+                    <a href="{% url 'usuarios:login' %}" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Iniciar Sesión</a>
                 {% endif %}
                 
                 <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -52,9 +52,3 @@
         </div>
     </div>
 </nav>
-
-<style>
-.nav-link {
-    @apply text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200;
-}
-</style>
