@@ -13,18 +13,21 @@
 {% url 'inventario:lista' as inventario_lista_url %}
 {% url 'dashboard:reportes' as dashboard_reportes_url %}
 
-<nav class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/70">
+{% with current_namespace=request.resolver_match.namespace current_url_name=request.resolver_match.url_name %}
+<nav class="sticky top-0 z-40 border-b border-white/20 bg-white/35 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/40">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
             <div class="flex items-center gap-3">
+                {% if user.is_authenticated %}
                 <button id="sidebar-toggle" type="button" class="btn-ghost px-3 md:hidden" aria-label="Abrir menú">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
+                {% endif %}
 
                 <a href="{% if dashboard_home_url %}{{ dashboard_home_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white">
+                    <span class="brand-mark">
                         <span class="text-sm font-bold">R</span>
                     </span>
                     <span class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">Sistema de Restaurante</span>
@@ -32,22 +35,22 @@
 
                 {% if user.is_authenticated %}
                 <div class="hidden items-center gap-1 md:flex">
-                    {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link">Menú</a>{% endif %}
+                    {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link {% if current_namespace == 'menu' %}nav-link-active{% endif %}">Menú</a>{% endif %}
 
                     {% if user.rol == 'cliente' %}
-                        {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link">Carrito</a>{% endif %}
-                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link">Mis pedidos</a>{% endif %}
-                        {% if reservas_mis_reservas_url %}<a href="{{ reservas_mis_reservas_url }}" class="nav-link">Mis reservas</a>{% endif %}
+                        {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
+                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
+                        {% if reservas_mis_reservas_url %}<a href="{{ reservas_mis_reservas_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
                     {% endif %}
 
                     {% if user.rol == 'mesero' or user.rol == 'administrador' %}
-                        {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link">Pedidos</a>{% endif %}
-                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link">Reservas</a>{% endif %}
+                        {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Pedidos</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Reservas</a>{% endif %}
                     {% endif %}
 
                     {% if user.rol == 'administrador' %}
-                        {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link">Inventario</a>{% endif %}
-                        {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link">Reportes</a>{% endif %}
+                        {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
+                        {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
                     {% endif %}
                 </div>
                 {% endif %}
@@ -59,8 +62,10 @@
                     <a href="{% if usuarios_perfil_url %}{{ usuarios_perfil_url }}{% else %}#{% endif %}" class="btn-ghost">Perfil</a>
                     <a href="{% if usuarios_logout_url %}{{ usuarios_logout_url }}{% else %}#{% endif %}" class="btn-primary">Salir</a>
                 {% else %}
-                    <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
-                    <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
+                    {% if current_namespace != 'usuarios' or current_url_name != 'login' and current_url_name != 'registro' %}
+                        <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
+                        <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
+                    {% endif %}
                 {% endif %}
 
                 <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Cambiar tema">
@@ -72,3 +77,4 @@
         </div>
     </div>
 </nav>
+{% endwith %}
