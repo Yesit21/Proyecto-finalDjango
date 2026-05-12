@@ -39,31 +39,17 @@
                     {% if user.rol == 'cliente' %}
                         {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
                         {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
-                        {% if reservas_mis_reservas_url %}<a href="{{ reservas_mis_reservas_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
                     {% endif %}
 
                     {% if user.rol == 'mesero' or user.rol == 'administrador' %}
                         {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Pedidos</a>{% endif %}
                         {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Reservas</a>{% endif %}
-                <div class="hidden md:flex space-x-4">
-                    <a href="{% url 'menu:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Menú</a>
-                    
-                    {% if user.rol == 'cliente' %}
-                        <a href="{% url 'pedidos:carrito' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Carrito</a>
-                        <a href="{% url 'pedidos:mis_pedidos' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Pedidos</a>
-                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Reservas</a>
-                    {% endif %}
-                    
-                    {% if user.rol in 'mesero,administrador' %}
-                        <a href="{% url 'pedidos:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Pedidos</a>
-                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reservas</a>
                     {% endif %}
 
                     {% if user.rol == 'administrador' %}
                         {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
                         {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
-                        <a href="{% url 'inventario:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Inventario</a>
-                        <a href="{% url 'dashboard:reportes' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reportes</a>
                     {% endif %}
                 </div>
                 {% endif %}
