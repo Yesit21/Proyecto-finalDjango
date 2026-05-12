@@ -3,78 +3,366 @@
 
 {% block title %}Menú del Restaurante{% endblock %}
 
-{% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-center mb-8">Nuestro Menú</h1>
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+:root {
+    --font-serif: 'Playfair Display', serif;
+}
 
-    <!-- Filtros por categoría -->
-    <div class="flex flex-wrap justify-center gap-4 mb-8">
-        <a href="{% url 'menu:lista' %}"
-           class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 {% if not request.GET.categoria %}bg-blue-700{% endif %}">
-            Todos
-        </a>
-        {% for categoria_value, categoria_name in categorias %}
-        <a href="?categoria={{ categoria_value }}"
-           class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 {% if request.GET.categoria == categoria_value %}bg-blue-500 text-white{% endif %}">
-            {{ categoria_name }}
-        </a>
-        {% endfor %}
+.hero-menu {
+    position: relative;
+    margin: 0 0 60px;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    padding: 60px;
+}
+
+.hero-menu-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, 
+        rgba(15, 16, 17, 0.95) 0%, 
+        rgba(15, 16, 17, 0.4) 50%, 
+        rgba(15, 16, 17, 0.1) 100%),
+    url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}') center/cover;
+    z-index: 1;
+}
+
+.hero-menu-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.badge-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251, 146, 60, 0.1);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    color: rgb(251, 146, 60);
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.hero-menu h1 {
+    font-family: var(--font-serif);
+    font-size: 64px;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-menu p {
+    color: rgb(156, 163, 175);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+.menu-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.menu-section-title {
+    font-family: var(--font-serif);
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.menu-section-title span {
+    position: relative;
+    color: rgb(251, 146, 60);
+}
+
+.menu-section-title span::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgb(251, 146, 60);
+}
+
+.filters-menu {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-btn-menu {
+    background-color: rgb(28, 29, 30);
+    color: rgb(156, 163, 175);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.filter-btn-menu:hover {
+    background-color: rgba(251, 146, 60, 0.1);
+    color: rgb(251, 146, 60);
+    border-color: rgba(251, 146, 60, 0.3);
+}
+
+.filter-btn-menu.active {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
+}
+
+.menu-grid-custom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+.food-card-custom {
+    background-color: rgb(28, 29, 30);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.food-card-custom:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    border-color: rgba(251, 146, 60, 0.3);
+}
+
+.food-card-custom img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.food-card-custom .no-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, rgb(28, 29, 30) 0%, rgb(22, 23, 24) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(156, 163, 175);
+}
+
+.food-info-custom {
+    padding: 24px;
+}
+
+.food-info-custom h3 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: rgb(245, 245, 245);
+}
+
+.food-info-custom .description {
+    color: rgb(156, 163, 175);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.food-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.food-price-custom {
+    color: rgb(251, 146, 60);
+    font-weight: 700;
+    font-size: 22px;
+    font-family: var(--font-serif);
+}
+
+.btn-view-detail {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-view-detail:hover {
+    background-color: rgb(224, 163, 106);
+    transform: translateY(-2px);
+}
+
+.empty-state-menu {
+    text-align: center;
+    padding: 80px 20px;
+    color: rgb(156, 163, 175);
+}
+
+.empty-state-menu i {
+    font-size: 64px;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.empty-state-menu h3 {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: rgb(245, 245, 245);
+}
+
+@media (max-width: 768px) {
+    .hero-menu {
+        padding: 40px 24px;
+        min-height: 300px;
+    }
+    
+    .hero-menu h1 {
+        font-size: 42px;
+    }
+    
+    .menu-section-title {
+        font-size: 32px;
+    }
+    
+    .menu-grid-custom {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero-menu">
+    <div class="hero-menu-bg"></div>
+    <div class="hero-menu-content">
+        <div class="badge-menu">
+            <i class="ph-fill ph-star"></i> 
+            RECOMENDADO POR EL CHEF
+        </div>
+        <h1>Descubre Sabores Únicos</h1>
+        <p>
+            Explora nuestra carta cuidadosamente elaborada con ingredientes frescos y de la más alta calidad. 
+            Cada plato cuenta una historia de pasión culinaria.
+        </p>
+    </div>
+</section>
+
+<!-- MENU SECTION -->
+<section>
+    <div class="menu-section-header">
+        <h2 class="menu-section-title">
+            Explora Nuestra<br>
+            <span>Carta</span>
+        </h2>
+        <div class="filters-menu">
+            <a href="{% url 'menu:lista' %}" 
+               class="filter-btn-menu {% if not request.GET.categoria %}active{% endif %}">
+                Todos
+            </a>
+            {% for categoria_value, categoria_name in categorias %}
+            <a href="?categoria={{ categoria_value }}" 
+               class="filter-btn-menu {% if request.GET.categoria == categoria_value %}active{% endif %}">
+                {{ categoria_name }}
+            </a>
+            {% endfor %}
+        </div>
     </div>
 
-    <!-- Grid de platos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="menu-grid-custom">
         {% for plato in platos %}
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div class="food-card-custom">
             {% if plato.imagen %}
-            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" class="w-full h-48 object-cover">
+            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
             {% else %}
-            <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <span class="text-gray-500">Sin imagen</span>
+            <div class="no-image">
+                <i class="ph ph-fork-knife" style="font-size: 48px;"></i>
             </div>
             {% endif %}
 
-            <div class="p-6">
-                <h3 class="text-xl font-semibold mb-2">{{ plato.nombre }}</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">{{ plato.descripcion|truncatechars:100 }}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-2xl font-bold text-green-600">${{ plato.precio }}</span>
-                    <a href="{% url 'menu:detalle' plato.pk %}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            <div class="food-info-custom">
+                <h3>{{ plato.nombre }}</h3>
+                <p class="description">{{ plato.descripcion }}</p>
+                <div class="food-footer">
+                    <span class="food-price-custom">${{ plato.precio }}</span>
+                    <a href="{% url 'menu:detalle' plato.pk %}" class="btn-view-detail">
+                        <i class="ph ph-eye"></i>
                         Ver detalle
                     </a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-span-full text-center py-12">
-            <p class="text-gray-500 text-lg">No hay platos disponibles en esta categoría.</p>
+        <div class="empty-state-menu" style="grid-column: 1 / -1;">
+            <i class="ph ph-fork-knife"></i>
+            <h3>No hay platos disponibles</h3>
+            <p>No se encontraron platos en esta categoría.</p>
         </div>
         {% endfor %}
     </div>
 
     <!-- Paginación -->
     {% if is_paginated %}
-    <div class="flex justify-center mt-8">
-        <div class="flex space-x-2">
+    <div class="flex justify-center mt-12">
+        <div class="flex gap-3">
             {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
-               class="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+               class="btn-ghost">
                 Anterior
             </a>
             {% endif %}
 
-            <span class="px-3 py-2 bg-blue-500 text-white rounded">
+            <span class="px-4 py-2 rounded-lg bg-amber-600 text-white font-semibold">
                 Página {{ page_obj.number }} de {{ paginator.num_pages }}
             </span>
 
             {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
-               class="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+               class="btn-ghost">
                 Siguiente
             </a>
             {% endif %}
         </div>
     </div>
     {% endif %}
-</div>
+</section>
 {% endblock %}
