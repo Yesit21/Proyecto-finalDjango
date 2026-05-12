@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualización de Reserva</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .status-update {
+            background: #f5f3ff;
+            border-left: 4px solid #8b5cf6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        .status-update h3 {
+            margin: 0 0 15px 0;
+            color: #6b21a8;
+            font-size: 18px;
+        }
+        .status-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .status-old {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        .status-new {
+            background: #ddd6fe;
+            color: #5b21b6;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #6b7280;
+        }
+        .info-box {
+            background: #f9fafb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+        }
+        .info-box strong {
+            color: #374151;
+        }
+        .footer {
+            background: #f9fafb;
+            padding: 25px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .emoji {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .message-box {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">{{ emoji }}</div>
+            <h1>Actualización de Reserva</h1>
+            <p>Reserva #{{ reserva.id }}</p>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hola <strong>{{ usuario.get_full_name|default:usuario.username }}</strong>,</p>
+            
+            <p>Te informamos que el estado de tu reserva ha sido actualizado.</p>
+            
+            <div class="message-box">
+                {{ mensaje }}
+            </div>
+            
+            <div class="status-update">
+                <h3>📊 Cambio de Estado</h3>
+                <div class="status-change">
+                    <span class="status-badge status-old">{{ estado_anterior }}</span>
+                    <span class="arrow">→</span>
+                    <span class="status-badge status-new">{{ estado_nuevo }}</span>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <strong>Número de Reserva:</strong> #{{ reserva.id }}<br>
+                <strong>Fecha y Hora:</strong> {{ reserva.fecha_reserva|date:"d/m/Y H:i" }}<br>
+                <strong>Cantidad de Personas:</strong> {{ reserva.cantidad_personas }}<br>
+                <strong>Estado Actual:</strong> <span class="status-badge status-new">{{ estado_nuevo }}</span>
+            </div>
+            
+            {% if reserva.estado == 'confirmada' %}
+            <div style="background: #d1fae5; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: #065f46; font-weight: 600; font-size: 18px;">
+                    🎉 ¡Tu reserva ha sido confirmada!
+                </p>
+                <p style="margin: 0; color: #047857;">
+                    Te esperamos el {{ reserva.fecha_reserva|date:"d/m/Y" }} a las {{ reserva.fecha_reserva|date:"H:i" }} hrs
+                </p>
+            </div>
+            {% elif reserva.estado == 'cancelada' %}
+            <div style="background: #fee2e2; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: #991b1b; font-weight: 600; font-size: 18px;">
+                    Tu reserva ha sido cancelada
+                </p>
+                <p style="margin: 0; color: #b91c1c;">
+                    Si tienes dudas o deseas hacer una nueva reserva, contáctanos.
+                </p>
+            </div>
+            {% endif %}
+            
+            {% if reserva.observaciones %}
+            <div style="background: #eff6ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p style="margin: 0; color: #1e40af;"><strong>📝 Observaciones:</strong></p>
+                <p style="margin: 5px 0 0 0; color: #1e40af;">{{ reserva.observaciones }}</p>
+            </div>
+            {% endif %}
+            
+            <p style="margin-top: 30px; color: #6b7280;">
+                Puedes revisar todos los detalles de tu reserva desde tu cuenta.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Restaurante</strong></p>
+            <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                © {{ reserva.created_at|date:"Y" }} Restaurante. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

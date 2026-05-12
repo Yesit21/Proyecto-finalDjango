@@ -61,25 +61,27 @@
 - [x] Alertas de stock bajo
 - [x] Actualización de stock
 
+### 10. Reportes y Exportación de Datos ✅
+- [x] Generar reportes en PDF (reportlab)
+- [x] Generar reportes en Excel (openpyxl)
+- [x] Filtros de búsqueda por fechas
+- [x] Segmentación por categorías
+- [x] Reportes de Pedidos, Ventas, Inventario, Reservas
+- [x] Interfaz de usuario para reportes
+
+### 11. Confirmación Automática por Correo ✅
+- [x] Envío de correo al crear pedido
+- [x] Envío de correo al crear reserva
+- [x] Envío de correo al cambiar estado de pedido
+- [x] Envío de correo al cambiar estado de reserva
+- [x] Templates HTML profesionales
+- [x] Configuración SMTP
+
 ---
 
 ## ❌ Requisitos Pendientes
 
-### 5. Reportes y Exportación de Datos ❌
-- [ ] Generar reportes en PDF (reportlab)
-- [ ] Generar reportes en Excel (pandas/openpyxl)
-- [ ] Filtros de búsqueda por fechas
-- [ ] Segmentación por categorías
-- **Prioridad: ALTA**
-
-### 8. Confirmación Automática por Correo ❌
-- [ ] Envío de correo al crear pedido
-- [ ] Envío de correo al crear reserva
-- [ ] Envío de correo al cambiar estado de pedido
-- **Prioridad: MEDIA**
-- **Nota**: Ya existe infraestructura de email en `apps/usuarios/services/auth_service.py`
-
-### 10. Despliegue del Sistema ❌
+### 8. Despliegue del Sistema ❌
 - [ ] Configurar para producción
 - [ ] Subir a plataforma (Render/Railway/PythonAnywhere)
 - [ ] Conectar a PostgreSQL
@@ -104,17 +106,17 @@
 
 ## 📊 Progreso General
 
-**Completado**: 75%
-**Pendiente**: 25%
+**Completado**: 85%
+**Pendiente**: 15%
 
 ### Desglose por Categoría:
 - ✅ Backend/Modelos: 100%
 - ✅ Autenticación: 100%
 - ✅ CRUD: 100%
-- ✅ Dashboard: 90% (falta exportación)
-- ✅ Frontend: 95% (falta algunas mejoras)
-- ❌ Reportes: 0%
-- ❌ Emails automáticos: 0%
+- ✅ Dashboard: 100%
+- ✅ Frontend: 95%
+- ✅ Reportes: 100%
+- ✅ Emails automáticos: 100%
 - ❌ Despliegue: 0%
 - ❌ Documentación: 10%
 
@@ -122,24 +124,24 @@
 
 ## 🎯 Próximos Pasos Recomendados
 
-### Fase 1: Reportes (1-2 días)
-1. Implementar generación de PDF para pedidos
-2. Implementar generación de PDF para reportes de ventas
-3. Implementar exportación a Excel
-4. Agregar filtros de fecha en reportes
+### ~~Fase 1: Reportes (1-2 días)~~ ✅ COMPLETADO
+1. ~~Implementar generación de PDF para pedidos~~
+2. ~~Implementar generación de PDF para reportes de ventas~~
+3. ~~Implementar exportación a Excel~~
+4. ~~Agregar filtros de fecha en reportes~~
 
-### Fase 2: Emails Automáticos (1 día)
-1. Email de confirmación de pedido
-2. Email de confirmación de reserva
-3. Email de cambio de estado de pedido
+### ~~Fase 2: Emails Automáticos (1 día)~~ ✅ COMPLETADO
+1. ~~Email de confirmación de pedido~~
+2. ~~Email de confirmación de reserva~~
+3. ~~Email de cambio de estado de pedido~~
 
-### Fase 3: Documentación (1 día)
+### Fase 3: Documentación (1 día) ⏳ PENDIENTE
 1. Crear README.md completo
 2. Documentar instalación
 3. Documentar modelos y rutas
 4. Agregar capturas de pantalla
 
-### Fase 4: Despliegue (1-2 días)
+### Fase 4: Despliegue (1-2 días) ⏳ PENDIENTE
 1. Configurar settings para producción
 2. Configurar PostgreSQL
 3. Desplegar en Render/Railway

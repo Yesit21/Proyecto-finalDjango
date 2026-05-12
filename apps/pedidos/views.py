@@ -3,8 +3,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.inventario.models import Producto
+from services.email.email_service import EmailService
 from .forms import EstadoPedidoForm
 from .models import Pedido, PedidoItem
+import logging
+
+logger = logging.getLogger(__name__)
 
 CART_SESSION_KEY = 'pedidos_carrito'
 
@@ -138,6 +142,14 @@ def realizar_pedido(request):
     pedido.total = total
     pedido.save(update_fields=['total'])
     request.session.pop(CART_SESSION_KEY, None)
+    
+    # Enviar email de confirmación
+    try:
+        EmailService.send_order_confirmation(pedido)
+        logger.info(f"Email de confirmación enviado para pedido #{pedido.id}")
+    except Exception as e:
+        logger.error(f"Error enviando email de confirmación: {str(e)}")
+    
     messages.success(request, f'Pedido #{pedido.id} realizado con éxito.')
     return redirect('pedidos:mis_pedidos')
 
@@ -169,9 +181,22 @@ def cancelar_pedido(request, pedido_id):
 @login_required
 def actualizar_estado(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
+    estado_anterior = pedido.get_estado_display()
+    
     form = EstadoPedidoForm(request.POST or None, instance=pedido)
     if form.is_valid():
+        # Guardar el estado anterior antes de actualizar
+        estado_anterior_codigo = pedido.estado
         form.save()
+        
+        # Enviar email solo si el estado cambió
+        if estado_anterior_codigo != pedido.estado:
+            try:
+                EmailService.send_order_status_change(pedido, estado_anterior)
+                logger.info(f"Email de cambio de estado enviado para pedido #{pedido.id}")
+            except Exception as e:
+                logger.error(f"Error enviando email de cambio de estado: {str(e)}")
+        
         messages.success(request, 'Estado del pedido actualizado.')
         return redirect('pedidos:detalle', pedido_id=pedido.pk)
     return render(request, 'pedidos/estado_form.html', {'form': form, 'pedido': pedido})
