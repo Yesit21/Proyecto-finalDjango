@@ -147,7 +147,7 @@
                 {% endif %}
 
                 {% if dashboard_reportes_url %}
-                <a href="{{ dashboard_reportes_url }}" class="sidebar-link {% if current_namespace == 'dashboard' %}sidebar-link-active{% endif %}">
+                <a href="{{ dashboard_reportes_url }}" class="sidebar-link {% if current_namespace == 'dashboard' and request.resolver_match.url_name == 'reportes' %}sidebar-link-active{% endif %}">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19h16M4 5h16M7 15V9m5 6V7m5 8v-4"/>
@@ -156,6 +156,15 @@
                     <span>Reportes</span>
                 </a>
                 {% endif %}
+                
+                <a href="{% url 'dashboard:reportes_menu' %}" class="sidebar-link {% if request.resolver_match.url_name == 'reportes_menu' %}sidebar-link-active{% endif %}">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </span>
+                    <span>Exportar Reportes</span>
+                </a>
             </div>
         </div>
         {% endif %}
