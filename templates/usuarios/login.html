@@ -1,50 +1,99 @@
-﻿{% extends 'base/base.html' %}
-{% load static %}
+{% extends 'base/base.html' %}
 
-{% block title %}Iniciar Sesión - Restaurante{% endblock %}
+{% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">Iniciar Sesión</h2>
+<style>
+    /* Forzar estilos en modo oscuro */
+    .dark input[type="text"],
+    .dark input[type="password"],
+    .dark input[type="email"] {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border-color: #4b5563 !important;
+    }
     
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        
+    .dark input[type="text"]::placeholder,
+    .dark input[type="password"]::placeholder,
+    .dark input[type="email"]::placeholder {
+        color: #9ca3af !important;
+    }
+    
+    .dark input:-webkit-autofill,
+    .dark input:-webkit-autofill:hover,
+    .dark input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0 1000px #1f2937 inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
         <div>
-            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Usuario
-            </label>
-            {{ form.username }}
-            {% if form.username.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+                Iniciar Sesión
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                Sistema de Gestión de Restaurante
+            </p>
         </div>
         
-        <div>
-            <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Contraseña
-            </label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
-            {% endif %}
-        </div>
-        
-        {% if form.non_field_errors %}
-            <div class="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded">
-                {{ form.non_field_errors.0 }}
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            
+            <div class="rounded-md shadow-sm space-y-4">
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Usuario
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Contraseña
+                    </label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password.errors.0 }}</p>
+                    {% endif %}
+                </div>
             </div>
-        {% endif %}
-        
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
-            Iniciar Sesión
-        </button>
-    </form>
-    
-    <div class="mt-4 text-center">
-        <a href="{% url 'admin:index' %}" class="text-blue-600 hover:text-blue-800 text-sm">
-            ¿Eres administrador? Ir al panel de administración
-        </a>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    {{ form.remember_me }}
+                    <label for="{{ form.remember_me.id_for_label }}" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                        Recordarme
+                    </label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="{% url 'usuarios:password_reset' %}" class="font-medium text-red-600 hover:text-red-500">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn-primary w-full">
+                    Iniciar Sesión
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    ¿No tienes cuenta?
+                    <a href="{% url 'usuarios:registro' %}" class="font-medium text-red-600 hover:text-red-500">
+                        Regístrate aquí
+                    </a>
+                </p>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es" class="{% if dark_mode %}dark{% endif %}">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Cargar tema desde localStorage antes de que se renderice la página -->
+    <script>
+        // Evitar el flash de contenido sin estilo
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
@@ -23,7 +35,36 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script type="module" src="{% static 'src/js/main.js' %}"></script>
+    
+    <!-- Script del tema inline para evitar problemas de caché -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar el botón de toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    // Alternar la clase 'dark' en el elemento html
+                    const isDark = document.documentElement.classList.toggle('dark');
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    
+                    console.log('Tema cambiado a:', isDark ? 'oscuro' : 'claro');
+                });
+            }
+            
+            // Auto-ocultar alertas
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
