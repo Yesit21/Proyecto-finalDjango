@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 class="text-3xl font-semibold">Inventario</h1>
+        <div class="flex gap-3">
+            <a href="{% url 'inventario:crear_producto' %}" class="btn-primary">Nuevo producto</a>
+            <a href="{% url 'inventario:crear_movimiento' %}" class="btn-secondary">Registrar movimiento</a>
+        </div>
+    </div>
+
+    {% if alertas.exists %}
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4">
+        <p class="font-semibold">Productos con stock bajo:</p>
+        <ul class="list-disc list-inside mt-2">
+            {% for producto in alertas %}
+            <li>{{ producto.nombre }}: {{ producto.stock_actual }} unidades restantes</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Producto</th>
+                    <th class="px-4 py-3">Precio</th>
+                    <th class="px-4 py-3">Stock</th>
+                    <th class="px-4 py-3">Alerta</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for producto in productos %}
+                <tr>
+                    <td class="px-4 py-4">{{ producto.nombre }}</td>
+                    <td class="px-4 py-4">${{ producto.precio }}</td>
+                    <td class="px-4 py-4">{{ producto.stock_actual }}</td>
+                    <td class="px-4 py-4">{{ producto.alerta_stock }}</td>
+                    <td class="px-4 py-4 text-right">
+                        <a href="{% url 'inventario:editar_producto' producto.id %}" class="btn-secondary">Editar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-4">No hay productos registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

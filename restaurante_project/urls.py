@@ -8,6 +8,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/usuarios/login/', permanent=False)),
     path('usuarios/', include('apps.usuarios.urls')),
+    path('pedidos/', include('apps.pedidos.urls')),
+    path('inventario/', include('apps.inventario.urls')),
+    path('menu/', include('apps.menu.urls')),
+    path('reservas/', include('apps.reservas.urls')),
+    path('reportes-api/', include('apps.reportes.urls')),
+    path('dashboard/', include('apps.dashboard.urls')),
 ]
 
 if settings.DEBUG:
