@@ -79,10 +79,6 @@
                         <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
                         <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
                     {% endif %}
-                    <a href="{% url 'usuarios:perfil' %}" class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors">{{ user.username }}</a>
-                    <a href="{% url 'usuarios:logout' %}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Salir</a>
-                {% else %}
-                    <a href="{% url 'usuarios:login' %}" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Iniciar Sesión</a>
                 {% endif %}
 
                 <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Cambiar tema">
