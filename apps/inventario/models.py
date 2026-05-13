@@ -10,7 +10,7 @@ TIPO_MOVIMIENTO = [
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    precio = models.DecimalField(max_digits=12, decimal_places=0, default=0)
     stock_actual = models.IntegerField(default=0)
     alerta_stock = models.PositiveIntegerField(default=5)
 

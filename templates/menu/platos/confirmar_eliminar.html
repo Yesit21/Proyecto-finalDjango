@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Eliminar Plato{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <h1 class="text-2xl font-bold mb-4">Confirmar Eliminación</h1>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+            ¿Estás seguro de que deseas eliminar el plato <strong>"{{ object.nombre }}"</strong>?
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary bg-red-600 hover:bg-red-700">Sí, eliminar</button>
+                <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

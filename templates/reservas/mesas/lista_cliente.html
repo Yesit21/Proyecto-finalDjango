@@ -1,0 +1,119 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Elige tu Mesa - Experiencia Gourmet{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-fixed bg-cover bg-center py-12 px-4" 
+     style="background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="max-w-7xl mx-auto relative">
+        <!-- Elementos Decorativos -->
+        <div class="absolute -top-20 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl -z-10"></div>
+
+        <!-- Header -->
+        <div class="text-center mb-20 space-y-6 relative z-10">
+            <h1 class="text-7xl font-black text-white tracking-tighter mb-4 animate-fadeIn drop-shadow-2xl">Reserva tu Rincón</h1>
+            <p class="text-amber-200 text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fadeIn" style="animation-delay: 0.2s">Personaliza tu experiencia seleccionando el espacio perfecto para disfrutar de nuestra alta cocina.</p>
+            <div class="w-32 h-1.5 bg-amber-600 mx-auto rounded-full mt-10 animate-scaleIn"></div>
+        </div>
+
+        {% if mesas %}
+        <!-- Grid de Mesas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 relative z-10">
+            {% for mesa in mesas %}
+            <div class="group bg-white/5 backdrop-blur-3xl rounded-[4rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] border border-white/10 overflow-hidden hover:scale-[1.05] transition-all duration-700 flex flex-col relative">
+                <!-- Status Glow -->
+                <div class="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                <!-- Visualización de la Mesa -->
+                <div class="h-72 flex items-center justify-center relative overflow-hidden bg-gray-900">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay group-hover:scale-125 transition-transform duration-1000" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                    
+                    <div class="relative z-10 w-44 h-44 bg-white/5 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 group-hover:border-amber-500 transition-all duration-700 shadow-2xl overflow-hidden">
+                        <div class="absolute inset-0 bg-amber-600 opacity-0 group-hover:opacity-20 transition-opacity duration-700"></div>
+                        <svg class="w-24 h-24 text-white transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="absolute top-8 right-8">
+                        <div class="bg-amber-600 text-white px-6 py-2.5 rounded-2xl shadow-2xl border border-amber-500/50">
+                            <span class="font-black text-xs tracking-[0.2em] uppercase">Mesa {{ mesa.numero }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles -->
+                <div class="p-12 flex-1 flex flex-col relative z-10">
+                    <div class="mb-10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-6 h-[2px] bg-amber-600"></div>
+                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">Experiencia Gourmet</span>
+                        </div>
+                        <h3 class="text-4xl font-black text-white mb-3 tracking-tight">{{ mesa.ubicacion|default:"Salón Principal" }}</h3>
+                        <p class="text-white/40 text-sm leading-relaxed font-medium">Un rincón diseñado meticulosamente para elevar tus sentidos.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="bg-white/5 p-5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-colors">
+                            <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Capacidad</p>
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                <span class="font-black text-white text-lg">{{ mesa.capacidad }} Pers.</span>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-colors">
+                            <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Estado</p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.5)]"></div>
+                                <span class="font-black text-green-500 uppercase text-xs tracking-widest">Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'reservas:crear' %}?mesa={{ mesa.id }}" 
+                       class="mt-auto block w-full text-center bg-white hover:bg-amber-600 hover:text-white text-gray-900 font-black py-6 rounded-[2rem] shadow-2xl transition-all duration-500 transform hover:-translate-y-2 text-xl active:scale-95">
+                        Reservar Mesa
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white/5 backdrop-blur-3xl rounded-[4rem] border border-white/10 p-24 text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="w-44 h-44 bg-white/5 rounded-[3rem] flex items-center justify-center mx-auto mb-10 border border-white/10 transform rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                    <svg class="w-24 h-24 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                </div>
+                <h3 class="text-5xl font-black text-white mb-6 tracking-tighter">Salón Exclusivo Completo</h3>
+                <p class="text-white/40 text-xl mb-12 max-w-lg mx-auto leading-relaxed font-medium">En este momento todas nuestras mesas están deleitando a otros comensales. Vuelve pronto para asegurar tu lugar.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6">
+                    <a href="{% url 'reservas:lista' %}" class="inline-flex items-center justify-center gap-4 bg-white hover:bg-amber-600 hover:text-white text-gray-900 font-black py-6 px-12 rounded-[2rem] transition-all duration-500 transform hover:-translate-y-2 active:scale-95 text-lg shadow-2xl">
+                        Gestionar mis Reservas
+                    </a>
+                    <a href="{% url 'menu:platos' %}" class="inline-flex items-center justify-center gap-4 bg-white/5 hover:bg-white/10 text-white font-black py-6 px-12 rounded-[2rem] border border-white/10 backdrop-blur-md transition-all duration-500 transform hover:-translate-y-2 active:scale-95 text-lg">
+                        Explorar el Menú
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+</style>
+{% endblock %}

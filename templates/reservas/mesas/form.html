@@ -1,0 +1,147 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Editar Mesa {{ object.numero }}{% else %}Nueva Mesa{% endif %} | Gestión Salón{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
+         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    </div>
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-[4px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="relative z-10 max-w-2xl mx-auto py-10">
+        <!-- Enlace de regreso con estilo -->
+        <a href="{% url 'reservas:mesas_lista' %}" class="group inline-flex items-center gap-3 text-white/50 hover:text-amber-500 font-black text-xs uppercase tracking-[0.3em] mb-12 transition-all">
+            <div class="bg-white/5 p-2 rounded-xl border border-white/10 group-hover:border-amber-500/50 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+            </div>
+            Volver a la gestión de mesas
+        </a>
+
+        <!-- Contenedor de Formulario Flotante -->
+        <div class="bg-white/10 backdrop-blur-3xl rounded-[4rem] border border-white/20 shadow-2xl overflow-hidden relative group">
+            <!-- Status Glow Effect -->
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-amber-500/10 rounded-full blur-[100px] group-hover:bg-amber-500/20 transition-all duration-700"></div>
+            
+            <!-- Header del Formulario -->
+            <div class="p-10 md:p-14 border-b border-white/10 relative z-10">
+                <div class="flex items-center gap-8">
+                    <div class="bg-amber-500 p-5 rounded-[2rem] shadow-2xl shadow-amber-500/40 transform -rotate-6">
+                        <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-black text-white tracking-tighter uppercase mb-2">
+                            {% if object %}Editar <span class="text-amber-500">Mesa {{ object.numero }}</span>{% else %}Nueva <span class="text-amber-500">Mesa</span>{% endif %}
+                        </h1>
+                        <p class="text-amber-200/60 text-xs font-bold uppercase tracking-[0.3em]">Configuración física del salón</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuerpo del Formulario -->
+            <div class="p-10 md:p-14 relative z-10">
+                <form method="post" class="space-y-10">
+                    {% csrf_token %}
+                    
+                    <div class="grid gap-10">
+                        {% for field in form %}
+                        <div class="group/field space-y-4">
+                            <label for="{{ field.id_for_label }}" class="block text-[10px] font-black text-amber-500 uppercase tracking-[0.4em] ml-1">
+                                {{ field.label }}
+                            </label>
+                            <div class="relative">
+                                {{ field }}
+                            </div>
+                            {% if field.errors %}
+                            <p class="mt-2 text-red-400 text-[10px] font-black uppercase tracking-widest pl-1">{{ field.errors.0 }}</p>
+                            {% endif %}
+                            {% if field.help_text %}
+                            <p class="mt-2 text-white/30 text-[10px] italic pl-1 tracking-tight">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="pt-10 flex flex-col sm:flex-row gap-6">
+                        <button type="submit" 
+                                class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-6 rounded-[2.5rem] shadow-2xl shadow-amber-600/30 transition-all transform hover:scale-105 active:scale-95 text-xs uppercase tracking-[0.3em]">
+                            {% if object %}ACTUALIZAR MESA{% else %}CREAR MESA{% endif %}
+                        </button>
+                        <a href="{% url 'reservas:mesas_lista' %}" 
+                           class="flex-1 bg-white/5 hover:bg-white/10 text-white font-black py-6 rounded-[2.5rem] text-center border border-white/10 transition-all text-xs uppercase tracking-[0.3em]">
+                            CANCELAR
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Tip Informativo Premium -->
+        <div class="mt-12 text-center">
+            <p class="text-white/20 text-[10px] font-black uppercase tracking-[0.5em]">Gestión de Infraestructura Gastronómica</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilización de Inputs Glassmorphism */
+    input[type="text"], 
+    input[type="number"], 
+    select, 
+    textarea {
+        width: 100%;
+        padding: 1.5rem 2rem;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2rem;
+        font-weight: 700;
+        color: white !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 1rem;
+        letter-spacing: -0.025em;
+    }
+
+    input:focus, 
+    select:focus, 
+    textarea:focus {
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(217, 119, 6, 0.5);
+        box-shadow: 0 0 40px rgba(217, 119, 6, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Estilo para el checkbox si existe */
+    input[type="checkbox"] {
+        width: 1.5rem;
+        height: 1.5rem;
+        accent-color: #D97706;
+        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mejora para el selector en modo oscuro/glass */
+    select option {
+        background-color: #111827;
+        color: white;
+        padding: 1rem;
+    }
+
+    /* Placeholder con opacidad reducida */
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+    }
+</style>
+{% endblock %}

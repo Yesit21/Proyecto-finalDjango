@@ -32,37 +32,49 @@
     {% block extra_css %}{% endblock %}
 </head>
 {% with current_namespace=request.resolver_match.namespace current_url_name=request.resolver_match.url_name %}
-<body class="min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-200 {% if current_namespace != 'usuarios' %}bg-gray-50 dark:bg-gray-950{% endif %}">
-    {% if current_namespace == 'usuarios' %}
-    {% if current_url_name == 'login' or current_url_name == 'registro' or current_url_name == 'password_reset' or current_url_name == 'password_reset_done' or current_url_name == 'password_reset_confirm' or current_url_name == 'password_reset_complete' %}
-    <div class="fixed inset-0 -z-10">
-        <div class="absolute inset-0 bg-center bg-cover" style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45 dark:from-black/65 dark:via-black/45 dark:to-black/70"></div>
-        <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/15 via-transparent to-amber-500/10"></div>
-    </div>
-    {% endif %}
-    {% endif %}
+<body class="min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-200 {% block body_class %}{% if current_namespace != 'usuarios' %}bg-gray-50 dark:bg-gray-950{% endif %}{% endblock %}">
+    {% block background %}
+        {% if current_namespace == 'usuarios' %}
+            {% if current_url_name == 'login' or current_url_name == 'registro' or current_url_name == 'password_reset' or current_url_name == 'password_reset_done' or current_url_name == 'password_reset_confirm' or current_url_name == 'password_reset_complete' %}
+            <div class="fixed inset-0 -z-10">
+                <div class="absolute inset-0 bg-center bg-cover" style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45 dark:from-black/65 dark:via-black/45 dark:to-black/70"></div>
+                <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/15 via-transparent to-amber-500/10"></div>
+            </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
     {% include 'components/navbar/main.html' %}
 
     {% include 'partials/messages.html' %}
 
-    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div class="{% if user.is_authenticated %}relative flex gap-6{% endif %}">
-            <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-gray-900/50 md:hidden"></div>
-
-            {% if user.is_authenticated %}
-            <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 hidden w-72 flex-col border-r border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 md:static md:flex md:w-64">
-                {% include 'components/sidebar/main.html' %}
-            </aside>
-            {% endif %}
-
-            <main class="min-w-0 flex-1">
-                <div class="space-y-6">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
+    {% if user.is_authenticated %}
+    <!-- Sidebar fijo -->
+    <aside id="app-sidebar" class="fixed top-16 bottom-0 left-0 z-30 w-64 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 hidden md:block overflow-y-auto">
+        <div class="p-4">
+            {% include 'components/sidebar/main.html' %}
         </div>
-    </div>
+    </aside>
+
+    <!-- Overlay para móvil -->
+    <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-gray-900/50 md:hidden"></div>
+
+    <!-- Sidebar móvil -->
+    <aside id="app-sidebar-mobile" class="fixed top-0 bottom-0 left-0 z-50 w-72 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 hidden overflow-y-auto">
+        <div class="p-4 pt-20">
+            {% include 'components/sidebar/main.html' %}
+        </div>
+    </aside>
+    {% endif %}
+
+    <!-- Contenido principal -->
+    <main class="pt-16 {% if user.is_authenticated %}md:ml-64{% endif %}">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="space-y-6">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </main>
 
     {% include 'components/footer/main.html' %}
     

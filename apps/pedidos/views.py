@@ -1,8 +1,10 @@
-﻿from decimal import Decimal
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.inventario.models import Producto
+from apps.menu.models import Plato
+from apps.reservas.models import Reserva, Mesa
 from services.email.email_service import EmailService
 from .forms import EstadoPedidoForm
 from .models import Pedido, PedidoItem
@@ -24,47 +26,43 @@ def _save_cart(request, cart):
 
 @login_required
 def lista_pedidos(request):
-    productos = Producto.objects.all().order_by('nombre')
+    # Mostrar platos disponibles en lugar de productos
+    platos = Plato.objects.filter(disponible=True).order_by('categoria', 'nombre')
     pedidos = Pedido.objects.filter(cliente=request.user) if not request.user.is_staff else Pedido.objects.all()
     return render(request, 'pedidos/lista.html', {
-        'productos': productos,
+        'platos': platos,
         'pedidos': pedidos,
     })
 
 
 @login_required
-def agregar_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, pk=producto_id)
+def agregar_carrito(request, plato_id):
+    plato = get_object_or_404(Plato, pk=plato_id)
     
-    # Validar que el producto tenga stock disponible
-    if producto.stock_actual <= 0:
-        messages.error(request, f'{producto.nombre} no tiene stock disponible.')
+    # Validar que el plato esté disponible
+    if not plato.disponible:
+        messages.error(request, f'{plato.nombre} no está disponible en este momento.')
         return redirect('pedidos:lista')
     
     cart = _get_cart(request)
-    item = cart.get(str(producto.id), {
-        'nombre': producto.nombre,
-        'precio': str(producto.precio),
+    item = cart.get(str(plato.id), {
+        'nombre': plato.nombre,
+        'precio': str(plato.precio),
         'cantidad': 0,
+        'tipo': 'plato'  # Identificar que es un plato
     })
     
-    # Validar que no se exceda el stock disponible
-    nueva_cantidad = item['cantidad'] + 1
-    if nueva_cantidad > producto.stock_actual:
-        messages.warning(request, f'Solo hay {producto.stock_actual} unidades disponibles de {producto.nombre}.')
-        return redirect('pedidos:carrito')
-    
-    item['cantidad'] = nueva_cantidad
-    cart[str(producto.id)] = item
+    item['cantidad'] += 1
+    cart[str(plato.id)] = item
     _save_cart(request, cart)
-    messages.success(request, f'Agregado {producto.nombre} al carrito.')
+    messages.success(request, f'Agregado {plato.nombre} al carrito.')
     return redirect('pedidos:carrito')
 
 
 @login_required
-def eliminar_carrito(request, producto_id):
+def eliminar_carrito(request, item_id):
     cart = _get_cart(request)
-    cart.pop(str(producto_id), None)
+    cart.pop(str(item_id), None)
     _save_cart(request, cart)
     messages.success(request, 'Producto eliminado del carrito.')
     return redirect('pedidos:carrito')
@@ -86,56 +84,90 @@ def carrito(request):
             'subtotal': subtotal,
         })
 
+    # Mesas disponibles para el carrito
+    mesas_disponibles = Mesa.objects.filter(activa=True, estado='disponible')
+
     return render(request, 'pedidos/carrito.html', {
         'items': items,
         'total': total,
+        'mesas_disponibles': mesas_disponibles,
     })
 
 
 @login_required
 def realizar_pedido(request):
+    if request.method != 'POST':
+        return redirect('pedidos:carrito')
+        
     cart = _get_cart(request)
     if not cart:
         messages.warning(request, 'El carrito está vacío.')
         return redirect('pedidos:carrito')
 
-    # Validar stock antes de crear el pedido
-    errores_stock = []
-    for producto_id, item in cart.items():
-        producto = Producto.objects.filter(pk=int(producto_id)).first()
-        if producto:
-            if producto.stock_actual < item['cantidad']:
-                errores_stock.append(
-                    f"{item['nombre']}: solo hay {producto.stock_actual} unidades disponibles (solicitaste {item['cantidad']})"
-                )
+    # Datos de reserva si se incluyeron
+    quiere_reserva = request.POST.get('quiere_reserva') == 'on'
+    reserva_obj = None
     
-    if errores_stock:
-        for error in errores_stock:
-            messages.error(request, error)
-        return redirect('pedidos:carrito')
+    if quiere_reserva:
+        fecha_reserva = request.POST.get('fecha_reserva')
+        cantidad_personas = request.POST.get('cantidad_personas')
+        mesa_id = request.POST.get('mesa_reserva')
+        observaciones = request.POST.get('observaciones_reserva', '')
+        
+        if not fecha_reserva or not cantidad_personas:
+            messages.error(request, 'Debes completar los datos de la reserva.')
+            return redirect('pedidos:carrito')
+            
+        try:
+            mesa_obj = None
+            if mesa_id:
+                mesa_obj = Mesa.objects.filter(pk=mesa_id, estado='disponible', activa=True).first()
+            
+            reserva_obj = Reserva.objects.create(
+                usuario=request.user,
+                fecha_reserva=fecha_reserva,
+                cantidad_personas=int(cantidad_personas),
+                mesa=mesa_obj,
+                observaciones=observaciones,
+                estado='pendiente'
+            )
+            
+            # Si el cliente seleccionó una mesa, marcarla como reservada
+            if mesa_obj:
+                mesa_obj.estado = 'reservada'
+                mesa_obj.save()
+                
+            messages.info(request, 'Se ha creado tu solicitud de reserva de mesa.')
+        except Exception as e:
+            logger.error(f"Error creando reserva desde pedido: {str(e)}")
+            messages.error(request, 'Hubo un error al crear la reserva de mesa.')
 
     # Crear el pedido
-    pedido = Pedido.objects.create(cliente=request.user)
-    total = Decimal('0.00')
+    pedido = Pedido.objects.create(
+        cliente=request.user,
+        reserva=reserva_obj
+    )
+    total = Decimal('0')
 
-    for producto_id, item in cart.items():
-        producto = Producto.objects.filter(pk=int(producto_id)).first()
+    for item_id, item in cart.items():
         cantidad = item['cantidad']
         precio = Decimal(item['precio'])
         subtotal = precio * cantidad
 
-        PedidoItem.objects.create(
+        # Crear el item del pedido
+        pedido_item = PedidoItem.objects.create(
             pedido=pedido,
-            producto=producto,
             nombre=item['nombre'],
             cantidad=cantidad,
             precio_unitario=precio,
         )
-
-        # Descontar stock (ahora validado)
-        if producto:
-            producto.stock_actual -= cantidad
-            producto.save(update_fields=['stock_actual'])
+        
+        # Vincular con el plato si es un plato
+        if item.get('tipo') == 'plato':
+            plato = Plato.objects.filter(pk=int(item_id)).first()
+            if plato:
+                pedido_item.plato = plato
+                pedido_item.save(update_fields=['plato'])
 
         total += subtotal
 
@@ -143,12 +175,20 @@ def realizar_pedido(request):
     pedido.save(update_fields=['total'])
     request.session.pop(CART_SESSION_KEY, None)
     
-    # Enviar email de confirmación
+    # Enviar email de confirmación del pedido
     try:
         EmailService.send_order_confirmation(pedido)
         logger.info(f"Email de confirmación enviado para pedido #{pedido.id}")
     except Exception as e:
-        logger.error(f"Error enviando email de confirmación: {str(e)}")
+        logger.error(f"Error enviando email de confirmación de pedido: {str(e)}")
+        
+    # Si hubo reserva, enviar email de reserva
+    if reserva_obj:
+        try:
+            EmailService.send_reservation_confirmation(reserva_obj)
+            logger.info(f"Email de confirmación enviado para reserva #{reserva_obj.id}")
+        except Exception as e:
+            logger.error(f"Error enviando email de confirmación de reserva: {str(e)}")
     
     messages.success(request, f'Pedido #{pedido.id} realizado con éxito.')
     return redirect('pedidos:mis_pedidos')

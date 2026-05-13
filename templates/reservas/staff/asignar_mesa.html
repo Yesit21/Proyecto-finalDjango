@@ -1,0 +1,200 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Asignar Mesa - Reserva #{{ object.id }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-fixed bg-cover bg-center py-12 px-4" 
+     style="background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="mb-10">
+            <a href="{% url 'reservas:staff_lista' %}" class="inline-flex items-center gap-2 text-amber-200 hover:text-white font-black uppercase tracking-[0.2em] text-xs mb-8 transition-all group">
+                <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver a la gestión
+            </a>
+            
+            <div class="flex items-center gap-6 bg-white/10 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                <div class="bg-amber-600 p-5 rounded-[1.5rem] shadow-xl text-white transform rotate-3">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black text-white tracking-tighter">Asignar Mesa</h1>
+                    <p class="text-amber-200 font-bold uppercase tracking-[0.2em] text-[10px] mt-1">Reserva #{{ object.id }} • {{ object.usuario.get_full_name|default:object.usuario.username }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Detalles de la Reserva (Sidebar) -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/20 p-8 sticky top-24 overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-600/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-amber-600/10 transition-colors"></div>
+                    
+                    <h2 class="text-xs font-black text-amber-600 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                        <span class="w-2 h-4 bg-amber-600 rounded-full"></span>
+                        Resumen del Cliente
+                    </h2>
+                    
+                    <div class="space-y-8 relative z-10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-gray-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Fecha Programada</p>
+                                <p class="font-black text-gray-900 dark:text-white">{{ object.fecha_reserva|date:"d M Y" }}</p>
+                                <p class="text-sm font-bold text-amber-600">{{ object.fecha_reserva|date:"H:i" }} hrs</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center text-gray-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Comensales</p>
+                                <p class="font-black text-gray-900 dark:text-white">{{ object.cantidad_personas }} Personas</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-gray-100 dark:border-gray-800">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Estado de Gestión</p>
+                            <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest inline-block
+                                {% if object.estado == 'confirmada' %}bg-green-100 text-green-700
+                                {% elif object.estado == 'pendiente' %}bg-yellow-100 text-yellow-700
+                                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                                {{ object.get_estado_display }}
+                            </span>
+                        </div>
+
+                        {% if object.observaciones %}
+                        <div class="p-5 bg-amber-50 dark:bg-amber-900/20 rounded-[1.5rem] border border-amber-100 dark:border-amber-800/30">
+                            <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                                Notas Especiales
+                            </p>
+                            <p class="text-sm font-bold text-gray-700 dark:text-gray-300 italic">"{{ object.observaciones }}"</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Asignación -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/20 p-10">
+                    <form method="post" class="space-y-8">
+                        {% csrf_token %}
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-2 text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] ml-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    Asignar Mesa Física
+                                </label>
+                                <div class="relative group">
+                                    {{ form.mesa }}
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-6 pointer-events-none text-amber-600 group-hover:translate-y-0.5 transition-transform">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 font-bold ml-2 italic">Solo se muestran mesas activas y libres</p>
+                            </div>
+
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-2 text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] ml-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Actualizar Estado
+                                </label>
+                                <div class="relative group">
+                                    {{ form.estado }}
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-6 pointer-events-none text-amber-600 group-hover:translate-y-0.5 transition-transform">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-6">
+                            <button type="submit" 
+                                    class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-6 rounded-[2rem] shadow-2xl shadow-amber-600/40 transition-all duration-300 transform hover:-translate-y-2 flex items-center justify-center gap-4 text-xl active:scale-95 group">
+                                <svg class="w-6 h-6 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                Confirmar y Asignar Mesa
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Mesas Sugeridas -->
+                    <div class="mt-12 pt-10 border-t border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-black text-gray-900 dark:text-white tracking-tight">Sugerencias de Ubicación</h3>
+                            <span class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                Mín. {{ object.cantidad_personas }} personas
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for mesa in mesas_disponibles %}
+                                {% if mesa.capacidad >= object.cantidad_personas %}
+                                <div class="group/mesa p-5 bg-gray-50 dark:bg-gray-800/50 rounded-[2rem] border border-transparent hover:border-amber-500/30 transition-all duration-300">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="w-12 h-12 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center text-amber-600 font-black text-xl shadow-sm border border-gray-100 dark:border-gray-700 group-hover/mesa:scale-110 transition-transform">
+                                            {{ mesa.numero }}
+                                        </div>
+                                        <div class="bg-green-100 text-green-700 p-1.5 rounded-full">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+                                        </div>
+                                    </div>
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Capacidad Máx.</p>
+                                    <p class="font-black text-gray-900 dark:text-white mb-2">{{ mesa.capacidad }} Personas</p>
+                                    <p class="text-xs font-bold text-amber-600">{{ mesa.ubicacion|default:"Salón Central" }}</p>
+                                </div>
+                                {% endif %}
+                            {% empty %}
+                                <div class="col-span-full p-10 text-center bg-gray-50 dark:bg-gray-800/50 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    <p class="text-gray-400 font-bold">No hay mesas compatibles libres en este momento</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    select {
+        width: 100%;
+        padding: 1.25rem 2rem;
+        background-color: rgba(249, 250, 251, 1);
+        border: 2px solid rgba(243, 244, 246, 1);
+        border-radius: 1.5rem;
+        font-weight: 900;
+        color: #111827;
+        appearance: none;
+        transition: all 0.3s ease;
+    }
+    .dark select {
+        background-color: rgba(31, 41, 55, 0.5);
+        border-color: rgba(55, 65, 81, 0.5);
+        color: white;
+    }
+    select:focus {
+        outline: none;
+        border-color: #D97706;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+        background-color: white;
+    }
+    .dark select:focus {
+        background-color: rgba(17, 24, 39, 1);
+    }
+</style>
+{% endblock %}

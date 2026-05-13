@@ -1,163 +1,102 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}Cancelar Reserva #{{ object.id }}{% endblock %}
+{% block title %}Cancelar Reserva #{{ object.id }} | Gastronomía Premium{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-2xl mx-auto">
-        <!-- Breadcrumb -->
-        <nav class="mb-6 text-sm">
-            <ol class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                <li><a href="{% url 'reservas:lista' %}" class="hover:text-amber-600">Mis Reservas</a></li>
-                <li>/</li>
-                <li><a href="{% url 'reservas:detalle' object.pk %}" class="hover:text-amber-600">Reserva #{{ object.id }}</a></li>
-                <li>/</li>
-                <li class="text-gray-900 dark:text-white font-semibold">Cancelar</li>
+<div class="min-h-screen bg-fixed bg-cover bg-center py-20 px-4 relative" 
+     style="background-image: url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+    <div class="relative z-10 max-w-3xl mx-auto">
+        <!-- Breadcrumb Premium -->
+        <nav class="mb-10">
+            <ol class="flex items-center gap-3 text-white/40 text-xs font-black uppercase tracking-[0.3em]">
+                <li><a href="{% url 'reservas:lista' %}" class="hover:text-amber-500 transition-colors">Mis Reservas</a></li>
+                <li class="text-white/10">/</li>
+                <li><a href="{% url 'reservas:detalle' object.pk %}" class="hover:text-amber-500 transition-colors">Reserva #{{ object.id }}</a></li>
+                <li class="text-white/10">/</li>
+                <li class="text-red-500">Cancelar</li>
             </ol>
         </nav>
 
-        <!-- Card de Confirmación -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <!-- Header con Advertencia -->
-            <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
-                <div class="flex items-center gap-4 text-white">
-                    <div class="bg-white/20 p-3 rounded-full">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold">Confirmar Cancelación</h1>
-                        <p class="text-red-100">Esta acción no se puede deshacer</p>
-                    </div>
+        <div class="bg-white/10 backdrop-blur-3xl rounded-[4rem] border border-white/20 overflow-hidden shadow-2xl">
+            <!-- Header de Advertencia -->
+            <div class="p-12 md:p-16 bg-gradient-to-br from-red-500/20 to-transparent border-b border-white/10 relative overflow-hidden text-center">
+                <div class="absolute -top-24 -left-24 w-64 h-64 bg-red-500/10 rounded-full blur-[80px]"></div>
+                
+                <div class="relative z-10 inline-flex items-center justify-center w-24 h-24 bg-red-500/20 rounded-[2rem] border-2 border-red-500/50 mb-8 text-red-500 shadow-2xl shadow-red-500/20">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
                 </div>
+                
+                <h1 class="text-5xl font-black text-white tracking-tighter mb-4 uppercase">¿Confirmar <span class="text-red-500">Cancelación?</span></h1>
+                <p class="text-red-200/60 font-medium tracking-widest uppercase text-xs">Esta acción es definitiva y no podrá deshacerse.</p>
             </div>
 
-            <!-- Contenido -->
-            <div class="p-8">
-                <!-- Mensaje de Advertencia -->
-                <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <div>
-                            <p class="font-semibold text-red-800 dark:text-red-200 mb-2">¿Estás seguro de que deseas cancelar esta reserva?</p>
-                            <p class="text-sm text-red-700 dark:text-red-300">
-                                Una vez cancelada, no podrás recuperar esta reserva. Si deseas volver a reservar, deberás crear una nueva reserva.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Detalles de la Reserva -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Detalles de la Reserva a Cancelar</h3>
+            <div class="p-12 md:p-16">
+                <!-- Detalles de la Reserva (Estilo Resumen) -->
+                <div class="bg-white/5 border border-white/10 rounded-[3rem] p-10 mb-12">
+                    <h3 class="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 text-center">Resumen de la Visita</h3>
                     
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 space-y-4">
-                        <!-- Número de Reserva -->
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-600">
-                            <span class="text-gray-600 dark:text-gray-400">Número de Reserva:</span>
-                            <span class="font-bold text-gray-900 dark:text-white text-lg">#{{ object.id }}</span>
-                        </div>
-
-                        <!-- Fecha y Hora -->
-                        <div class="flex items-center gap-3">
-                            <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-lg">
-                                <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 border border-white/10">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Fecha y Hora</p>
-                                <p class="font-semibold text-gray-900 dark:text-white">{{ object.fecha_reserva|date:"d/m/Y H:i" }} hrs</p>
+                                <p class="text-white/30 text-[10px] font-black uppercase tracking-widest">Fecha y Hora</p>
+                                <p class="text-lg font-bold text-white tracking-tight">{{ object.fecha_reserva|date:"l, d F • H:i" }} hrs</p>
                             </div>
                         </div>
 
-                        <!-- Cantidad de Personas -->
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 border border-white/10">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Cantidad de Personas</p>
-                                <p class="font-semibold text-gray-900 dark:text-white">{{ object.cantidad_personas }} persona{{ object.cantidad_personas|pluralize }}</p>
+                                <p class="text-white/30 text-[10px] font-black uppercase tracking-widest">Invitados</p>
+                                <p class="text-lg font-bold text-white tracking-tight">{{ object.cantidad_personas }} comensales</p>
                             </div>
                         </div>
-
-                        <!-- Estado Actual -->
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-600">
-                            <span class="text-gray-600 dark:text-gray-400">Estado Actual:</span>
-                            <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                {% if object.estado == 'confirmada' %}
-                                    bg-green-100 text-green-800
-                                {% else %}
-                                    bg-yellow-100 text-yellow-800
-                                {% endif %}">
-                                {{ object.get_estado_display }}
-                            </span>
-                        </div>
-
-                        <!-- Observaciones -->
-                        {% if object.observaciones %}
-                        <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Observaciones:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ object.observaciones }}</p>
-                        </div>
-                        {% endif %}
                     </div>
                 </div>
 
-                <!-- Información Adicional -->
-                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <div class="text-sm text-blue-700 dark:text-blue-200">
-                            <p class="font-semibold mb-1">Información:</p>
-                            <ul class="list-disc list-inside space-y-1">
-                                <li>Recibirás un email de confirmación de la cancelación</li>
-                                <li>Si deseas hacer una nueva reserva, puedes crearla desde "Mis Reservas"</li>
-                                <li>Para cancelaciones con menos de 2 horas de anticipación, contacta directamente al restaurante</li>
+                <!-- Advertencias Finales -->
+                <div class="bg-red-500/5 border border-red-500/20 rounded-[2.5rem] p-8 mb-12">
+                    <div class="flex items-start gap-6">
+                        <div class="text-red-500 mt-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-red-200/80 font-bold text-sm uppercase tracking-widest">Nota importante:</p>
+                            <ul class="text-white/40 text-xs space-y-2 list-disc list-inside font-medium tracking-wide">
+                                <li>Recibirás un email de confirmación de la cancelación.</li>
+                                <li>Tu mesa será liberada inmediatamente para otros clientes.</li>
+                                <li>Para futuras visitas, deberás generar una nueva reserva.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Formulario de Confirmación -->
-                <form method="post">
+                <!-- Formulario de Acción -->
+                <form method="post" class="flex flex-col sm:flex-row gap-6">
                     {% csrf_token %}
-                    
-                    <div class="flex flex-wrap gap-3">
-                        <button type="submit" 
-                                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                            Sí, Cancelar Reserva
-                        </button>
-                        <a href="{% url 'reservas:detalle' object.pk %}" 
-                           class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                            </svg>
-                            No, Volver Atrás
-                        </a>
-                    </div>
+                    <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-6 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] transition-all transform hover:scale-105 active:scale-95 shadow-2xl shadow-red-600/20">
+                        Sí, Cancelar Reserva
+                    </button>
+                    <a href="{% url 'reservas:detalle' object.pk %}" class="flex-1 bg-white/5 hover:bg-white/10 text-white py-6 rounded-[2.5rem] font-black text-center text-xs uppercase tracking-[0.3em] transition-all border border-white/10">
+                        No, Volver Atrás
+                    </a>
                 </form>
             </div>
-        </div>
 
-        <!-- Ayuda -->
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                ¿Necesitas ayuda? 
-                <a href="#" class="text-amber-600 hover:text-amber-700 font-semibold">Contacta con nosotros</a>
-            </p>
+            <!-- Footer con Estilo -->
+            <div class="p-12 border-t border-white/5 text-center">
+                <p class="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">Gastronomía Premium • Experiencia Exclusiva</p>
+            </div>
         </div>
     </div>
 </div>

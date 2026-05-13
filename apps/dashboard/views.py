@@ -1,4 +1,4 @@
-﻿import json
+import json
 import logging
 from datetime import timedelta, datetime
 from django.contrib import messages
@@ -20,9 +20,8 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    # Solo meseros y administradores pueden ver el dashboard
-    if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para acceder al dashboard.')
+    # Solo administradores pueden ver el dashboard
+    if request.user.rol != 'administrador':
         return redirect(reverse('menu:lista'))
     
     now = timezone.now()
@@ -71,7 +70,6 @@ def home(request):
 def reporte_panel(request):
     # Solo administradores pueden ver reportes
     if request.user.rol != 'administrador':
-        messages.warning(request, 'No tienes permiso para acceder a los reportes.')
         return redirect(reverse('dashboard:home'))
     
     fecha_desde = request.GET.get('desde')
@@ -97,7 +95,6 @@ def reporte_panel(request):
 def reportes_view(request):
     """Vista principal de reportes"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para acceder a los reportes.')
         return redirect(reverse('menu:lista'))
     
     context = {
@@ -110,7 +107,6 @@ def reportes_view(request):
 def reporte_pedidos_pdf(request):
     """Genera reporte de pedidos en PDF"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:
@@ -156,7 +152,6 @@ def reporte_pedidos_pdf(request):
 def reporte_pedidos_excel(request):
     """Genera reporte de pedidos en Excel"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:
@@ -205,7 +200,6 @@ def reporte_pedidos_excel(request):
 def reporte_ventas_pdf(request):
     """Genera reporte de ventas en PDF"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:
@@ -285,7 +279,6 @@ def reporte_ventas_pdf(request):
 def reporte_ventas_excel(request):
     """Genera reporte de ventas en Excel"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:
@@ -367,7 +360,6 @@ def reporte_ventas_excel(request):
 def reporte_inventario_pdf(request):
     """Genera reporte de inventario en PDF"""
     if request.user.rol != 'administrador':
-        messages.warning(request, 'No tienes permiso para generar reportes de inventario.')
         return redirect(reverse('dashboard:home'))
     
     try:
@@ -405,7 +397,6 @@ def reporte_inventario_pdf(request):
 def reporte_inventario_excel(request):
     """Genera reporte de inventario en Excel"""
     if request.user.rol != 'administrador':
-        messages.warning(request, 'No tienes permiso para generar reportes de inventario.')
         return redirect(reverse('dashboard:home'))
     
     try:
@@ -446,7 +437,6 @@ def reporte_inventario_excel(request):
 def reporte_reservas_pdf(request):
     """Genera reporte de reservas en PDF"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:
@@ -492,7 +482,6 @@ def reporte_reservas_pdf(request):
 def reporte_reservas_excel(request):
     """Genera reporte de reservas en Excel"""
     if request.user.rol not in ['mesero', 'administrador']:
-        messages.warning(request, 'No tienes permiso para generar reportes.')
         return redirect(reverse('menu:lista'))
     
     try:

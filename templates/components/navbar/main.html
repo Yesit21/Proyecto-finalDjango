@@ -13,7 +13,7 @@
 {% url 'dashboard:reportes' as dashboard_reportes_url %}
 
 {% with current_namespace=request.resolver_match.namespace current_url_name=request.resolver_match.url_name %}
-<nav class="sticky top-0 z-40 border-b border-white/20 bg-white/35 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/40">
+<nav class="sticky top-0 z-40 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -25,10 +25,10 @@
                 </button>
                 {% endif %}
 
-                {% if user.rol == 'cliente' %}
-                <a href="{% if menu_lista_url %}{{ menu_lista_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
-                {% else %}
+                {% if user.rol == 'administrador' or user.is_superuser %}
                 <a href="{% if dashboard_home_url %}{{ dashboard_home_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+                {% else %}
+                <a href="{% if menu_lista_url %}{{ menu_lista_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
                 {% endif %}
                     <span class="brand-mark">
                         <span class="text-sm font-bold">R</span>
@@ -37,24 +37,38 @@
                 </a>
 
                 {% if user.is_authenticated %}
-                <div class="hidden items-center gap-1 md:flex">
-                    {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link {% if current_namespace == 'menu' %}nav-link-active{% endif %}">Menú</a>{% endif %}
-
+                <div class="hidden items-center gap-4 md:flex">
+                    
+                    {# MENÚ PARA CLIENTES #}
                     {% if user.rol == 'cliente' %}
-                        {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
-                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
-                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
+                        {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link {% if current_namespace == 'menu' %}nav-link-active{% endif %}">Menú</a>{% endif %}
+                        {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'carrito' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
+                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'mis_pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' and current_url_name == 'lista' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
+                        <a href="{% url 'reservas:mesas_disponibles' %}" class="nav-link {% if current_url_name == 'mesas_disponibles' %}nav-link-active{% endif %}">Mesas</a>
                     {% endif %}
 
-                    {% if user.rol == 'mesero' or user.rol == 'administrador' %}
-                        {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Pedidos</a>{% endif %}
-                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Reservas</a>{% endif %}
+                    {# MENÚ PARA MESEROS (Solo Gestión Operativa) #}
+                    {% if user.rol == 'mesero' and not user.is_superuser and user.rol != 'administrador' %}
+                        {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'lista' %}nav-link-active{% endif %}">Gestión Pedidos</a>{% endif %}
+                        <a href="{% url 'reservas:staff_lista' %}" class="nav-link {% if current_url_name == 'staff_lista' %}nav-link-active{% endif %}">Gestión Reservas</a>
+                        <a href="{% url 'reservas:mesas_lista' %}" class="nav-link {% if current_url_name == 'mesas_lista' %}nav-link-active{% endif %}">Gestión Mesas</a>
                     {% endif %}
 
-                    {% if user.rol == 'administrador' %}
-                        {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
-                        {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
+                    {# MENÚ PARA ADMINISTRADORES (Acceso Total) #}
+                    {% if user.is_superuser or user.rol == 'administrador' %}
+                        {% if user.rol != 'cliente' %}
+                            {# Secciones Operativas #}
+                            {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'lista' %}nav-link-active{% endif %}">Gestión Pedidos</a>{% endif %}
+                            <a href="{% url 'reservas:staff_lista' %}" class="nav-link {% if current_url_name == 'staff_lista' %}nav-link-active{% endif %}">Gestión Reservas</a>
+                            <a href="{% url 'reservas:mesas_lista' %}" class="nav-link {% if current_url_name == 'mesas_lista' %}nav-link-active{% endif %}">Gestión Mesas</a>
+                            
+                            {# Secciones Administrativas #}
+                            {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
+                            {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
+                        {% endif %}
                     {% endif %}
+
                 </div>
                 {% endif %}
             </div>

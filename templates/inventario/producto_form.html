@@ -1,14 +1,97 @@
 {% extends 'base/base.html' %}
+{% load static %}
+
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
-<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm max-w-2xl mx-auto">
-    <h1 class="text-3xl font-semibold mb-4">{{ titulo }}</h1>
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn-primary">Guardar</button>
-        <a href="{% url 'inventario:lista' %}" class="btn-secondary">Cancelar</a>
-    </form>
+<div class="min-h-screen bg-fixed bg-cover bg-center py-12 px-4" 
+     style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="max-w-2xl mx-auto">
+        <!-- Back Link -->
+        <a href="{% url 'inventario:lista' %}" class="inline-flex items-center gap-2 text-amber-200 hover:text-white font-bold mb-8 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver al inventario
+        </a>
+
+        <!-- Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-t-3xl border border-white/10">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-3 rounded-2xl shadow-lg text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black text-white tracking-tight">{{ titulo }}</h1>
+                    <p class="text-amber-200 text-sm font-bold uppercase tracking-widest">Gestión de insumos y stock</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-8 rounded-b-3xl shadow-2xl border border-white/10">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="space-y-2">
+                    <label for="{{ field.id_for_label }}" class="block text-xs font-black text-amber-600 uppercase tracking-widest">
+                        {{ field.label }}
+                    </label>
+                    <div class="relative">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-600 font-bold">{{ field.errors.0 }}</p>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="mt-1 text-xs text-gray-500 italic">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" 
+                            class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-amber-600/20 transition-all duration-300 transform hover:-translate-y-1">
+                        Guardar Producto
+                    </button>
+                    <a href="{% url 'inventario:lista' %}" 
+                       class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-black py-4 rounded-2xl text-center transition-all">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<style>
+    input[type="text"], input[type="number"], select, textarea {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background-color: rgba(249, 250, 251, 1);
+        border: 1px solid rgba(243, 244, 246, 1);
+        border-radius: 1rem;
+        font-weight: 700;
+        color: #111827;
+        transition: all 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #D97706;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+        background-color: white;
+    }
+    .dark input, .dark select, .dark textarea {
+        background-color: rgba(31, 41, 55, 1);
+        border-color: rgba(55, 65, 81, 1);
+        color: white;
+    }
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+        background-color: rgba(17, 24, 39, 1);
+    }
+</style>
 {% endblock %}

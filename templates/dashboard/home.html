@@ -1,51 +1,143 @@
 {% extends 'base/base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% load static %}
+
+{% block title %}Dashboard Restaurante{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
+         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    </div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <div class="grid gap-6 lg:grid-cols-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <p class="text-sm uppercase text-gray-500">Pedidos últimos 30 días</p>
-            <p class="text-4xl font-semibold kpi-value" data-value="{{ total_pedidos }}">0</p>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <p class="text-sm uppercase text-gray-500">Ingresos</p>
-            <p class="text-4xl font-semibold kpi-value" data-value="{{ ingresos }}">0</p>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <p class="text-sm uppercase text-gray-500">Promedio por pedido</p>
-            <p class="text-4xl font-semibold kpi-value" data-value="{{ promedio_por_pedido }}">0</p>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <p class="text-sm uppercase text-gray-500">Productos bajos</p>
-            <p class="text-4xl font-semibold kpi-value" data-value="{{ productos_bajos }}">0</p>
-        </div>
-    </div>
-
-    <section class="grid gap-6 lg:grid-cols-2">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-2xl font-semibold mb-4">Ventas por día</h2>
-            <canvas id="sales-chart" data-chart='{"labels": {{ etiquetas_ventas|safe }}, "data": {{ datos_ventas|safe }}, "type": "line"}'></canvas>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-2xl font-semibold mb-4">Pedidos por estado</h2>
-            <canvas id="orders-chart" data-chart='{"labels": {{ etiquetas_pedidos|safe }}, "data": {{ datos_pedidos|safe }}, "type": "pie"}'></canvas>
-        </div>
-    </section>
-
-    <section class="grid gap-6 lg:grid-cols-2">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-2xl font-semibold mb-4">Productos más vendidos</h2>
-            <canvas id="products-chart" data-chart='{"labels": {{ etiquetas_platos|safe }}, "data": {{ datos_platos|safe }}, "type": "bar"}'></canvas>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-2xl font-semibold mb-4">Tus ventas</h2>
-            <div class="space-y-4 text-gray-700 dark:text-gray-300">
-                <p>Total de ventas en 30 días: <strong>{{ total_pedidos }}</strong></p>
-                <p>Ingreso total: <strong>${{ ingresos }}</strong></p>
-                <p>Promedio por pedido: <strong>${{ promedio_por_pedido }}</strong></p>
+<div class="relative z-10 py-8 px-4">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Welcome Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-4 rounded-2xl shadow-xl text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black text-white tracking-tight">Panel de Control</h1>
+                    <p class="text-amber-200 font-medium">Bienvenido, {{ user.get_full_name|default:user.username }}</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white/10 px-6 py-3 rounded-xl border border-white/10 text-white text-center">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-amber-500">Fecha Actual</p>
+                    <p class="font-bold">{% now "d M Y" %}</p>
+                </div>
             </div>
         </div>
-    </section>
+
+        <!-- KPI Grid -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 hover:scale-[1.03] transition-all">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Ventas 30 días</p>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-black text-gray-900 dark:text-white kpi-value" data-value="{{ total_pedidos }}">0</p>
+                    <p class="text-xs font-bold text-green-500 mb-1 flex items-center">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
+                        12%
+                    </p>
+                </div>
+            </div>
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 hover:scale-[1.03] transition-all">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Ingresos Totales</p>
+                <div class="flex items-end gap-1">
+                    <p class="text-xl font-black text-amber-600 mb-1">$</p>
+                    <p class="text-4xl font-black text-gray-900 dark:text-white kpi-value" data-value="{{ ingresos }}">0</p>
+                </div>
+            </div>
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 hover:scale-[1.03] transition-all">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Promedio Ticket</p>
+                <div class="flex items-end gap-1">
+                    <p class="text-xl font-black text-amber-600 mb-1">$</p>
+                    <p class="text-4xl font-black text-gray-900 dark:text-white kpi-value" data-value="{{ promedio_por_pedido }}">0</p>
+                </div>
+            </div>
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 hover:scale-[1.03] transition-all">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Stock Crítico</p>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-black {% if productos_bajos > 0 %}text-red-600{% else %}text-green-600{% endif %} kpi-value" data-value="{{ productos_bajos }}">0</p>
+                    <p class="text-xs font-bold text-gray-400 mb-1">Items</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <section class="grid gap-8 lg:grid-cols-2">
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/20">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white">Tendencia de Ventas</h2>
+                    <div class="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">Diario</div>
+                </div>
+                <canvas id="sales-chart" data-chart='{"labels": {{ etiquetas_ventas|safe }}, "data": {{ datos_ventas|safe }}, "type": "line"}'></canvas>
+            </div>
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/20">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white">Estado de Pedidos</h2>
+                    <div class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">Operación</div>
+                </div>
+                <div class="max-w-[300px] mx-auto">
+                    <canvas id="orders-chart" data-chart='{"labels": {{ etiquetas_pedidos|safe }}, "data": {{ datos_pedidos|safe }}, "type": "pie"}'></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Grid -->
+        <section class="grid gap-8 lg:grid-cols-2">
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/20">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white">Favoritos del Menú</h2>
+                    <svg class="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
+                <canvas id="products-chart" data-chart='{"labels": {{ etiquetas_platos|safe }}, "data": {{ datos_platos|safe }}, "type": "bar"}'></canvas>
+            </div>
+            
+            <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/20">
+                <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8">Resumen Operativo</h2>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-amber-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            </div>
+                            <span class="font-bold text-gray-700 dark:text-gray-300">Total de ventas</span>
+                        </div>
+                        <span class="text-2xl font-black text-gray-900 dark:text-white">{{ total_pedidos }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span class="font-bold text-gray-700 dark:text-gray-300">Ingreso total</span>
+                        </div>
+                        <span class="text-2xl font-black text-gray-900 dark:text-white">${{ ingresos }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
+                            <span class="font-bold text-gray-700 dark:text-gray-300">Ticket promedio</span>
+                        </div>
+                        <span class="text-2xl font-black text-gray-900 dark:text-white">${{ promedio_por_pedido }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}

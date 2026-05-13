@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Calendario de Reservas{% endblock %}
+
+{% block content %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
+         style="background-image: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    </div>
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-[2px]"></div>
+</div>
+
+<div class="max-w-7xl mx-auto space-y-8 relative py-10">
+        <!-- Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-4 rounded-2xl shadow-xl text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black text-white tracking-tight">Próximas Reservas</h1>
+                    <p class="text-amber-200 font-medium">Cronograma detallado del servicio</p>
+                </div>
+            </div>
+            <a href="{% url 'reservas:staff_lista' %}" class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-bold backdrop-blur-md transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Volver a Gestión
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar: Estado de Mesas -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 sticky top-8">
+                    <h2 class="text-xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-amber-600 rounded-full"></span>
+                        Estado de Mesas
+                    </h2>
+                    <div class="space-y-3">
+                        {% for mesa in mesas %}
+                        <div class="flex justify-between items-center p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
+                            <span class="font-bold text-gray-700 dark:text-gray-300">Mesa {{ mesa.numero }}</span>
+                            <span class="w-3 h-3 rounded-full shadow-sm
+                                {% if mesa.estado == 'disponible' %}bg-green-500 shadow-green-500/50
+                                {% elif mesa.estado == 'reservada' %}bg-yellow-500 shadow-yellow-500/50
+                                {% elif mesa.estado == 'ocupada' %}bg-red-500 shadow-red-500/50
+                                {% else %}bg-gray-400{% endif %}" 
+                                title="{{ mesa.get_estado_display }}">
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+                        <div class="flex flex-wrap gap-4 justify-center">
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span> Libre
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full"></span> Reservada
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span> Ocupada
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main: Timeline de Reservas -->
+            <div class="lg:col-span-3">
+                {% if reservas %}
+                <div class="space-y-8">
+                    {% regroup reservas by fecha_reserva|date:"l d de F" as reservas_por_dia %}
+                    
+                    {% for dia in reservas_por_dia %}
+                    <div class="relative">
+                        <!-- Fecha del Día -->
+                        <div class="sticky top-0 z-10 py-4 mb-4">
+                            <h3 class="inline-block bg-amber-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase tracking-widest shadow-lg shadow-amber-600/20 capitalize">
+                                {{ dia.grouper }}
+                            </h3>
+                        </div>
+
+                        <div class="space-y-4">
+                            {% for reserva in dia.list %}
+                            <div class="group bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 flex flex-col sm:flex-row justify-between items-center gap-6 hover:scale-[1.01] transition-all">
+                                <div class="flex items-center gap-6">
+                                    <div class="text-center bg-amber-100 dark:bg-amber-900/30 p-4 rounded-2xl min-w-[100px] border border-amber-200 dark:border-amber-800">
+                                        <p class="text-amber-600 dark:text-amber-400 font-black text-2xl">{{ reserva.fecha_reserva|date:"H:i" }}</p>
+                                        <p class="text-[10px] font-black text-amber-800/50 dark:text-amber-300/50 uppercase tracking-widest">Horario</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-black text-gray-900 dark:text-white text-xl mb-1">{{ reserva.usuario.get_full_name }}</p>
+                                        <div class="flex flex-wrap gap-3">
+                                            <span class="flex items-center gap-1 text-sm font-bold text-gray-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                                {{ reserva.cantidad_personas }} personas
+                                            </span>
+                                            {% if reserva.mesa %}
+                                            <span class="flex items-center gap-1 text-sm font-black text-amber-600">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                                Mesa {{ reserva.mesa.numero }}
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
+                                        {% if reserva.estado == 'confirmada' %}bg-green-100 text-green-700
+                                        {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                                        {{ reserva.get_estado_display }}
+                                    </span>
+                                    <a href="{% url 'reservas:detalle' reserva.pk %}" class="bg-gray-100 dark:bg-gray-800 hover:bg-amber-600 hover:text-white p-3 rounded-2xl transition-all shadow-sm">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl shadow-xl p-20 text-center border border-white/20">
+                    <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-8 text-gray-300">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">No hay reservas programadas</h3>
+                    <p class="text-gray-500 dark:text-gray-400">El calendario está libre por ahora.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
