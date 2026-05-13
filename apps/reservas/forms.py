@@ -10,19 +10,19 @@ class ReservaForm(forms.ModelForm):
             'fecha_reserva': forms.DateTimeInput(
                 attrs={
                     'type': 'datetime-local',
-                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
                 }
             ),
             'cantidad_personas': forms.NumberInput(
                 attrs={
-                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white',
                     'min': '1',
                     'max': '20'
                 }
             ),
             'observaciones': forms.Textarea(
                 attrs={
-                    'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white',
                     'rows': 4,
                     'placeholder': 'Observaciones especiales (opcional)'
                 }
