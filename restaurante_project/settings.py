@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-vxa(a(jyvv9babg@+fhr(q3$u%!#p0rra$%fp)xm5)vo2d9)z#')
 
 DEBUG = True
+print(f"DEBUG status: {DEBUG}")
 
 ALLOWED_HOSTS = ['*']
 
@@ -16,10 +17,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000'
 ]
-
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000', cast=lambda v: [s.strip() for s in v.split(',')])
-if os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
-    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ.get('RAILWAY_PUBLIC_DOMAIN')}")
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
