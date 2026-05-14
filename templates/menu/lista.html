@@ -1,0 +1,343 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Menú del Restaurante{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --font-serif: 'Playfair Display', serif;
+}
+
+.hero-menu {
+    position: relative;
+    margin: 0 0 60px;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    padding: 60px;
+}
+
+.hero-menu-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, 
+        rgba(15, 16, 17, 0.95) 0%, 
+        rgba(15, 16, 17, 0.4) 50%, 
+        rgba(15, 16, 17, 0.1) 100%),
+    url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}') center/cover;
+    z-index: 1;
+}
+
+.hero-menu-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.badge-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251, 146, 60, 0.1);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    color: rgb(251, 146, 60);
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.hero-menu h1 {
+    font-family: var(--font-serif);
+    font-size: 64px;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-menu p {
+    color: rgb(156, 163, 175);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+.menu-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.menu-section-title {
+    font-family: var(--font-serif);
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.menu-section-title span {
+    position: relative;
+    color: rgb(251, 146, 60);
+}
+
+.menu-section-title span::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgb(251, 146, 60);
+}
+
+.filters-menu {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-btn-menu {
+    background-color: rgb(28, 29, 30);
+    color: rgb(156, 163, 175);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.filter-btn-menu:hover {
+    background-color: rgba(251, 146, 60, 0.1);
+    color: rgb(251, 146, 60);
+    border-color: rgba(251, 146, 60, 0.3);
+}
+
+.filter-btn-menu.active {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
+}
+
+.menu-grid-custom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+.food-card-custom {
+    background-color: rgb(28, 29, 30);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.food-card-custom:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    border-color: rgba(251, 146, 60, 0.3);
+}
+
+.food-card-custom img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.food-card-custom .no-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, rgb(28, 29, 30) 0%, rgb(22, 23, 24) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(156, 163, 175);
+}
+
+.food-info-custom {
+    padding: 24px;
+}
+
+.food-info-custom h3 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: rgb(245, 245, 245);
+}
+
+.food-info-custom .description {
+    color: rgb(156, 163, 175);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.food-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.food-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgb(251, 146, 60);
+}
+
+.add-btn {
+    background-color: rgba(251, 146, 60, 0.1);
+    color: rgb(251, 146, 60);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.add-btn:hover {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
+}
+
+.pagination-container {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pagination-btn {
+    background-color: rgb(28, 29, 30);
+    color: rgb(156, 163, 175);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.pagination-btn:hover, .pagination-btn.active {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-menu">
+    <div class="hero-menu-bg"></div>
+    <div class="hero-menu-content text-white">
+        <div class="badge-menu">
+            <i class="ph ph-sparkle"></i>
+            EXPERIENCIA EXCEPCIONAL
+        </div>
+        <h1 class="text-white">Nuestra <br>Selección <span class="text-orange-500">Culinaria</span></h1>
+        <p class="text-gray-300">Descubre una colección única de sabores preparados con ingredientes frescos y la pasión de nuestros maestros chefs.</p>
+    </div>
+</div>
+
+<!-- Menu Section -->
+<div class="menu-section-header">
+    <h2 class="menu-section-title text-gray-900 dark:text-white">Explora <span>Nuestros Platos</span></h2>
+    
+    <div class="filters-menu">
+        <a href="{% url 'menu:lista' %}" class="filter-btn-menu {% if not request.GET.categoria %}active{% endif %}">Todos</a>
+        {% for code, label in categorias %}
+            <a href="?categoria={{ code }}" class="filter-btn-menu {% if request.GET.categoria == code %}active{% endif %}">{{ label }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Grid de Platos -->
+<div class="menu-grid-custom">
+    {% for plato in platos %}
+    <div class="food-card-custom" data-url="{% url 'menu:detalle' plato.id %}" onclick="location.href=this.dataset.url">
+        {% if plato.imagen %}
+            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
+        {% else %}
+            <div class="no-image">
+                <i class="ph ph-image-square text-4xl"></i>
+            </div>
+        {% endif %}
+        
+        <div class="food-info-custom">
+            <h3 class="text-white">{{ plato.nombre }}</h3>
+            <p class="description text-gray-400">{{ plato.descripcion }}</p>
+            <div class="food-footer">
+                <span class="food-price">${{ plato.precio|floatformat:2 }}</span>
+                <a href="{% url 'pedidos:agregar_carrito' plato.id %}" class="add-btn" onclick="event.stopPropagation();">
+                    <i class="ph ph-plus-bold"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center bg-gray-100 dark:bg-white/5 rounded-3xl border border-dashed border-gray-300 dark:border-white/10">
+        <i class="ph ph-cooking-pot text-6xl text-gray-400 mb-4"></i>
+        <p class="text-gray-500 dark:text-gray-400 text-xl">No se encontraron platos en esta categoría.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Paginación -->
+{% if is_paginated %}
+<div class="pagination-container">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">
+            <i class="ph ph-caret-left-bold"></i>
+        </a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="pagination-btn active">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">
+            <i class="ph ph-caret-right-bold"></i>
+        </a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

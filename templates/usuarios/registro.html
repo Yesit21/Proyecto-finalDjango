@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<style>
+    /* Forzar estilos en modo oscuro */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="tel"] {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder,
+    input[type="email"]::placeholder,
+    input[type="tel"]::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.6) inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full space-y-8 rounded-2xl border border-white/20 bg-white/55 p-8 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/45">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+                Crear Cuenta
+            </h2>
+        </div>
+        
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% include 'components/ui/field.html' with field=form.username label='Usuario' %}
+                
+                {% include 'components/ui/field.html' with field=form.email label='Email' %}
+                
+                {% include 'components/ui/field.html' with field=form.first_name label='Nombre' %}
+                
+                {% include 'components/ui/field.html' with field=form.last_name label='Apellido' %}
+                
+                {% include 'components/ui/field.html' with field=form.telefono label='Teléfono (opcional)' %}
+                
+                <div></div>
+                
+                {% include 'components/ui/field.html' with field=form.password1 label='Contraseña' %}
+                
+                {% include 'components/ui/field.html' with field=form.password2 label='Confirmar Contraseña' %}
+            </div>
+
+            <div>
+                <button type="submit" class="btn-primary w-full">
+                    Registrarse
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    ¿Ya tienes cuenta?
+                    <a href="{% url 'usuarios:login' %}" class="link-accent">
+                        Inicia sesión aquí
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

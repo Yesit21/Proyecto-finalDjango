@@ -1,0 +1,132 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Plato{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
+         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    </div>
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-[4px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="relative z-10 max-w-3xl mx-auto py-12 px-4">
+        <!-- Back Link -->
+        <a href="{% url 'menu:platos_admin' %}" class="inline-flex items-center gap-2 text-amber-200 hover:text-white font-bold mb-8 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver al listado de platos
+        </a>
+
+        <!-- Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-t-3xl border border-white/10">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-3 rounded-2xl shadow-lg text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black text-white tracking-tight">
+                        {% if object %}Editar {{ object.nombre }}{% else %}Nuevo Plato{% endif %}
+                    </h1>
+                    <p class="text-amber-200 text-sm font-bold uppercase tracking-widest">Configuración de la carta</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-8 rounded-b-3xl shadow-2xl border border-white/10">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {% for field in form %}
+                    <div class="space-y-2 {% if field.name == 'descripcion' or field.name == 'imagen' %}md:col-span-2{% endif %}">
+                        <label for="{{ field.id_for_label }}" class="block text-xs font-black text-amber-600 uppercase tracking-widest">
+                            {{ field.label }}
+                        </label>
+                        <div class="relative">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                        <p class="mt-1 text-sm text-red-600 font-bold">{{ field.errors.0 }}</p>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <p class="mt-1 text-xs text-gray-500 italic">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="pt-8 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" 
+                            class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-amber-600/20 transition-all duration-300 transform hover:-translate-y-1">
+                        {% if object %}Actualizar Plato{% else %}Crear Plato{% endif %}
+                    </button>
+                    <a href="{% url 'menu:platos_admin' %}" 
+                       class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-black py-4 rounded-2xl text-center transition-all">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="number"], select, textarea, input[type="file"] {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        font-weight: 700;
+        color: white !important;
+        transition: all 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #D97706;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+        background-color: rgba(0, 0, 0, 0.6) !important;
+    }
+    
+    /* File input specific styling */
+    input[type="file"] {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+    }
+    input[type="file"]::file-selector-button {
+        background: #D97706;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        margin-right: 1rem;
+        font-weight: 700;
+    }
+    input[type="checkbox"] {
+        width: 1.5rem;
+        height: 1.5rem;
+        accent-color: #D97706;
+        border-radius: 0.5rem;
+    }
+
+    select option {
+        background-color: #1a1a1a;
+        color: white;
+    }
+
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+</style>
+{% endblock %}

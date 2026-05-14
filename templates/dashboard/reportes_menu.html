@@ -1,0 +1,239 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="page-title">Reportes y Exportación</h1>
+            <p class="page-subtitle">Genera reportes detallados en PDF o Excel</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Reporte de Pedidos -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">Reporte de Pedidos</h3>
+                <p class="card-subtitle">Lista detallada de pedidos con filtros</p>
+            </div>
+            <svg class="h-8 w-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6m-6 4h6m-6 4h6M5 3h14a2 2 0 012 2v16l-4-2-4 2-4-2-4 2V5a2 2 0 012-2z"/>
+            </svg>
+        </div>
+        
+        <form id="form-pedidos" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label">Desde Fecha</label>
+                    <input type="date" name="fecha_desde" class="input-field">
+                </div>
+                <div>
+                    <label class="form-label">Hasta Fecha</label>
+                    <input type="date" name="fecha_hasta" class="input-field">
+                </div>
+            </div>
+            
+            <div>
+                <label class="form-label">Estado</label>
+                <select name="estado" class="input-field">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en_preparacion">En Preparación</option>
+                    <option value="completado">Completado</option>
+                    <option value="cancelado">Cancelado</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="descargarReporte('pedidos', 'pdf')" class="btn-primary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar PDF
+                </button>
+                <button type="button" onclick="descargarReporte('pedidos', 'excel')" class="btn-secondary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar Excel
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Reporte de Ventas -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">Reporte de Ventas</h3>
+                <p class="card-subtitle">Análisis de ventas y métricas</p>
+            </div>
+            <svg class="h-8 w-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+        </div>
+        
+        <form id="form-ventas" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label">Desde Fecha</label>
+                    <input type="date" name="fecha_desde" class="input-field">
+                </div>
+                <div>
+                    <label class="form-label">Hasta Fecha</label>
+                    <input type="date" name="fecha_hasta" class="input-field">
+                </div>
+            </div>
+            
+            <div>
+                <label class="form-label">Categoría</label>
+                <select name="categoria" class="input-field">
+                    <option value="">Todas</option>
+                    <option value="entradas">Entradas</option>
+                    <option value="platos_principales">Platos Principales</option>
+                    <option value="postres">Postres</option>
+                    <option value="bebidas">Bebidas</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="descargarReporte('ventas', 'pdf')" class="btn-primary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar PDF
+                </button>
+                <button type="button" onclick="descargarReporte('ventas', 'excel')" class="btn-secondary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar Excel
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if user.rol == 'administrador' %}
+    <!-- Reporte de Inventario -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">Reporte de Inventario</h3>
+                <p class="card-subtitle">Estado actual del inventario</p>
+            </div>
+            <svg class="h-8 w-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+        </div>
+        
+        <form id="form-inventario" class="space-y-4">
+            <div>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="stock_bajo" value="true" class="rounded">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Solo productos con stock bajo</span>
+                </label>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="descargarReporte('inventario', 'pdf')" class="btn-primary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar PDF
+                </button>
+                <button type="button" onclick="descargarReporte('inventario', 'excel')" class="btn-secondary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar Excel
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Reporte de Reservas -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">Reporte de Reservas</h3>
+                <p class="card-subtitle">Lista de reservas con filtros</p>
+            </div>
+            <svg class="h-8 w-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        
+        <form id="form-reservas" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label">Desde Fecha</label>
+                    <input type="date" name="fecha_desde" class="input-field">
+                </div>
+                <div>
+                    <label class="form-label">Hasta Fecha</label>
+                    <input type="date" name="fecha_hasta" class="input-field">
+                </div>
+            </div>
+            
+            <div>
+                <label class="form-label">Estado</label>
+                <select name="estado" class="input-field">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="cancelada">Cancelada</option>
+                    <option value="completada">Completada</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="descargarReporte('reservas', 'pdf')" class="btn-primary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar PDF
+                </button>
+                <button type="button" onclick="descargarReporte('reservas', 'excel')" class="btn-secondary flex-1">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Descargar Excel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function descargarReporte(tipo, formato) {
+    // Obtener el formulario correspondiente
+    const form = document.getElementById(`form-${tipo}`);
+    const formData = new FormData(form);
+    
+    // Construir URL con parámetros
+    const params = new URLSearchParams(formData);
+    const url = `{% url 'dashboard:reportes_menu' %}`.replace('menu/', `${tipo}/${formato}/`) + '?' + params.toString();
+    
+    // Mostrar indicador de carga
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    
+    // Descargar archivo
+    window.location.href = url;
+    
+    // Restaurar botón después de 2 segundos
+    setTimeout(() => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+    }, 2000);
+}
+</script>
+{% endblock %}

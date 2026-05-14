@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["python312", "nodejs_18", "gcc"]
+
+[phases.install]
+cmds = [
+    "python -m venv /opt/venv && . /opt/venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt",
+    "npm install"
+]
+
+[phases.build]
+cmds = [
+    "npm run build",
+    ". /opt/venv/bin/activate && python manage.py collectstatic --noinput"
+]
+
+[start]
+cmd = ". /opt/venv/bin/activate && python manage.py migrate --noinput && gunicorn restaurante_project.wsgi --bind 0.0.0.0:$PORT"

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Update</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .status-update {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        .status-update h3 {
+            margin: 0 0 15px 0;
+            color: #1e40af;
+            font-size: 18px;
+        }
+        .status-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .status-old {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        .status-new {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #6b7280;
+        }
+        .info-box {
+            background: #f9fafb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+        }
+        .info-box strong {
+            color: #374151;
+        }
+        .footer {
+            background: #f9fafb;
+            padding: 25px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Update</h1>
+            <p>Your order has changed its status</p>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hi {{ user.get_full_name|default:user.username }},</p>
+            
+            <p>We inform you that your order <strong>#{{ order.id }}</strong> has been updated.</p>
+            
+            <div class="status-update">
+                <h3>New Status:</h3>
+                <div class="status-change">
+                    <span class="status-badge status-old">{{ old_status }}</span>
+                    <span class="arrow">→</span>
+                    <span class="status-badge status-new">{{ new_status }}</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Total Amount:</strong> ${{ order.total }}</p>
+                <p><strong>Date:</strong> {{ order.fecha_pedido|date:"d M Y H:i" }}</p>
+            </div>
+
+            <center>
+                <a href="{{ site_url }}{% url 'pedidos:mis_pedidos' %}" class="button">Track Order</a>
+            </center>
+        </div>
+
+        <div class="footer">
+            <p>© {% now "Y" %} Restaurant System. All rights reserved.</p>
+            <p>This is an automated email, please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>

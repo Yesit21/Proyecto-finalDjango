@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Mesa | Gestión Salón{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-fixed bg-cover bg-center py-20 px-4 relative" 
+     style="background-image: url('https://images.unsplash.com/photo-1550966842-2849a221202a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <!-- Overlay gradiente profundo -->
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+    <div class="relative z-10 max-w-lg mx-auto">
+        <!-- Contenedor Flotante -->
+        <div class="bg-white/10 backdrop-blur-3xl rounded-[4rem] border border-white/20 shadow-2xl overflow-hidden relative group">
+            <!-- Warning Glow Effect -->
+            <div class="absolute -top-32 -left-32 w-64 h-64 bg-red-500/10 rounded-full blur-[100px] group-hover:bg-red-500/20 transition-all duration-700"></div>
+            
+            <div class="p-12 md:p-16 text-center relative z-10">
+                <!-- Icono de Advertencia Premium -->
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-red-500/20 rounded-[2.5rem] border-2 border-red-500/50 mb-10 text-red-500 shadow-2xl shadow-red-500/20 transform group-hover:rotate-12 transition-transform duration-500">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                
+                <h1 class="text-4xl font-black text-white tracking-tighter uppercase mb-6">
+                    ¿ELIMINAR <span class="text-red-500 tracking-tight">MESA {{ object.numero }}?</span>
+                </h1>
+                
+                <p class="text-white/40 font-medium text-sm leading-relaxed mb-12 px-4">
+                    Esta acción es <span class="text-red-400 font-bold uppercase tracking-widest text-[10px]">irreversible</span>. La mesa será retirada permanentemente de la configuración física del salón.
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="flex flex-col gap-6">
+                        <button type="submit" 
+                                class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-6 rounded-[2.5rem] shadow-2xl shadow-red-600/30 transition-all transform hover:scale-105 active:scale-95 text-xs uppercase tracking-[0.3em]">
+                            SÍ, ELIMINAR PERMANENTEMENTE
+                        </button>
+                        <a href="{% url 'reservas:mesas_lista' %}" 
+                           class="w-full bg-white/5 hover:bg-white/10 text-white font-black py-6 rounded-[2.5rem] text-center border border-white/10 transition-all text-xs uppercase tracking-[0.3em]">
+                            CANCELAR OPERACIÓN
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer con Estilo -->
+            <div class="p-10 border-t border-white/5 bg-white/5">
+                <p class="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">Protocolo de Seguridad del Sistema</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

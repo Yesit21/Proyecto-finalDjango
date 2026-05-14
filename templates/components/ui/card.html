@@ -1,0 +1,17 @@
+<section class="card">
+    {% if title %}
+    <header class="card-header">
+        <div class="min-w-0">
+            <h2 class="card-title truncate">{{ title }}</h2>
+            {% if subtitle %}<p class="card-subtitle">{{ subtitle }}</p>{% endif %}
+        </div>
+        {% if actions_template %}{% include actions_template %}{% endif %}
+    </header>
+    {% endif %}
+
+    {% if content_template %}
+        {% include content_template %}
+    {% else %}
+        {{ content|default:"" }}
+    {% endif %}
+</section>

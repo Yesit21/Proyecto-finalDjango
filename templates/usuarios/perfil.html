@@ -1,0 +1,107 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil - {{ usuario.get_full_name|default:usuario.username }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-fixed bg-cover bg-center py-12 px-4" 
+     style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1556740734-7f95cb93e3e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="max-w-5xl mx-auto">
+        <!-- Profile Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 mb-8 flex flex-col md:flex-row items-center gap-8">
+            <div class="relative group">
+                <div class="w-40 h-40 rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-600/30 group-hover:border-amber-600 transition-all duration-500">
+                    {% if usuario.foto %}
+                        <img src="{{ usuario.foto.url }}" alt="{{ usuario.username }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    {% else %}
+                        <div class="w-full h-full bg-amber-600 flex items-center justify-center text-white text-6xl font-black">
+                            {{ usuario.username.0|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-amber-600 p-2 rounded-xl text-white shadow-xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+            </div>
+            
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-5xl font-black text-white tracking-tight mb-2">{{ usuario.get_full_name|default:usuario.username }}</h1>
+                <p class="text-amber-200 text-lg font-bold mb-4">@{{ usuario.username }}</p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                    <span class="px-4 py-1 bg-amber-600 text-white rounded-full text-xs font-black uppercase tracking-widest">
+                        {{ usuario.get_rol_display }}
+                    </span>
+                    <span class="px-4 py-1 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-widest backdrop-blur-md">
+                        Miembro desde {{ usuario.date_joined|date:"M Y" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Details Column -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-white/20">
+                    <h2 class="text-xs font-black text-amber-600 uppercase tracking-[0.2em] mb-8">Información Personal</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Correo Electrónico</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ usuario.email }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Teléfono de Contacto</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ usuario.telefono|default:"No registrado" }}</p>
+                        </div>
+                        <div class="md:col-span-2 space-y-1">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dirección de Envío</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ usuario.direccion|default:"Sin dirección registrada" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-white/20">
+                    <h2 class="text-xs font-black text-amber-600 uppercase tracking-[0.2em] mb-6">Seguridad de la Cuenta</h2>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-bold text-gray-900 dark:text-white">Contraseña</p>
+                            <p class="text-sm text-gray-500">Actualiza tu contraseña periódicamente</p>
+                        </div>
+                        <a href="{% url 'usuarios:password_reset' %}" class="bg-gray-100 dark:bg-gray-800 hover:bg-amber-600 hover:text-white text-gray-700 dark:text-gray-300 px-6 py-3 rounded-xl font-bold transition-all">
+                            Cambiar Contraseña
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Column -->
+            <div class="space-y-8">
+                <div class="bg-amber-600 p-8 rounded-3xl shadow-xl shadow-amber-600/20 text-white">
+                    <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-60 mb-6">Actividad Reciente</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-2xl">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-black">12</p>
+                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Pedidos Realizados</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-2xl">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-black">4</p>
+                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Reservas Activas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

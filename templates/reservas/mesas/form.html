@@ -1,0 +1,139 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Edit Table {{ object.numero }}{% else %}New Table{% endif %} | Hall Management{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
+    </div>
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-[4px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="relative z-10 max-w-2xl mx-auto py-10 px-4">
+        <!-- Back link with "Orange Square" style -->
+        <a href="{% url 'reservas:mesas_lista' %}" class="group inline-flex items-center gap-4 text-white hover:text-amber-500 font-black text-xs uppercase tracking-[0.4em] mb-12 transition-all">
+            <div class="bg-amber-500 text-black p-3 shadow-[5px_5px_0px_0px_rgba(255,255,255,0.2)] group-hover:shadow-none transition-all border-2 border-black">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+            </div>
+            Back to management
+        </a>
+
+        <!-- Solid Orange Square Container -->
+        <div class="bg-gray-900 border-8 border-black shadow-2xl relative overflow-hidden">
+            <!-- Form Header -->
+            <div class="p-10 border-b-8 border-black bg-black">
+                <div class="flex flex-col sm:flex-row items-center gap-8">
+                    <div class="bg-amber-500 text-black p-6 shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)] transform -rotate-3 border-4 border-black">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <div class="bg-black text-white px-6 py-2 inline-block transform rotate-1 border-4 border-amber-500 shadow-2xl mb-2">
+                            <h1 class="text-3xl font-black uppercase tracking-tighter">
+                                {% if object %}Edit Table {{ object.numero }}{% else %}New Table{% endif %}
+                            </h1>
+                        </div>
+                        <div class="bg-amber-500 text-black px-4 py-1 block transform -rotate-1 border-2 border-black">
+                            <p class="font-black uppercase tracking-[0.2em] text-[10px]">Gastronomic Infrastructure</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- High Contrast Form Body -->
+            <div class="p-10 md:p-14">
+                <form method="post" class="space-y-12">
+                    {% csrf_token %}
+                    
+                    <div class="grid gap-12">
+                        {% for field in form %}
+                        <div class="space-y-4">
+                            <label for="{{ field.id_for_label }}" class="bg-amber-500 text-black px-4 py-1 inline-block text-[10px] font-black uppercase tracking-[0.4em] border-2 border-black">
+                                {{ field.label }}
+                            </label>
+                            <div class="relative">
+                                {{ field }}
+                            </div>
+                            {% if field.errors %}
+                            <p class="mt-4 bg-red-600 text-white px-4 py-2 text-[10px] font-black uppercase tracking-widest border-2 border-black">{{ field.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="pt-12 flex flex-col sm:flex-row gap-8">
+                        <button type="submit" 
+                                class="flex-1 bg-amber-500 hover:bg-white text-black font-black py-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.5)] transition-all transform active:scale-95 text-lg uppercase tracking-[0.3em] border-4 border-black">
+                            {% if object %}UPDATE{% else %}CREATE TABLE{% endif %}
+                        </button>
+                        <a href="{% url 'reservas:mesas_lista' %}" 
+                           class="flex-1 bg-black hover:bg-gray-800 text-white font-black py-8 text-center transition-all text-lg uppercase tracking-[0.3em] border-4 border-white">
+                            CANCEL
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+    /* Force visibility and Solid style in Inputs */
+    input[type="text"], 
+    input[type="number"], 
+    select, 
+    textarea {
+        width: 100%;
+        padding: 1.5rem 2rem;
+        background-color: #000 !important;
+        border: 4px solid #f59e0b !important; /* Amber 500 */
+        border-radius: 0 !important;
+        font-weight: 900;
+        color: #fff !important;
+        transition: all 0.3s;
+        font-size: 1.25rem;
+        text-transform: uppercase;
+    }
+
+    input:focus, 
+    select:focus, 
+    textarea:focus {
+        outline: none;
+        background-color: #111 !important;
+        border-color: #fff !important;
+        transform: translate(-4px, -4px);
+        box-shadow: 8px 8px 0px 0px #f59e0b;
+    }
+
+    /* Block style checkbox */
+    input[type="checkbox"] {
+        width: 2rem;
+        height: 2rem;
+        accent-color: #f59e0b;
+        background: #000;
+        border: 4px solid #f59e0b;
+    }
+
+    select option {
+        background-color: #000;
+        color: white;
+        padding: 1.5rem;
+    }
+
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+    }
+</style>
+{% endblock %}

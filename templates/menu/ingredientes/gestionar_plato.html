@@ -1,0 +1,109 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Ingredientes de {{ plato.nombre }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Ingredientes de {{ plato.nombre }}</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Gestiona los ingredientes necesarios para este plato</p>
+        </div>
+        <a href="{% url 'menu:lista' %}" class="btn-secondary">
+            ← Volver al menú
+        </a>
+    </div>
+
+    <!-- Formulario para agregar ingrediente -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold mb-4">Agregar Ingrediente</h2>
+        <form method="post" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% csrf_token %}
+            
+            <div>
+                <label class="form-label">{{ form.ingrediente.label }}</label>
+                {{ form.ingrediente }}
+                {% if form.ingrediente.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ form.ingrediente.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="form-label">{{ form.cantidad.label }}</label>
+                {{ form.cantidad }}
+                {% if form.cantidad.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ form.cantidad.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-end">
+                <button type="submit" class="btn-primary w-full">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Agregar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de ingredientes del plato -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-xl font-semibold mb-4">Ingredientes Actuales</h2>
+        </div>
+        
+        {% if plato_ingredientes %}
+        <div class="overflow-x-auto">
+            <table class="table">
+                <thead class="table-head">
+                    <tr>
+                        <th class="table-th">Ingrediente</th>
+                        <th class="table-th">Cantidad</th>
+                        <th class="table-th">Unidad</th>
+                        <th class="table-th">Stock Disponible</th>
+                        <th class="table-th">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pi in plato_ingredientes %}
+                    <tr class="table-row">
+                        <td class="table-td font-medium">{{ pi.ingrediente.nombre }}</td>
+                        <td class="table-td">{{ pi.cantidad }}</td>
+                        <td class="table-td">{{ pi.ingrediente.get_unidad_medida_display }}</td>
+                        <td class="table-td">
+                            <span class="{% if pi.ingrediente.stock_bajo %}text-red-600 font-semibold{% endif %}">
+                                {{ pi.ingrediente.stock_actual }}
+                            </span>
+                            {% if pi.ingrediente.stock_bajo %}
+                            <span class="badge badge-warning ml-2">Stock Bajo</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-td">
+                            <a href="{% url 'menu:eliminar_ingrediente_plato' pi.id %}" 
+                               class="text-red-600 hover:text-red-800 dark:text-red-400"
+                               onclick="return confirm('¿Eliminar este ingrediente del plato?')">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-6 text-center text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p>Este plato no tiene ingredientes asignados.</p>
+            <p class="text-sm mt-2">Usa el formulario de arriba para agregar ingredientes.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

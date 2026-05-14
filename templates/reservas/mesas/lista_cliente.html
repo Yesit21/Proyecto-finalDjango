@@ -1,0 +1,102 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reserva tu Mesa - Experiencia Gourmet{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-black py-12 px-4 relative overflow-hidden" style="background-color: #000 !important;">
+    <!-- Fondo de Imagen con Capa de Oscuridad Máxima -->
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center opacity-30" 
+         style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    </div>
+    <div class="absolute inset-0 bg-black/95"></div>
+    
+    <div class="max-w-7xl mx-auto relative z-10">
+        <!-- Header con "Cuadritos Naranjas" Profesionales -->
+        <div class="text-center mb-16 space-y-12">
+            <div class="inline-block bg-amber-500 px-12 py-5 shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)] transform -rotate-2 border-4 border-black">
+                <span class="uppercase tracking-[0.6em] text-xl font-black" style="color: #000 !important;">Reserva tu Mesa</span>
+            </div>
+            
+            <div class="flex flex-col items-center space-y-6">
+                <div class="bg-black px-16 py-8 transform rotate-1 shadow-[15px_15px_0px_0px_rgba(245,158,11,0.5)] border-4 border-amber-500">
+                    <h1 class="text-4xl md:text-8xl uppercase tracking-tighter leading-none font-black" style="color: #fff !important;">ELIGE EL ESPACIO</h1>
+                </div>
+                <div class="bg-amber-500 px-16 py-8 transform -rotate-1 shadow-[15px_15px_0px_0px_rgba(0,0,0,0.5)] border-4 border-black">
+                    <h1 class="text-4xl md:text-8xl uppercase tracking-tighter leading-none font-black" style="color: #000 !important;">PARA TU CENA</h1>
+                </div>
+            </div>
+        </div>
+
+        {% if mesas %}
+        <!-- Grid de Mesas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            {% for mesa in mesas %}
+            <div class="bg-gray-900 border-8 border-amber-500 rounded-none overflow-hidden shadow-[25px_25px_0px_0px_rgba(0,0,0,0.8)] transition-all hover:translate-x-2 hover:translate-y-2 hover:shadow-none duration-300 flex flex-col group">
+                <!-- Visualización de la Mesa -->
+                <div class="h-72 bg-black flex items-center justify-center relative border-b-8 border-amber-500">
+                    <svg class="w-40 h-40 text-amber-500/10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    <div class="absolute top-0 right-0">
+                        <div class="bg-amber-500 px-10 py-6 text-3xl uppercase shadow-2xl border-b-4 border-l-4 border-black font-black" style="color: #000 !important;">
+                            Mesa {{ mesa.numero }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-12 flex-1 flex flex-col bg-gray-900">
+                    <div class="mb-12 space-y-8">
+                        <div class="bg-black p-6 inline-block transform -rotate-3 border-4 border-amber-500 w-full text-center">
+                            <h3 class="text-4xl font-black uppercase tracking-widest" style="color: #f59e0b !important;">{{ mesa.ubicacion|default:"Salón Principal" }}</h3>
+                        </div>
+                        
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-amber-500 px-8 py-4 font-black text-2xl flex items-center justify-center gap-4 border-4 border-black" style="color: #000 !important;">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 005.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                {{ mesa.capacidad }} PERSONAS
+                            </div>
+                            <div class="bg-green-600 px-8 py-4 font-black text-xl uppercase tracking-widest flex items-center justify-center gap-4 border-4 border-white" style="color: #fff !important;">
+                                <div class="w-4 h-4 bg-white rounded-full animate-pulse shadow-[0_0_15px_white]"></div>
+                                DISPONIBLE
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'reservas:crear' %}?mesa={{ mesa.id }}" 
+                       class="mt-auto block w-full text-center bg-amber-500 hover:bg-black hover:text-white font-black py-8 shadow-2xl transition-all uppercase tracking-[0.4em] text-3xl border-4 border-black" style="color: #000 !important;">
+                        RESERVAR AHORA
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Estado Vacío con Cuadritos Naranjas Reforzado -->
+        <div class="max-w-5xl mx-auto text-center space-y-20 py-10">
+            <div class="relative inline-block">
+                <div class="absolute inset-0 bg-amber-500 transform -rotate-2 translate-x-6 translate-y-6 -z-10 border-4 border-black"></div>
+                <div class="bg-black px-20 py-12 text-5xl md:text-9xl uppercase border-8 border-amber-500 shadow-2xl font-black" style="color: #f59e0b !important;">
+                    Salón Completo
+                </div>
+            </div>
+            
+            <div class="bg-amber-500 px-16 py-10 text-2xl md:text-5xl uppercase tracking-[0.3em] shadow-2xl transform rotate-1 mx-auto max-w-fit border-8 border-black font-black" style="color: #000 !important;">
+                No hay mesas disponibles
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-12 pt-16">
+                <a href="{% url 'reservas:lista' %}" class="group relative bg-amber-600 hover:bg-amber-500 font-black py-10 px-20 text-3xl shadow-2xl transition-all uppercase tracking-widest border-4 border-black" style="color: #fff !important;">
+                    <span class="relative z-10">MIS RESERVAS</span>
+                    <div class="absolute inset-0 bg-black transform translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                </a>
+                <a href="{% url 'menu:lista' %}" class="group relative bg-black hover:bg-gray-900 font-black py-10 px-20 text-3xl shadow-2xl transition-all uppercase tracking-widest border-4 border-white" style="color: #fff !important;">
+                    <span class="relative z-10">VER MENÚ</span>
+                    <div class="absolute inset-0 bg-amber-500 transform translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

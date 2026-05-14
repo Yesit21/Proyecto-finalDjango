@@ -1,0 +1,204 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reserva tu Mesa | Gastronomía Premium{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+    /* Force visibility of text in inputs with dark background */
+    input[type="datetime-local"],
+    input[type="number"],
+    select,
+    textarea {
+        color: white !important;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Style for the calendar icon in datetime-local */
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+
+    /* Placeholder with better visibility */
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    /* Select options */
+    select option {
+        background-color: #1a1a1a;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
+    </div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="relative z-10 max-w-4xl mx-auto py-10">
+        <!-- Styled Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4 drop-shadow-2xl">
+                RESERVA TU <span class="text-amber-500">EXPERIENCIA</span>
+            </h1>
+            <p class="text-amber-200 text-xl font-medium tracking-wide uppercase">Asegura tu lugar en el corazón de nuestra cocina</p>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-8 items-start">
+            <!-- Form Column -->
+            <div class="lg:col-span-3">
+                <form method="post" class="bg-white/10 backdrop-blur-2xl rounded-[3rem] border border-white/20 p-8 md:p-12 shadow-2xl">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="mb-8 p-4 bg-red-500/20 backdrop-blur-md border border-red-500/50 text-red-100 rounded-2xl text-sm">
+                        {% for error in form.non_field_errors %}
+                        <p class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {{ error }}
+                        </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="space-y-8">
+                        <!-- Date and Time -->
+                        <div class="group">
+                            <label for="{{ form.fecha_reserva.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
+                                Fecha y Hora
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                                <input type="datetime-local" name="{{ form.fecha_reserva.name }}" id="{{ form.fecha_reserva.id_for_label }}" 
+                                       class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all placeholder-white/20"
+                                       value="{{ form.fecha_reserva.value|default_if_none:'' }}">
+                            </div>
+                            {% if form.fecha_reserva.errors %}
+                            <p class="mt-2 text-red-400 text-xs font-bold">{{ form.fecha_reserva.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Number of Guests -->
+                        <div class="group">
+                            <label for="{{ form.cantidad_personas.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
+                                Cantidad de Personas
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                                <input type="number" name="{{ form.cantidad_personas.name }}" id="{{ form.cantidad_personas.id_for_label }}" 
+                                       class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                                       placeholder="¿Cuántos vendrán?" value="{{ form.cantidad_personas.value|default_if_none:'' }}">
+                            </div>
+                            {% if form.cantidad_personas.errors %}
+                            <p class="mt-2 text-red-400 text-xs font-bold">{{ form.cantidad_personas.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Table (Optional) -->
+                        <div class="group">
+                            <label for="{{ form.mesa.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
+                                Mesa (Opcional)
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                </div>
+                                <select name="{{ form.mesa.name }}" id="{{ form.mesa.id_for_label }}" 
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all appearance-none cursor-pointer">
+                                    {% for choice in form.mesa.field.choices %}
+                                        <option value="{{ choice.0 }}" class="bg-gray-900 text-white" {% if form.mesa.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-white/50">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="group">
+                            <label for="{{ form.observaciones.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
+                                Notas Especiales
+                            </label>
+                            <textarea name="{{ form.observaciones.name }}" id="{{ form.observaciones.id_for_label }}" rows="3"
+                                      class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                                      placeholder="Alergias, cumpleaños, preferencias...">{{ form.observaciones.value|default_if_none:'' }}</textarea>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-amber-600/20 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+                                CONFIRMAR RESERVA
+                            </button>
+                            <a href="{% url 'reservas:lista' %}" class="flex-1 bg-white/5 hover:bg-white/10 text-white font-black py-4 rounded-2xl text-center border border-white/10 transition-all">
+                                CANCELAR
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Info Column -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-8">
+                    <h3 class="text-2xl font-black text-white mb-6">¿Por qué reservar?</h3>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <div class="bg-amber-500/20 p-2 rounded-xl h-fit">
+                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold">Sin esperas</h4>
+                                <p class="text-white/60 text-sm">Tu mesa estará lista tan pronto como llegues.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="bg-amber-500/20 p-2 rounded-xl h-fit">
+                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold">Mejor ubicación</h4>
+                                <p class="text-white/60 text-sm">Prioridad en los mejores rincones del salón.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="bg-amber-500/20 p-2 rounded-xl h-fit">
+                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold">Experiencia VIP</h4>
+                                <p class="text-white/60 text-sm">Atención personalizada desde tu llegada.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+                    <h3 class="text-2xl font-black mb-2 relative z-10">¿Evento Especial?</h3>
+                    <p class="text-amber-100 mb-6 relative z-10">Si planeas una celebración para más de 10 personas, contáctanos directamente.</p>
+                    <a href="#" class="inline-block bg-white text-amber-600 font-black px-6 py-3 rounded-xl shadow-lg relative z-10 hover:scale-105 transition-transform">
+                        Llamar ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

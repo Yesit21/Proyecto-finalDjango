@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<style>
+    /* Forzar estilos en modo oscuro */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder,
+    input[type="email"]::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.6) inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 rounded-2xl border border-white/20 bg-white/55 p-8 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/45">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+                Iniciar Sesión
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                Sistema de Gestión de Restaurante
+            </p>
+        </div>
+        
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            
+            <div class="rounded-md shadow-sm space-y-4">
+                {% include 'components/ui/field.html' with field=form.username label='Usuario' %}
+                
+                {% include 'components/ui/field.html' with field=form.password label='Contraseña' %}
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div>
+                    {% include 'components/ui/field.html' with field=form.remember_me label='Recordarme' %}
+                </div>
+
+                <div class="text-sm">
+                    <a href="{% url 'usuarios:password_reset' %}" class="link-accent">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn-primary w-full">
+                    Iniciar Sesión
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    ¿No tienes cuenta?
+                    <a href="{% url 'usuarios:registro' %}" class="link-accent">
+                        Regístrate aquí
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

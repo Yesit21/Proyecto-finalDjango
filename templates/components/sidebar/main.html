@@ -1,0 +1,203 @@
+{% url 'dashboard:home' as dashboard_home_url %}
+{% url 'dashboard:home' as dashboard_dashboard_url %}
+{% url 'menu:lista' as menu_lista_url %}
+{% url 'pedidos:lista' as pedidos_lista_url %}
+{% url 'pedidos:carrito' as pedidos_carrito_url %}
+{% url 'pedidos:mis_pedidos' as pedidos_mis_pedidos_url %}
+{% url 'reservas:lista' as reservas_lista_url %}
+{% url 'reservas:crear' as reservas_crear_url %}
+{% url 'inventario:lista' as inventario_lista_url %}
+{% url 'dashboard:reportes' as dashboard_reportes_url %}
+
+{% with current_namespace=request.resolver_match.namespace %}
+<!-- Sidebar Header -->
+<div class="flex items-center justify-between gap-3 pb-4 border-b border-gray-200 dark:border-gray-800">
+    {% if user.rol == 'cliente' %}
+    <a href="{% if menu_lista_url %}{{ menu_lista_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+    {% else %}
+    <a href="{% if dashboard_home_url %}{{ dashboard_home_url }}{% else %}/{% endif %}" class="flex items-center gap-2">
+    {% endif %}
+        <span class="brand-mark">
+            <span class="text-sm font-bold">R</span>
+        </span>
+        <span class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">Menú</span>
+    </a>
+
+    <button id="sidebar-close" type="button" class="btn-ghost px-3 md:hidden" aria-label="Cerrar menú">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+</div>
+
+<!-- Sidebar Content -->
+<div class="py-4 space-y-4">
+    
+    {# GENERAL SECTION #}
+    <div>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">General</p>
+        <div class="space-y-1">
+            {% if user.is_superuser or user.rol == 'administrador' or user.rol == 'mesero' %}
+                <a href="{% url 'dashboard:home' %}" class="sidebar-link {% if current_namespace == 'dashboard' and request.resolver_match.url_name == 'home' %}sidebar-link-active{% endif %}">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v9H3V3zm11 0h7v5h-7V3zM14 10h7v11h-7V10zM3 14h7v7H3v-7z"/>
+                        </svg>
+                    </span>
+                    <span>Panel de Control</span>
+                </a>
+            {% endif %}
+
+            {% if menu_lista_url %}
+            <a href="{{ menu_lista_url }}" class="sidebar-link {% if current_namespace == 'menu' and request.resolver_match.url_name == 'lista' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"/>
+                    </svg>
+                </span>
+                <span>Menú de Platos</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {# CUSTOMER SECTION #}
+    {% if user.rol == 'cliente' %}
+    <div>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Mis Servicios</p>
+        <div class="space-y-1">
+            {% if pedidos_carrito_url %}
+            <a href="{{ pedidos_carrito_url }}" class="sidebar-link {% if current_namespace == 'pedidos' and request.resolver_match.url_name == 'carrito' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 2.6A1 1 0 006.6 17h12M7 13l1 7m10-7l-1 7m-9 0h8"/>
+                    </svg>
+                </span>
+                <span>Mi Carrito</span>
+            </a>
+            {% endif %}
+
+            {% if pedidos_mis_pedidos_url %}
+            <a href="{{ pedidos_mis_pedidos_url }}" class="sidebar-link {% if current_namespace == 'pedidos' and request.resolver_match.url_name == 'mis_pedidos' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6m-6 4h6m-6 4h6M5 3h14a2 2 0 012 2v16l-4-2-4 2-4-2-4 2V5a2 2 0 012-2z"/>
+                    </svg>
+                </span>
+                <span>Mis Pedidos</span>
+            </a>
+            {% endif %}
+
+            {% if reservas_lista_url %}
+            <a href="{{ reservas_lista_url }}" class="sidebar-link {% if current_namespace == 'reservas' and request.resolver_match.url_name == 'lista' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 19h14M7 15h4"/>
+                    </svg>
+                </span>
+                <span>Mis Reservas</span>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'reservas:mesas_disponibles' %}" class="sidebar-link {% if request.resolver_match.url_name == 'mesas_disponibles' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                </span>
+                <span>Reservar Mesa</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {# SECCIÓN GESTIÓN OPERATIVA (MESEROS / ADMINS) #}
+    {% if user.is_superuser or user.rol == 'mesero' or user.rol == 'administrador' %}
+    <div>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Operación</p>
+        <div class="space-y-1">
+            {% if pedidos_lista_url %}
+            <a href="{{ pedidos_lista_url }}" class="sidebar-link {% if current_namespace == 'pedidos' and request.resolver_match.url_name == 'lista' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6m-6 4h6m-6 4h6M5 3h14a2 2 0 012 2v16H5V5a2 2 0 012-2z"/>
+                    </svg>
+                </span>
+                <span>Gestión Pedidos</span>
+            </a>
+            {% endif %}
+            
+            <a href="{% url 'reservas:staff_lista' %}" class="sidebar-link {% if request.resolver_match.url_name == 'staff_lista' or request.resolver_match.url_name == 'staff_calendario' or request.resolver_match.url_name == 'staff_asignar_mesa' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 19h14"/>
+                    </svg>
+                </span>
+                <span>Gestión Reservas</span>
+            </a>
+
+            <a href="{% url 'reservas:mesas_lista' %}" class="sidebar-link {% if request.resolver_match.url_name == 'mesas_lista' or request.resolver_match.url_name == 'mesa_crear' or request.resolver_match.url_name == 'mesa_editar' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                </span>
+                <span>Gestión Mesas</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {# SECCIÓN ADMINISTRACIÓN AVANZADA #}
+    {% if user.is_superuser or user.rol == 'administrador' %}
+    <div>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Administración</p>
+        <div class="space-y-1">
+            <a href="{% url 'menu:platos_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'platos_admin' or request.resolver_match.url_name == 'platos_crear' or request.resolver_match.url_name == 'platos_editar' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                    </svg>
+                </span>
+                <span>Gestionar Platos</span>
+            </a>
+
+            {% if inventario_lista_url %}
+            <a href="{{ inventario_lista_url }}" class="sidebar-link {% if current_namespace == 'inventario' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-4V3H10v2H6a2 2 0 00-2 2v6m16 0H4m16 0v6a2 2 0 002 2H6a2 2 0 01-2-2v-6"/>
+                    </svg>
+                </span>
+                <span>Inventario</span>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'menu:ingredientes_lista' %}" class="sidebar-link {% if request.resolver_match.url_name == 'ingredientes_lista' or request.resolver_match.url_name == 'ingredientes_crear' or request.resolver_match.url_name == 'ingredientes_editar' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                    </svg>
+                </span>
+                <span>Ingredientes</span>
+            </a>
+
+            <a href="{% url 'dashboard:reportes_menu' %}" class="sidebar-link {% if request.resolver_match.url_name == 'reportes_menu' %}sidebar-link-active{% endif %}">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </span>
+                <span>Reportes</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Footer del sidebar -->
+<div class="border-t border-gray-200 pt-3 mt-4 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+    <p class="truncate">Sesión: {{ user.username }}</p>
+    <p class="mt-1 truncate">Rol: {{ user.get_rol_display|default:user.rol }}</p>
+</div>
+{% endwith %}

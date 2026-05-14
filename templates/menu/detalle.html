@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ plato.nombre }} - Menú{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            {% if plato.imagen %}
+            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" class="w-full h-64 object-cover">
+            {% else %}
+            <div class="w-full h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                <span class="text-gray-500">Sin imagen</span>
+            </div>
+            {% endif %}
+
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold mb-2">{{ plato.nombre }}</h1>
+                        <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                            {{ plato.get_categoria_display }}
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-4xl font-bold text-green-600">${{ plato.precio }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3">Descripción</h2>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{{ plato.descripcion }}</p>
+                </div>
+
+                {% if plato_ingredientes %}
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3">Ingredientes</h2>
+                    <ul class="space-y-2">
+                        {% for pi in plato_ingredientes %}
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ pi.ingrediente.nombre }} - {{ pi.cantidad }} {{ pi.ingrediente.get_unidad_medida_display }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <span class="{% if plato.disponible %}text-green-600{% else %}text-red-600{% endif %} font-medium">
+                            {% if plato.disponible %}Disponible{% else %}No disponible{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <a href="{% url 'menu:lista' %}"
+                           class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
+                            ← Volver al menú
+                        </a>
+                        {% if plato.disponible %}
+                        <a href="{% url 'pedidos:agregar_carrito' plato.id %}" 
+                           class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                            Agregar al pedido
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

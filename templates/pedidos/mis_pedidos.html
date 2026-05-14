@@ -1,0 +1,120 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Mis Pedidos | Gastronomía Premium{% endblock %}
+
+{% block body_class %}bg-gray-950{% endblock %}
+
+{% block background %}
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
+    </div>
+    <div class="absolute inset-0 bg-black/90"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="relative z-10 max-w-5xl mx-auto py-10 px-4">
+    <!-- Header with Professional Squares -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-10 mb-16">
+        <div class="flex flex-col sm:flex-row items-center gap-8">
+            <div class="bg-amber-500 text-black p-6 shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)] transform -rotate-3 border-4 border-black">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5h6m-6 4h6m-6 4h6M5 3h14a2 2 0 012 2v16l-4-2-4 2-4-2-4 2V5a2 2 0 012-2z"/>
+                </svg>
+            </div>
+            <div class="space-y-3 text-center sm:text-left">
+                <div class="bg-black text-white px-8 py-3 inline-block transform rotate-1 border-4 border-amber-500 shadow-2xl">
+                    <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter">MIS <span class="text-amber-500">PEDIDOS</span></h1>
+                </div>
+                <div class="bg-amber-500 text-black px-6 py-1 block transform -rotate-1 border-2 border-black">
+                    <p class="font-black uppercase tracking-[0.3em] text-xs">Tu historial de sabor exclusivo</p>
+                </div>
+            </div>
+        </div>
+        
+        <a href="{% url 'pedidos:lista' %}" class="group relative bg-amber-600 hover:bg-amber-500 text-white font-black py-6 px-12 text-xl shadow-2xl transition-all uppercase tracking-widest border-4 border-black">
+            <span class="relative z-10">NUEVO PEDIDO</span>
+            <div class="absolute inset-0 bg-black transform translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+        </a>
+    </div>
+
+    <!-- Orders List -->
+    <div class="space-y-8">
+        {% for pedido in pedidos %}
+        <div class="bg-gray-900 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl transition-all hover:border-amber-500/30">
+            <div class="p-8 md:p-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    <div class="flex-1 space-y-6">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <span class="text-3xl font-black text-white tracking-tight">PEDIDO #{{ pedido.id|stringformat:"04d" }}</span>
+                            <span class="px-5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border
+                                {% if pedido.estado == 'pendiente' %}border-yellow-500/50 text-yellow-500 bg-yellow-500/5
+                                {% elif pedido.estado == 'en_preparacion' %}border-blue-500/50 text-blue-500 bg-blue-500/5
+                                {% elif pedido.estado == 'listo' %}border-green-500/50 text-green-500 bg-green-500/5
+                                {% elif pedido.estado == 'entregado' %}border-white/20 text-white/50 bg-white/5
+                                {% else %}border-red-500/50 text-red-500 bg-red-500/5{% endif %}">
+                                {{ pedido.get_estado_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 text-white/40 font-bold uppercase tracking-widest text-[10px]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {{ pedido.fecha_pedido|date:"d F, Y" }} — {{ pedido.fecha_pedido|date:"H:i" }}
+                        </div>
+                        
+                        <!-- Items Preview -->
+                        <div class="flex flex-wrap gap-3">
+                            {% for item in pedido.items.all|slice:":3" %}
+                            <div class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl flex items-center gap-3">
+                                <span class="text-amber-500 font-black text-xs">{{ item.cantidad }}x</span>
+                                <span class="text-white/80 font-bold text-xs">{{ item.nombre }}</span>
+                            </div>
+                            {% endfor %}
+                            {% if pedido.items.count > 3 %}
+                            <span class="text-white/20 text-[10px] font-black uppercase self-center">+ {{ pedido.items.count|add:"-3" }} más</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-end gap-5 min-w-[180px]">
+                        <div class="text-right">
+                            <p class="text-white/20 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Total</p>
+                            <div class="text-4xl font-black text-amber-500 tracking-tight">${{ pedido.total }}</div>
+                        </div>
+                        <a href="{% url 'pedidos:detalle' pedido.id %}" class="w-full bg-white/5 hover:bg-white/10 text-white px-6 py-3.5 rounded-xl font-black text-center text-[10px] uppercase tracking-widest transition-all border border-white/10">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            {% if pedido.reserva %}
+            <div class="bg-amber-500/5 px-8 py-3 border-t border-white/5 flex items-center gap-3">
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                <span class="text-[10px] font-black text-amber-500/80 uppercase tracking-widest">
+                    Vinculado a tu reserva de las {{ pedido.reserva.fecha_reserva|date:"H:i" }} hrs
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="bg-gray-900 border border-white/10 rounded-[2.5rem] p-20 text-center shadow-2xl">
+            <h2 class="text-3xl font-black text-white mb-4 tracking-tight uppercase">¿Aún no has pedido?</h2>
+            <p class="text-white/40 text-sm mb-8 font-bold uppercase tracking-widest">Explora nuestro menú hoy mismo</p>
+            <a href="{% url 'pedidos:lista' %}" class="inline-block bg-amber-600 hover:bg-amber-700 text-white font-black py-4 px-10 rounded-xl transition-all uppercase tracking-widest text-xs">
+                Ir al Menú
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+</style>
+{% endblock %}

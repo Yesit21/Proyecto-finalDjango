@@ -1,0 +1,19 @@
+<div class="card hover:shadow-xl transition-shadow duration-300">
+    {% if plato.imagen %}
+    <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" class="w-full h-48 object-cover rounded-t-lg">
+    {% endif %}
+    <div class="p-4">
+        <h3 class="text-xl font-semibold mb-2">{{ plato.nombre }}</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">{{ plato.descripcion|truncatewords:15 }}</p>
+        <div class="flex justify-between items-center">
+            <span class="text-2xl font-bold text-amber-600">${{ plato.precio }}</span>
+            <span class="text-sm text-gray-500">{{ plato.categoria.nombre }}</span>
+        </div>
+        <div class="mt-4 flex gap-2">
+            <a href="{% url 'menu:detalle' plato.id %}" class="btn-secondary flex-1 text-center">Ver</a>
+            {% if user.rol == 'cliente' %}
+            <a href="{% url 'pedidos:agregar_carrito' plato.id %}" class="btn-primary flex-1 text-center">Agregar</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
