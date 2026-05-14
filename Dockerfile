@@ -39,5 +39,9 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8000
 
+# Copy and set permissions for start script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Run migrations and start server
-CMD python manage.py migrate --noinput && gunicorn restaurante_project.wsgi --bind 0.0.0.0:${PORT:-8000} --log-file -
+CMD ["/app/start.sh"]
