@@ -2,16 +2,10 @@
 nixPkgs = ["python312", "python312Packages.pip", "nodejs-18_x"]
 
 [phases.install]
-cmds = [
-    "python3 -m pip install -r requirements.txt",
-    "npm install"
-]
+cmds = ["pip install -r requirements.txt", "npm install"]
 
 [phases.build]
-cmds = [
-    "npm run build",
-    "python manage.py collectstatic --noinput"
-]
+cmds = ["npm run build", "python manage.py collectstatic --noinput"]
 
 [start]
-cmd = "python manage.py migrate --noinput && gunicorn restaurante_project.wsgi --bind 0.0.0.0:$PORT"
+cmd = "gunicorn restaurante_project.wsgi --bind 0.0.0.0:$PORT"
