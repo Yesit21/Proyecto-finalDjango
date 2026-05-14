@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Run migrations
-python manage.py migrate --noinput
+# Run migrations with --fake-initial to handle existing tables
+python manage.py migrate --fake-initial --noinput
 
 # Get PORT from environment, default to 8000
 PORT=${PORT:-8000}
