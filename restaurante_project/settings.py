@@ -14,6 +14,9 @@ if os.environ.get('RAILWAY_STATIC_URL'):
     ALLOWED_HOSTS.append(os.environ.get('RAILWAY_STATIC_URL'))
 if os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
     ALLOWED_HOSTS.append(os.environ.get('RAILWAY_PUBLIC_DOMAIN'))
+# Allow Railway internal IPs for healthcheck
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    ALLOWED_HOSTS.extend(['100.64.0.2', '.railway.internal'])
 if '*' not in ALLOWED_HOSTS and DEBUG:
     ALLOWED_HOSTS.append('*')
 
