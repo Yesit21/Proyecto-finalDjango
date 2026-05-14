@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('menu', '0002_alter_plato_precio'),
+        ('menu', '0002_ingrediente_platoingrediente_plato_ingredientes_and_more'),
         ('pedidos', '0002_initial'),
     ]
 
