@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %}
+{% block title %}Actualizar reserva{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">Actualizar reserva</h1>
+        <a href="{% url 'reservas:lista' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Mesa</label>
+                {{ form.mesa }}
+                {% if form.mesa.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.mesa.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Fecha</label>
+                {{ form.fecha_reserva }}
+                {% if form.fecha_reserva.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.fecha_reserva.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Cantidad de personas</label>
+                {{ form.cantidad_personas }}
+                {% if form.cantidad_personas.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.cantidad_personas.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Observaciones</label>
+                {{ form.observaciones }}
+                {% if form.observaciones.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.observaciones.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a href="{% url 'reservas:lista' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

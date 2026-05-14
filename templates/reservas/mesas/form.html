@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% block title %}{% if object %}Editar mesa{% else %}Crear mesa{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">{% if object %}Editar mesa{% else %}Crear mesa{% endif %}</h1>
+        <a href="{% url 'reservas:mesas_lista' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div class="grid gap-5 lg:grid-cols-2">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Número</label>
+                    {{ form.numero }}
+                    {% if form.numero.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.numero.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Capacidad</label>
+                    {{ form.capacidad }}
+                    {% if form.capacidad.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.capacidad.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Ubicación</label>
+                {{ form.ubicacion }}
+                {% if form.ubicacion.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.ubicacion.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center gap-2">
+                {{ form.activa }}
+                <label class="text-sm">Activa</label>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a href="{% url 'reservas:mesas_lista' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

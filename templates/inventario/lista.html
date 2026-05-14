@@ -42,6 +42,7 @@
                     <td class="px-4 py-4">{{ producto.alerta_stock }}</td>
                     <td class="px-4 py-4 text-right">
                         <a href="{% url 'inventario:editar_producto' producto.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'inventario:eliminar_producto' producto.id %}" class="btn-secondary">Eliminar</a>
                     </td>
                 </tr>
                 {% empty %}

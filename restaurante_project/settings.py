@@ -2,14 +2,21 @@ from pathlib import Path
 import os
 from decouple import config
 import importlib.util
+from dj_database_url import parse as db_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-vxa(a(jyvv9babg@+fhr(q3$u%!#p0rra$%fp)xm5)vo2d9)z#')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production')
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [s.strip() for s in v.split(',') if s.strip()],
+)
+if DEBUG and '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('*')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,10 +74,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'restaurante_project.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': config(
+        'DATABASE_URL',
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        cast=db_url,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -99,12 +107,15 @@ LOGIN_URL = 'usuarios:login'
 LOGIN_REDIRECT_URL = 'usuarios:perfil'
 LOGOUT_REDIRECT_URL = 'usuarios:login'
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = config(
+    'EMAIL_BACKEND',
+    default='django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend',
+)
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='marlonchamoro21@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='axep pwof oiux vohj')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='marlonchamoro21@gmail.com')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@restaurante.local')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

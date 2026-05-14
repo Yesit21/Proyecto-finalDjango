@@ -175,9 +175,9 @@ EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
-EMAIL_HOST_USER=marlonchamoro21@gmail.com
-EMAIL_HOST_PASSWORD=axep pwof oiux vohj
-DEFAULT_FROM_EMAIL=marlonchamoro21@gmail.com
+EMAIL_HOST_USER=tu-email@gmail.com
+EMAIL_HOST_PASSWORD=xxxx xxxx xxxx xxxx
+DEFAULT_FROM_EMAIL=tu-email@gmail.com
 ```
 
 **Archivo:** `restaurante_project/settings.py`

@@ -20,6 +20,20 @@
             {% endif %}
 
             <div class="mb-6">
+                <label for="{{ form.mesa.id_for_label }}" class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                    {{ form.mesa.label }}
+                </label>
+                {{ form.mesa }}
+                {% if form.mesa.errors %}
+                <div class="text-red-500 text-sm mt-2">
+                    {% for error in form.mesa.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
                 <label for="{{ form.fecha_reserva.id_for_label }}" class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
                     {{ form.fecha_reserva.label }}
                 </label>

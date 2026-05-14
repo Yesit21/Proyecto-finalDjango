@@ -5,12 +5,12 @@
 ### 1. Cambiar Contraseña de Aplicación de Gmail
 
 Tu contraseña de aplicación actual está expuesta en el archivo `.env`:
-- Email: `marlonchamoro21@gmail.com`
-- Contraseña: `axep pwof oiux vohj`
+- Email: `tu-email@gmail.com`
+- Contraseña: `xxxx xxxx xxxx xxxx`
 
 **PASOS:**
 1. Ve a https://myaccount.google.com/apppasswords
-2. Revoca la contraseña actual `axep pwof oiux vohj`
+2. Revoca la contraseña actual `xxxx xxxx xxxx xxxx`
 3. Genera una nueva contraseña de aplicación
 4. Actualiza el archivo `.env` con la nueva contraseña
 

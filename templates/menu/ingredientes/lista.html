@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block title %}Ingredientes{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 class="text-3xl font-semibold">Ingredientes</h1>
+        <div class="flex gap-3">
+            <a href="{% url 'menu:ingredientes_crear' %}" class="btn-primary">Nuevo ingrediente</a>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Nombre</th>
+                    <th class="px-4 py-3">Unidad</th>
+                    <th class="px-4 py-3">Activo</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for ingrediente in ingredientes %}
+                <tr>
+                    <td class="px-4 py-4">{{ ingrediente.nombre }}</td>
+                    <td class="px-4 py-4">{{ ingrediente.unidad|default:"-" }}</td>
+                    <td class="px-4 py-4">{% if ingrediente.activo %}Sí{% else %}No{% endif %}</td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <a href="{% url 'menu:ingredientes_editar' ingrediente.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'menu:ingredientes_eliminar' ingrediente.id %}" class="btn-secondary">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-4 py-4">No hay ingredientes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -7,9 +7,9 @@
 {% url 'menu:lista' as menu_lista_url %}
 {% url 'pedidos:carrito' as pedidos_carrito_url %}
 {% url 'pedidos:mis_pedidos' as pedidos_mis_pedidos_url %}
-{% url 'reservas:mis_reservas' as reservas_mis_reservas_url %}
-{% url 'pedidos:lista' as pedidos_lista_url %}
 {% url 'reservas:lista' as reservas_lista_url %}
+{% url 'reservas:staff_lista' as reservas_staff_lista_url %}
+{% url 'pedidos:lista' as pedidos_lista_url %}
 {% url 'inventario:lista' as inventario_lista_url %}
 {% url 'dashboard:reportes' as dashboard_reportes_url %}
 
@@ -40,31 +40,17 @@
                     {% if user.rol == 'cliente' %}
                         {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
                         {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
-                        {% if reservas_mis_reservas_url %}<a href="{{ reservas_mis_reservas_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
                     {% endif %}
 
                     {% if user.rol == 'mesero' or user.rol == 'administrador' %}
                         {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' %}nav-link-active{% endif %}">Pedidos</a>{% endif %}
-                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Reservas</a>{% endif %}
-                <div class="hidden md:flex space-x-4">
-                    <a href="{% url 'menu:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Menú</a>
-                    
-                    {% if user.rol == 'cliente' %}
-                        <a href="{% url 'pedidos:carrito' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Carrito</a>
-                        <a href="{% url 'pedidos:mis_pedidos' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Pedidos</a>
-                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Mis Reservas</a>
-                    {% endif %}
-                    
-                    {% if user.rol in 'mesero,administrador' %}
-                        <a href="{% url 'pedidos:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Pedidos</a>
-                        <a href="{% url 'reservas:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reservas</a>
+                        {% if reservas_staff_lista_url %}<a href="{{ reservas_staff_lista_url }}" class="nav-link {% if current_namespace == 'reservas' %}nav-link-active{% endif %}">Reservas</a>{% endif %}
                     {% endif %}
 
                     {% if user.rol == 'administrador' %}
                         {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
                         {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
-                        <a href="{% url 'inventario:lista' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Inventario</a>
-                        <a href="{% url 'dashboard:reportes' %}" class="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200">Reportes</a>
                     {% endif %}
                 </div>
                 {% endif %}
@@ -76,14 +62,8 @@
                     <a href="{% if usuarios_perfil_url %}{{ usuarios_perfil_url }}{% else %}#{% endif %}" class="btn-ghost">Perfil</a>
                     <a href="{% if usuarios_logout_url %}{{ usuarios_logout_url }}{% else %}#{% endif %}" class="btn-primary">Salir</a>
                 {% else %}
-                    {% if current_namespace != 'usuarios' or current_url_name != 'login' and current_url_name != 'registro' %}
-                        <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
-                        <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
-                    {% endif %}
-                    <a href="{% url 'usuarios:perfil' %}" class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors">{{ user.username }}</a>
-                    <a href="{% url 'usuarios:logout' %}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Salir</a>
-                {% else %}
-                    <a href="{% url 'usuarios:login' %}" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Iniciar Sesión</a>
+                    <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
+                    <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
                 {% endif %}
 
                 <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Cambiar tema">

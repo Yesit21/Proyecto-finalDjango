@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+{% block title %}Cancelar reserva{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl space-y-6">
+    <h1 class="text-3xl font-semibold">Cancelar reserva</h1>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-4">
+        <p>¿Seguro que deseas cancelar esta reserva?</p>
+        <div class="text-sm text-gray-700 dark:text-gray-200">
+            <div><span class="font-semibold">Fecha:</span> {{ object.fecha_reserva|date:'d M Y H:i' }}</div>
+            <div><span class="font-semibold">Mesa:</span> {% if object.mesa %}{{ object.mesa.numero }}{% else %}-{% endif %}</div>
+        </div>
+
+        <form method="post" class="flex gap-3">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">Sí, cancelar</button>
+            <a href="{% url 'reservas:lista' %}" class="btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

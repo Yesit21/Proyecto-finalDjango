@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+{% block title %}Precios{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold">Precios</h1>
+            <p class="text-sm text-gray-600 dark:text-gray-300">{{ plato.nombre }}</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{% url 'menu:precios_crear' plato.id %}" class="btn-primary">Nuevo precio</a>
+            <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Volver</a>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Fecha</th>
+                    <th class="px-4 py-3">Precio</th>
+                    <th class="px-4 py-3">Activo</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for precio in precios %}
+                <tr>
+                    <td class="px-4 py-4">{{ precio.fecha_inicio|date:'d M Y H:i' }}</td>
+                    <td class="px-4 py-4">${{ precio.precio }}</td>
+                    <td class="px-4 py-4">{% if precio.activo %}Sí{% else %}No{% endif %}</td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <a href="{% url 'menu:precios_editar' precio.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'menu:precios_eliminar' precio.id %}" class="btn-secondary">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-4 py-4">No hay historial de precios.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

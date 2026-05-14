@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block title %}{% if object %}Editar precio{% else %}Crear precio{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">{% if object %}Editar precio{% else %}Crear precio{% endif %}</h1>
+        {% if object %}
+            <a href="{% url 'menu:precios_lista' object.plato_id %}" class="btn-secondary">Volver</a>
+        {% else %}
+            <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Volver</a>
+        {% endif %}
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Precio</label>
+                {{ form.precio }}
+                {% if form.precio.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.precio.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center gap-2">
+                {{ form.activo }}
+                <label class="text-sm">Activo</label>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                {% if object %}
+                    <a href="{% url 'menu:precios_lista' object.plato_id %}" class="btn-secondary">Cancelar</a>
+                {% else %}
+                    <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Cancelar</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
