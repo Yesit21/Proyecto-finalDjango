@@ -5,6 +5,13 @@ class Ingrediente(models.Model):
     nombre = models.CharField(max_length=120, unique=True)
     unidad = models.CharField(max_length=30, blank=True)
     activo = models.BooleanField(default=True)
+    producto_inventario = models.ForeignKey(
+        'inventario.Producto',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ingredientes',
+    )
 
     class Meta:
         verbose_name = "Ingrediente"

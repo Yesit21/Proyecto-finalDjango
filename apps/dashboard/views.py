@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Avg, Count, F, Sum
-from django.db.models.functions import TruncDate
+from django.db.models.functions import Coalesce, TruncDate
 from django.shortcuts import render
 from django.utils import timezone
 from apps.inventario.models import Producto
@@ -23,7 +23,13 @@ def home(request):
     promedio_por_pedido = pedidos_ultimos.aggregate(promedio=Avg('total'))['promedio'] or 0
     pedidos_por_estado = Pedido.objects.values('estado').annotate(count=Count('id'))
     productos_bajos = Producto.objects.filter(stock_actual__lte=F('alerta_stock')).count()
-    platos_vendidos = PedidoItem.objects.values('nombre').annotate(cantidad=Sum('cantidad')).order_by('-cantidad')[:5]
+    platos_vendidos = (
+        PedidoItem.objects
+        .annotate(nombre_plato=Coalesce('producto__plato__nombre', 'nombre'))
+        .values('nombre_plato')
+        .annotate(cantidad=Sum('cantidad'))
+        .order_by('-cantidad')[:5]
+    )
 
     ventas_por_dia = (
         pedidos_ultimos
@@ -38,7 +44,7 @@ def home(request):
     datos_pedidos = json.dumps([item['count'] for item in pedidos_por_estado])
     etiquetas_pedidos = json.dumps([item['estado'] for item in pedidos_por_estado])
     datos_platos = json.dumps([item['cantidad'] for item in platos_vendidos])
-    etiquetas_platos = json.dumps([item['nombre'] for item in platos_vendidos])
+    etiquetas_platos = json.dumps([item['nombre_plato'] for item in platos_vendidos])
 
     context = {
         'total_pedidos': total_pedidos,
