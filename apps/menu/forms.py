@@ -5,10 +5,11 @@ from .models import Ingrediente, Plato, PlatoIngrediente, PrecioPlato
 class IngredienteForm(forms.ModelForm):
     class Meta:
         model = Ingrediente
-        fields = ["nombre", "unidad", "activo"]
+        fields = ["nombre", "unidad", "producto_inventario", "activo"]
         widgets = {
             "nombre": forms.TextInput(attrs={"class": "w-full rounded-md border-gray-300 shadow-sm"}),
             "unidad": forms.TextInput(attrs={"class": "w-full rounded-md border-gray-300 shadow-sm"}),
+            "producto_inventario": forms.Select(attrs={"class": "w-full rounded-md border-gray-300 shadow-sm"}),
             "activo": forms.CheckboxInput(attrs={"class": "rounded"}),
         }
 

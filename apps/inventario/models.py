@@ -1,4 +1,4 @@
-﻿from django.db import models
+from django.db import models
 from django.utils import timezone
 
 TIPO_MOVIMIENTO = [
@@ -13,6 +13,13 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock_actual = models.IntegerField(default=0)
     alerta_stock = models.PositiveIntegerField(default=5)
+    plato = models.OneToOneField(
+        'menu.Plato',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='producto_inventario',
+    )
 
     class Meta:
         ordering = ['nombre']

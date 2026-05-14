@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #ef4444;">Confirmación de Pedido</h1>
+
+        <p>Hola {{ pedido.cliente.username }},</p>
+
+        <p>Tu pedido <strong>#{{ pedido.id }}</strong> fue recibido correctamente.</p>
+
+        <p><strong>Resumen</strong></p>
+        <ul>
+            {% for item in pedido.items.all %}
+            <li>{{ item.cantidad }} x {{ item.nombre }} — ${{ item.precio_unitario }}</li>
+            {% endfor %}
+        </ul>
+
+        <p><strong>Total:</strong> ${{ pedido.total }}</p>
+        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+        <p style="font-size: 12px; color: #666;">
+            Este es un email automático, por favor no respondas a este mensaje.
+        </p>
+    </div>
+</body>
+</html>

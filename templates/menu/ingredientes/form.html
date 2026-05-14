@@ -28,6 +28,14 @@
                 {% endif %}
             </div>
 
+            <div>
+                <label class="block text-sm font-medium mb-1">Producto de inventario</label>
+                {{ form.producto_inventario }}
+                {% if form.producto_inventario.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.producto_inventario.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
             <div class="flex items-center gap-2">
                 {{ form.activo }}
                 <label class="text-sm">Activo</label>

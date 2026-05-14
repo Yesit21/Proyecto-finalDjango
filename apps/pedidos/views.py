@@ -1,7 +1,11 @@
 from decimal import Decimal
+from decimal import ROUND_CEILING
+from collections import defaultdict
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.inventario.models import Producto
 from services.email.email_service import EmailService
@@ -139,6 +143,7 @@ def realizar_pedido(request):
 
     # Validar stock antes de crear el pedido
     errores_stock = []
+    requerimientos_ingredientes = defaultdict(int)
     for producto_id, item in cart.items():
         producto = Producto.objects.filter(pk=int(producto_id)).first()
         if producto:
@@ -146,39 +151,65 @@ def realizar_pedido(request):
                 errores_stock.append(
                     f"{item['nombre']}: solo hay {producto.stock_actual} unidades disponibles (solicitaste {item['cantidad']})"
                 )
+            plato = getattr(producto, 'plato', None)
+            if plato:
+                from apps.menu.models import PlatoIngrediente
+                receta = PlatoIngrediente.objects.select_related('ingrediente__producto_inventario').filter(plato=plato)
+                for pi in receta:
+                    inv_producto = pi.ingrediente.producto_inventario
+                    if not inv_producto:
+                        errores_stock.append(
+                            f"Ingrediente '{pi.ingrediente.nombre}' del plato '{plato.nombre}' no está vinculado a inventario."
+                        )
+                        continue
+                    requerido = (Decimal(pi.cantidad) * Decimal(item['cantidad'])).to_integral_value(rounding=ROUND_CEILING)
+                    requerimientos_ingredientes[inv_producto.id] += int(requerido)
     
+    if requerimientos_ingredientes:
+        inventario = {p.id: p for p in Producto.objects.filter(id__in=requerimientos_ingredientes.keys())}
+        for inv_id, requerido in requerimientos_ingredientes.items():
+            prod = inventario.get(inv_id)
+            if not prod:
+                errores_stock.append("Inventario: producto requerido por receta no existe.")
+                continue
+            if prod.stock_actual < requerido:
+                errores_stock.append(
+                    f"Inventario insuficiente: '{prod.nombre}' tiene {prod.stock_actual} (se requiere {requerido})."
+                )
+
     if errores_stock:
         for error in errores_stock:
             messages.error(request, error)
         return redirect('pedidos:carrito')
 
-    # Crear el pedido
-    pedido = Pedido.objects.create(cliente=request.user)
-    total = Decimal('0.00')
+    with transaction.atomic():
+        pedido = Pedido.objects.create(cliente=request.user)
+        total = Decimal('0.00')
 
-    for producto_id, item in cart.items():
-        producto = Producto.objects.filter(pk=int(producto_id)).first()
-        cantidad = item['cantidad']
-        precio = Decimal(item['precio'])
-        subtotal = precio * cantidad
+        for producto_id, item in cart.items():
+            producto = Producto.objects.filter(pk=int(producto_id)).first()
+            cantidad = item['cantidad']
+            precio = Decimal(item['precio'])
+            subtotal = precio * cantidad
 
-        PedidoItem.objects.create(
-            pedido=pedido,
-            producto=producto,
-            nombre=item['nombre'],
-            cantidad=cantidad,
-            precio_unitario=precio,
-        )
+            PedidoItem.objects.create(
+                pedido=pedido,
+                producto=producto,
+                nombre=item['nombre'],
+                cantidad=cantidad,
+                precio_unitario=precio,
+            )
 
-        # Descontar stock (ahora validado)
-        if producto:
-            producto.stock_actual -= cantidad
-            producto.save(update_fields=['stock_actual'])
+            if producto:
+                Producto.objects.filter(pk=producto.pk).update(stock_actual=F('stock_actual') - cantidad)
 
-        total += subtotal
+            total += subtotal
 
-    pedido.total = total
-    pedido.save(update_fields=['total'])
+        for inv_id, requerido in requerimientos_ingredientes.items():
+            Producto.objects.filter(pk=inv_id).update(stock_actual=F('stock_actual') - requerido)
+
+        pedido.total = total
+        pedido.save(update_fields=['total'])
     EmailService.send_order_confirmation(pedido)
     request.session.pop(CART_SESSION_KEY, None)
     messages.success(request, f'Pedido #{pedido.id} realizado con éxito.')
