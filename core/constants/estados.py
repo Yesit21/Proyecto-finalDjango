@@ -23,3 +23,15 @@ ESTADOS_RESERVA = (
     (RESERVA_CANCELADA, 'Cancelada'),
     (RESERVA_COMPLETADA, 'Completada'),
 )
+
+MESA_DISPONIBLE = 'disponible'
+MESA_OCUPADA = 'ocupada'
+MESA_RESERVADA = 'reservada'
+MESA_MANTENIMIENTO = 'mantenimiento'
+
+ESTADOS_MESA = (
+    (MESA_DISPONIBLE, 'Disponible'),
+    (MESA_OCUPADA, 'Ocupada'),
+    (MESA_RESERVADA, 'Reservada'),
+    (MESA_MANTENIMIENTO, 'Mantenimiento'),
+)
