@@ -40,4 +40,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Run migrations and start server
-CMD python manage.py migrate --noinput && gunicorn restaurante_project.wsgi --bind 0.0.0.0:$PORT --log-file -
+CMD python manage.py migrate --noinput && gunicorn restaurante_project.wsgi --bind 0.0.0.0:${PORT:-8000} --log-file -
