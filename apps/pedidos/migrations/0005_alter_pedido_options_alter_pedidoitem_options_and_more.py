@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('inventario', '0003_alter_movimientoinventario_options_and_more'),
-        ('menu', '0004_alter_ingrediente_options_alter_plato_options_and_more'),
+        ('menu', '0003_ingrediente_producto_inventario'),
         ('pedidos', '0004_pedido_reserva'),
         ('reservas', '0003_alter_mesa_estado_alter_mesa_numero_and_more'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
