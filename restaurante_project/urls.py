@@ -3,9 +3,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from .healthcheck import healthcheck
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('health/', healthcheck, name='healthcheck'),  # Railway healthcheck endpoint
     path('admin/', admin.site.urls),
     path('usuarios/', include('apps.usuarios.urls')),
     path('pedidos/', include('apps.pedidos.urls')),
