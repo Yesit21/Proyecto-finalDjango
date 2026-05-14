@@ -5,6 +5,22 @@ from django.utils import timezone
 
 Usuario = get_user_model()
 
+
+class Mesa(models.Model):
+    numero = models.PositiveIntegerField(unique=True)
+    capacidad = models.PositiveIntegerField(default=2)
+    ubicacion = models.CharField(max_length=120, blank=True)
+    activa = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Mesa"
+        verbose_name_plural = "Mesas"
+        ordering = ["numero"]
+
+    def __str__(self):
+        return f"Mesa {self.numero} ({self.capacidad})"
+
+
 class Reserva(models.Model):
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
@@ -13,6 +29,7 @@ class Reserva(models.Model):
     ]
 
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, verbose_name="Usuario")
+    mesa = models.ForeignKey(Mesa, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Mesa")
     fecha_reserva = models.DateTimeField(verbose_name="Fecha de la reserva")
     cantidad_personas = models.PositiveIntegerField(verbose_name="Cantidad de personas")
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente', verbose_name="Estado")

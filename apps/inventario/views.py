@@ -1,12 +1,14 @@
-﻿from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
+from core.permissions.decorators import admin_required
 from .forms import MovimientoInventarioForm, ProductoForm
 from .models import MovimientoInventario, Producto
 
 
 @login_required
+@admin_required
 def lista_productos(request):
     productos = Producto.objects.all()
     alertas = productos.filter(stock_actual__lte=F('alerta_stock'))
@@ -17,6 +19,7 @@ def lista_productos(request):
 
 
 @login_required
+@admin_required
 def crear_producto(request):
     form = ProductoForm(request.POST or None)
     if form.is_valid():
@@ -27,6 +30,7 @@ def crear_producto(request):
 
 
 @login_required
+@admin_required
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     form = ProductoForm(request.POST or None, instance=producto)
@@ -38,6 +42,19 @@ def editar_producto(request, pk):
 
 
 @login_required
+@admin_required
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    if request.method == 'POST':
+        nombre = producto.nombre
+        producto.delete()
+        messages.success(request, f'Producto {nombre} eliminado correctamente.')
+        return redirect('inventario:lista')
+    return render(request, 'inventario/confirmar_eliminar.html', {'producto': producto})
+
+
+@login_required
+@admin_required
 def crear_movimiento(request):
     form = MovimientoInventarioForm(request.POST or None)
     if form.is_valid():
@@ -48,6 +65,7 @@ def crear_movimiento(request):
 
 
 @login_required
+@admin_required
 def historial_movimientos(request):
     movimientos = MovimientoInventario.objects.select_related('producto').all()
     return render(request, 'inventario/movimientos.html', {'movimientos': movimientos})

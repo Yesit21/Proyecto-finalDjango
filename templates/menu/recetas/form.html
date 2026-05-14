@@ -1,0 +1,38 @@
+{% extends 'base/base.html' %}
+{% block title %}{% if object %}Editar ingrediente{% else %}Agregar ingrediente{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">{% if object %}Editar ingrediente{% else %}Agregar ingrediente{% endif %}</h1>
+        <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Ingrediente</label>
+                {{ form.ingrediente }}
+                {% if form.ingrediente.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.ingrediente.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Cantidad</label>
+                {{ form.cantidad }}
+                {% if form.cantidad.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.cantidad.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

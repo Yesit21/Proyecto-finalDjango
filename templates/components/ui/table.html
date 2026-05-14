@@ -1,0 +1,10 @@
+<div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900/30">
+    <table class="table">
+        {% if thead_template %}
+            {% include thead_template %}
+        {% endif %}
+        {% if tbody_template %}
+            {% include tbody_template %}
+        {% endif %}
+    </table>
+</div>

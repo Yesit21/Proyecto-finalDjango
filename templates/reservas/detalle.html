@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block title %}Detalle reserva{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">Reserva #{{ reserva.id }}</h1>
+        <a href="{% url 'reservas:lista' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-3">
+        <div><span class="font-semibold">Fecha:</span> {{ reserva.fecha_reserva|date:'d M Y H:i' }}</div>
+        <div><span class="font-semibold">Personas:</span> {{ reserva.cantidad_personas }}</div>
+        <div><span class="font-semibold">Mesa:</span> {% if reserva.mesa %}{{ reserva.mesa.numero }}{% else %}-{% endif %}</div>
+        <div><span class="font-semibold">Estado:</span> {{ reserva.get_estado_display }}</div>
+        <div><span class="font-semibold">Observaciones:</span> {{ reserva.observaciones|default:"-" }}</div>
+    </div>
+
+    <div class="flex gap-3">
+        <a href="{% url 'reservas:actualizar' reserva.id %}" class="btn-primary">Editar</a>
+        <a href="{% url 'reservas:cancelar' reserva.id %}" class="btn-secondary">Cancelar</a>
+    </div>
+</div>
+{% endblock %}

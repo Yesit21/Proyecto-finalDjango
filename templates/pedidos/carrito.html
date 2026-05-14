@@ -33,7 +33,7 @@
     </div>
     <div class="mt-6 flex justify-between items-center">
         <div class="text-lg font-semibold">Total: <span id="cart-total">${{ total }}</span></div>
-        <a href="{% url 'pedidos:realizar_pedido' %}" class="btn-primary">Confirmar pedido</a>
+        <a href="{% url 'pedidos:pago' %}" class="btn-primary">Pagar (simulado)</a>
     </div>
     {% else %}
     <p>Tu carrito está vacío. Agrega productos desde la sección de pedidos.</p>

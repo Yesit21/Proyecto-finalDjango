@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% block title %}Mesas{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 class="text-3xl font-semibold">Mesas</h1>
+        <div class="flex gap-3">
+            <a href="{% url 'reservas:mesas_crear' %}" class="btn-primary">Nueva mesa</a>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Número</th>
+                    <th class="px-4 py-3">Capacidad</th>
+                    <th class="px-4 py-3">Ubicación</th>
+                    <th class="px-4 py-3">Activa</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for mesa in mesas %}
+                <tr>
+                    <td class="px-4 py-4">{{ mesa.numero }}</td>
+                    <td class="px-4 py-4">{{ mesa.capacidad }}</td>
+                    <td class="px-4 py-4">{{ mesa.ubicacion|default:"-" }}</td>
+                    <td class="px-4 py-4">{% if mesa.activa %}Sí{% else %}No{% endif %}</td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <a href="{% url 'reservas:mesas_editar' mesa.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'reservas:mesas_eliminar' mesa.id %}" class="btn-secondary">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-4">No hay mesas registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #ef4444;">Confirmación de Reserva</h1>
+
+        <p>Hola {{ reserva.usuario.username }},</p>
+
+        <p>Tu reserva <strong>#{{ reserva.id }}</strong> fue creada correctamente.</p>
+
+        <p><strong>Detalles</strong></p>
+        <ul>
+            <li><strong>Fecha:</strong> {{ reserva.fecha_reserva }}</li>
+            <li><strong>Personas:</strong> {{ reserva.cantidad_personas }}</li>
+            <li><strong>Mesa:</strong> {% if reserva.mesa %}{{ reserva.mesa.numero }}{% else %}-{% endif %}</li>
+            <li><strong>Estado:</strong> {{ reserva.get_estado_display }}</li>
+        </ul>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+        <p style="font-size: 12px; color: #666;">
+            Este es un email automático, por favor no respondas a este mensaje.
+        </p>
+    </div>
+</body>
+</html>
