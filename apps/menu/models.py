@@ -24,13 +24,6 @@ class Ingrediente(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    ingredientes = models.ManyToManyField(
-        Ingrediente,
-        through="PlatoIngrediente",
-        related_name="platos",
-        blank=True,
-    )
-
     class Meta:
         verbose_name = "Ingredient"
         verbose_name_plural = "Ingredients"
