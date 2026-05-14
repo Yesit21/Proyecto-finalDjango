@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% block title %}Pago (simulado){% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">Pago (simulado)</h1>
+        <a href="{% url 'pedidos:carrito' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-4">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-100 dark:bg-gray-900">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Producto</th>
+                        <th class="px-4 py-3 text-right">Cantidad</th>
+                        <th class="px-4 py-3 text-right">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for item in items %}
+                    <tr>
+                        <td class="px-4 py-4">{{ item.nombre }}</td>
+                        <td class="px-4 py-4 text-right">{{ item.cantidad }}</td>
+                        <td class="px-4 py-4 text-right">${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <div class="text-lg font-semibold">Total: ${{ total }}</div>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-primary">Confirmar pago</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
-﻿import json
+import json
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Avg, Count, F, Sum
 from django.db.models.functions import TruncDate
 from django.shortcuts import render
@@ -11,6 +12,8 @@ from apps.pedidos.models import Pedido, PedidoItem
 
 @login_required
 def home(request):
+    if getattr(request.user, "rol", None) not in {"mesero", "administrador"}:
+        raise PermissionDenied
     now = timezone.now()
     fecha_inicio = now - timedelta(days=30)
 
@@ -55,6 +58,8 @@ def home(request):
 
 @login_required
 def reporte_panel(request):
+    if getattr(request.user, "rol", None) not in {"mesero", "administrador"}:
+        raise PermissionDenied
     fecha_desde = request.GET.get('desde')
     fecha_hasta = request.GET.get('hasta')
     pedidos = Pedido.objects.all().order_by('-fecha_pedido')

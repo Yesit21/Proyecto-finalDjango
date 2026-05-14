@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block title %}{% if object %}Editar ingrediente{% else %}Crear ingrediente{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">{% if object %}Editar ingrediente{% else %}Crear ingrediente{% endif %}</h1>
+        <a href="{% url 'menu:ingredientes_lista' %}" class="btn-secondary">Volver</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Nombre</label>
+                {{ form.nombre }}
+                {% if form.nombre.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.nombre.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Unidad</label>
+                {{ form.unidad }}
+                {% if form.unidad.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.unidad.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center gap-2">
+                {{ form.activo }}
+                <label class="text-sm">Activo</label>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a href="{% url 'menu:ingredientes_lista' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

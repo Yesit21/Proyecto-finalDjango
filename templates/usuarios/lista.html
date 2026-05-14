@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold">Gestión de Usuarios</h1>
-        <a href="{% url 'usuarios:crear' %}" class="btn-primary">
-            + Nuevo Usuario
-        </a>
+    {% include 'components/ui/page_header.html' with title='Gestión de Usuarios' subtitle='Administración de usuarios del sistema' %}
+
+    <div class="mt-4 flex justify-end">
+        <a href="{% url 'usuarios:crear' %}" class="btn-primary">+ Nuevo Usuario</a>
     </div>
     
+    {% if usuarios %}
     <div class="card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -82,5 +82,10 @@
             </table>
         </div>
     </div>
+    {% else %}
+        <div class="mt-6">
+            {% include 'components/ui/empty_state.html' with title='No hay usuarios registrados' description='Cuando crees usuarios, aparecerán aquí para su gestión.' %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

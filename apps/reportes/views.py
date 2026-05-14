@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_http_methods
@@ -24,7 +26,10 @@ def _get_filtered_pedidos(request):
 
 
 @require_http_methods(['GET'])
+@login_required
 def export_orders_pdf(request):
+    if getattr(request.user, "rol", None) not in {"mesero", "administrador"}:
+        raise PermissionDenied
     pedidos = _get_filtered_pedidos(request)
     buffer = PDFReportService.generate_orders_report_pdf(pedidos)
     response = HttpResponse(buffer, content_type='application/pdf')
@@ -33,7 +38,10 @@ def export_orders_pdf(request):
 
 
 @require_http_methods(['GET'])
+@login_required
 def export_orders_excel(request):
+    if getattr(request.user, "rol", None) not in {"mesero", "administrador"}:
+        raise PermissionDenied
     pedidos = _get_filtered_pedidos(request)
     buffer = ExcelService.export_orders(pedidos)
     response = HttpResponse(buffer, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

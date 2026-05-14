@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% block title %}Mis reservas{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">Mis reservas</h1>
+        <a href="{% url 'reservas:crear' %}" class="btn-primary">Nueva reserva</a>
+    </div>
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Fecha</th>
+                    <th class="px-4 py-3">Personas</th>
+                    <th class="px-4 py-3">Mesa</th>
+                    <th class="px-4 py-3">Estado</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for reserva in reservas %}
+                <tr>
+                    <td class="px-4 py-4">{{ reserva.fecha_reserva|date:'d M Y H:i' }}</td>
+                    <td class="px-4 py-4">{{ reserva.cantidad_personas }}</td>
+                    <td class="px-4 py-4">{% if reserva.mesa %}{{ reserva.mesa.numero }}{% else %}-{% endif %}</td>
+                    <td class="px-4 py-4">{{ reserva.get_estado_display }}</td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <a href="{% url 'reservas:detalle' reserva.id %}" class="btn-secondary">Ver</a>
+                        <a href="{% url 'reservas:actualizar' reserva.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'reservas:cancelar' reserva.id %}" class="btn-secondary">Cancelar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-4">No tienes reservas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
