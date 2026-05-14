@@ -1,14 +1,13 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}Gestión de Mesas{% endblock %}
+{% block title %}Table Management{% endblock %}
 
 {% block body_class %}{% endblock %}
 
 {% block background %}
 <div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
-         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
     </div>
     <div class="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
     <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
@@ -16,160 +15,120 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto space-y-8 relative py-10">
-        <!-- Elementos Decorativos -->
-        <div class="absolute -top-10 -right-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -z-10"></div>
-        <div class="absolute top-1/2 -left-20 w-80 h-80 bg-orange-500/5 rounded-full blur-3xl -z-10"></div>
-
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-            <div class="flex items-center gap-8 relative z-10">
-                <div class="relative">
-                    <div class="bg-amber-600 p-6 rounded-[2.5rem] shadow-2xl shadow-amber-600/40 text-white transform -rotate-6 group-hover:rotate-0 transition-all duration-500">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                        </svg>
-                    </div>
-                    <div class="absolute -bottom-2 -right-2 bg-white text-amber-600 p-2 rounded-full shadow-lg border border-amber-100">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13zM7 13a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd"/></svg>
-                    </div>
+<div class="max-w-7xl mx-auto space-y-12 relative py-10 px-4">
+        <!-- Header with Professional "Orange Squares" -->
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-10 mb-16">
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+                <div class="bg-amber-500 text-black p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.5)] transform -rotate-3 border-4 border-black">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
                 </div>
-                <div>
-                    <h1 class="text-6xl font-black text-white tracking-tighter mb-2">Salón & Mesas</h1>
-                    <p class="text-amber-400 font-bold uppercase tracking-[0.3em] text-xs flex items-center gap-2">
-                        <span class="w-8 h-[2px] bg-amber-600"></span>
-                        Gestión Gastronómica de Espacios
-                    </p>
+                <div class="space-y-2 text-center sm:text-left">
+                    <div class="bg-black text-white px-8 py-2 inline-block transform rotate-1 border-4 border-amber-500 shadow-2xl">
+                        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter">Hall & Tables</h1>
+                    </div>
+                    <div class="bg-amber-500 text-black px-6 py-1 block transform -rotate-1 border-2 border-black">
+                        <p class="font-black uppercase tracking-[0.3em] text-xs">Gastronomic Space Management</p>
+                    </div>
                 </div>
             </div>
+            
             <a href="{% url 'reservas:mesa_crear' %}" 
-               class="relative z-10 bg-white hover:bg-amber-600 hover:text-white text-gray-900 px-10 py-5 rounded-[2rem] font-black transition-all shadow-2xl flex items-center gap-4 transform hover:-translate-y-2 active:scale-95 group/btn">
-                <span class="bg-amber-600 group-hover/btn:bg-white p-2 rounded-xl transition-colors">
-                    <svg class="w-6 h-6 text-white group-hover/btn:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-                </span>
-                Nueva Mesa
+               class="group relative bg-white hover:bg-amber-500 text-black font-black px-12 py-6 text-xl transition-all shadow-2xl border-4 border-black uppercase tracking-widest flex items-center gap-4">
+                <span class="relative z-10">New Table</span>
+                <svg class="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                <div class="absolute inset-0 bg-amber-500 transform translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
             </a>
         </div>
 
-        <!-- Stats Bar -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden group">
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2 relative z-10">Capacidad Total</p>
-                <p class="text-4xl font-black text-white relative z-10">{{ total_mesas }}</p>
+        <!-- Solid Stats Bar -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="bg-gray-900 border-4 border-amber-500 p-8 shadow-[10px_10px_0px_0px_rgba(245,158,11,0.2)]">
+                <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2">Total Capacity</p>
+                <p class="text-5xl font-black text-white">{{ total_mesas }}</p>
             </div>
-            <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden group">
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-green-500/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                <p class="text-[10px] font-black text-green-500 uppercase tracking-widest mb-2 relative z-10">Servicio Disponible</p>
-                <p class="text-4xl font-black text-white relative z-10">{{ disponibles_count }}</p>
+            <div class="bg-gray-900 border-4 border-green-500 p-8 shadow-[10px_10px_0px_0px_rgba(34,197,94,0.2)]">
+                <p class="text-[10px] font-black text-green-500 uppercase tracking-widest mb-2">Available</p>
+                <p class="text-5xl font-black text-white">{{ disponibles_count }}</p>
             </div>
-            <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden group">
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-yellow-500/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                <p class="text-[10px] font-black text-yellow-500 uppercase tracking-widest mb-2 relative z-10">Reservas Confirmadas</p>
-                <p class="text-4xl font-black text-white relative z-10">{{ reservadas_count }}</p>
+            <div class="bg-gray-900 border-4 border-yellow-500 p-8 shadow-[10px_10px_0px_0px_rgba(234,179,8,0.2)]">
+                <p class="text-[10px] font-black text-yellow-500 uppercase tracking-widest mb-2">Reserved</p>
+                <p class="text-5xl font-black text-white">{{ reservadas_count }}</p>
             </div>
-            <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden group">
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-red-500/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                <p class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-2 relative z-10">Mesas en Comensal</p>
-                <p class="text-4xl font-black text-white relative z-10">{{ ocupadas_count }}</p>
+            <div class="bg-gray-900 border-4 border-red-500 p-8 shadow-[10px_10px_0px_0px_rgba(239,68,68,0.2)]">
+                <p class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-2">Occupied</p>
+                <p class="text-5xl font-black text-white">{{ ocupadas_count }}</p>
             </div>
         </div>
 
-        <!-- Filtros -->
-        <div class="bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden group">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-600/10 rounded-full blur-2xl"></div>
-            <form method="get" class="flex flex-col md:flex-row gap-8 items-end relative z-10">
-                <div class="flex-1 w-full space-y-3">
-                    <label class="flex items-center gap-2 text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] ml-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-                        Estado del Salón
+        <!-- Professional Filters -->
+        <div class="bg-gray-900 border-8 border-black p-10 shadow-2xl">
+            <form method="get" class="flex flex-col md:flex-row gap-10 items-end">
+                <div class="flex-1 w-full space-y-4">
+                    <label class="bg-amber-500 text-black px-4 py-1 inline-block text-xs font-black uppercase tracking-widest border-2 border-black">
+                        Filter by Status
                     </label>
-                    <div class="relative group/select">
-                        <select name="estado" class="w-full px-8 py-5 bg-white/5 border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 text-white font-black appearance-none transition-all cursor-pointer hover:bg-white/10">
-                            <option value="" class="bg-gray-900">Vista General del Salón</option>
+                    <div class="relative">
+                        <select name="estado" class="w-full px-8 py-5 bg-black border-4 border-amber-500 text-white font-black appearance-none focus:ring-0 focus:border-white transition-all cursor-pointer">
+                            <option value="">General Hall View</option>
                             {% for code, label in estados %}
-                                <option value="{{ code }}" {% if request.GET.estado == code %}selected{% endif %} class="bg-gray-900">{{ label }}</option>
+                                <option value="{{ code }}" {% if request.GET.estado == code %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-8 pointer-events-none text-amber-500 group-hover/select:translate-y-1 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-8 pointer-events-none text-amber-500">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M19 9l-7 7-7-7"/></svg>
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-4 w-full md:w-auto">
-                    <button type="submit" class="flex-1 md:flex-none bg-amber-600 hover:bg-amber-700 text-white font-black px-12 py-5 rounded-2xl transition-all shadow-2xl shadow-amber-600/30 active:scale-95 flex items-center justify-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        Actualizar Vista
+                <div class="flex gap-6 w-full md:w-auto">
+                    <button type="submit" class="flex-1 md:flex-none bg-amber-500 hover:bg-white text-black font-black px-12 py-5 transition-all shadow-xl border-4 border-black uppercase tracking-widest">
+                        Update
                     </button>
-                    <a href="{% url 'reservas:mesas_lista' %}" class="flex-1 md:flex-none text-center text-white/40 hover:text-white font-black px-8 py-5 transition-all uppercase text-[10px] tracking-widest flex items-center justify-center border border-white/10 rounded-2xl hover:bg-white/5">
-                        Restablecer
+                    <a href="{% url 'reservas:mesas_lista' %}" class="flex-1 md:flex-none bg-black hover:bg-gray-800 text-white font-black px-10 py-5 transition-all uppercase text-xs tracking-widest flex items-center justify-center border-4 border-white">
+                        Clear
                     </a>
                 </div>
             </form>
         </div>
 
         {% if mesas %}
-        <!-- Grid de Mesas para Staff -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <!-- Solid Tables Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
             {% for mesa in mesas %}
-            <div class="group bg-white/5 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden hover:scale-[1.05] transition-all duration-700 relative">
-                <!-- Status Glow -->
-                <div class="absolute -top-24 -right-24 w-48 h-48 blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700
-                    {% if mesa.estado == 'disponible' %}bg-green-500{% elif mesa.estado == 'ocupada' %}bg-red-500{% elif mesa.estado == 'reservada' %}bg-yellow-500{% else %}bg-gray-500{% endif %}">
-                </div>
-                
-                <div class="p-10 relative z-10">
-                    <div class="flex justify-between items-start mb-10">
-                        <div class="relative group/mesa">
-                            <div class="w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-[2rem] flex items-center justify-center text-white font-black text-4xl shadow-inner border border-white/20 group-hover/mesa:border-amber-500 group-hover/mesa:text-amber-500 transition-all duration-500">
-                                {{ mesa.numero }}
-                            </div>
-                            <div class="absolute -top-3 -right-3 bg-amber-600 p-2 rounded-xl shadow-2xl scale-0 group-hover/mesa:scale-100 transition-transform duration-500">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                            </div>
+            <div class="bg-gray-900 border-4 border-black shadow-[15px_15px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-300">
+                <div class="p-8 space-y-8">
+                    <div class="flex justify-between items-start">
+                        <div class="bg-white text-black w-24 h-24 flex items-center justify-center text-5xl font-black border-4 border-amber-500 transform -rotate-3">
+                            {{ mesa.numero }}
                         </div>
-                        <div class="text-right">
-                            <div class="flex items-center gap-2 mb-3">
-                                <div class="w-2 h-2 rounded-full animate-pulse
-                                    {% if mesa.estado == 'disponible' %}bg-green-500{% elif mesa.estado == 'ocupada' %}bg-red-500{% elif mesa.estado == 'reservada' %}bg-yellow-500{% else %}bg-gray-500{% endif %}">
-                                </div>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em] 
-                                    {% if mesa.estado == 'disponible' %}text-green-500{% elif mesa.estado == 'ocupada' %}text-red-500{% elif mesa.estado == 'reservada' %}text-yellow-500{% else %}text-gray-400{% endif %}">
-                                    {{ mesa.get_estado_display }}
-                                </span>
-                            </div>
-                            <p class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Mesa de Servicio</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6 mb-12">
-                        <div class="flex items-center gap-5 p-5 bg-white/5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-colors">
-                            <div class="bg-amber-600/20 p-3 rounded-2xl text-amber-500">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Capacidad</p>
-                                <p class="text-base font-black text-white">{{ mesa.capacidad }} Personas</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-5 p-5 bg-white/5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-colors">
-                            <div class="bg-orange-600/20 p-3 rounded-2xl text-orange-500">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Ubicación</p>
-                                <p class="text-base font-black text-white">{{ mesa.ubicacion|default:"Salón Central" }}</p>
+                        <div class="text-right space-y-2">
+                            <div class="bg-black border-2 px-3 py-1 inline-block
+                                {% if mesa.estado == 'disponible' %}border-green-500 text-green-500
+                                {% elif mesa.estado == 'ocupada' %}border-red-500 text-red-500
+                                {% elif mesa.estado == 'reservada' %}border-yellow-500 text-yellow-500
+                                {% else %}border-gray-500 text-gray-500{% endif %}">
+                                <span class="text-[10px] font-black uppercase tracking-widest">{{ mesa.get_estado_display }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-4 pt-8 border-t border-white/5">
-                        <a href="{% url 'reservas:mesa_editar' mesa.pk %}" class="flex-1 bg-white hover:bg-amber-600 hover:text-white text-gray-900 py-5 rounded-[1.5rem] text-center font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 group/btn shadow-xl active:scale-95">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            Editar
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-4 border-l-4 border-amber-500">
+                            <p class="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-1">Capacity</p>
+                            <p class="text-xl font-black text-white">{{ mesa.capacidad }} People</p>
+                        </div>
+                        <div class="bg-black/40 p-4 border-l-4 border-white">
+                            <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Location</p>
+                            <p class="text-xl font-black text-white">{{ mesa.ubicacion|default:"Main Hall" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6 border-t-4 border-black">
+                        <a href="{% url 'reservas:mesa_editar' mesa.pk %}" class="flex-1 bg-white hover:bg-amber-500 text-black py-4 font-black text-xs uppercase tracking-widest text-center border-2 border-black transition-colors">
+                            Edit
                         </a>
-                        <a href="{% url 'reservas:mesa_eliminar' mesa.pk %}" class="bg-red-500/10 hover:bg-red-600 text-red-500 hover:text-white p-5 rounded-[1.5rem] transition-all shadow-xl active:scale-95">
+                        <a href="{% url 'reservas:mesa_eliminar' mesa.pk %}" class="bg-red-600 hover:bg-black text-white p-4 border-2 border-black transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </a>
                     </div>
@@ -178,21 +137,24 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="bg-white/5 backdrop-blur-3xl rounded-[4rem] shadow-2xl p-24 text-center border border-white/10 relative overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent"></div>
-            <div class="relative z-10">
-                <div class="w-40 h-40 bg-white/5 rounded-[3rem] flex items-center justify-center mx-auto mb-10 border border-white/10 transform -rotate-12 group-hover:rotate-0 transition-transform duration-700">
-                    <svg class="w-20 h-20 text-amber-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                </div>
-                <h3 class="text-4xl font-black text-white mb-4 tracking-tighter">Salón por Inaugurar</h3>
-                <p class="text-white/40 text-xl mb-12 max-w-md mx-auto font-medium">Diseña la experiencia de tus comensales configurando la disposición de las mesas.</p>
-                <a href="{% url 'reservas:mesa_crear' %}" class="inline-flex items-center gap-4 bg-white hover:bg-amber-600 hover:text-white text-gray-900 font-black py-6 px-16 rounded-[2rem] shadow-2xl transition-all transform hover:-translate-y-2 active:scale-95 text-lg">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-                    Añadir Primera Mesa
-                </a>
+        <!-- Solid Empty State -->
+        <div class="bg-gray-900 border-8 border-black p-24 text-center shadow-2xl">
+            <div class="w-48 h-48 bg-amber-500 text-black flex items-center justify-center mx-auto mb-12 transform rotate-12 border-8 border-black">
+                <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
             </div>
+            <h3 class="text-5xl font-black text-white mb-6 uppercase tracking-tighter">Hall to be Inaugurated</h3>
+            <p class="text-white/40 text-xl mb-12 max-w-md mx-auto font-black uppercase tracking-widest">Set up the table layout to start.</p>
+            <a href="{% url 'reservas:mesa_crear' %}" class="inline-block bg-white hover:bg-amber-500 text-black font-black py-8 px-16 text-2xl border-8 border-black transition-all transform hover:scale-105">
+                Add First Table
+            </a>
         </div>
         {% endif %}
     </div>
 </div>
+
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+</style>
 {% endblock %}

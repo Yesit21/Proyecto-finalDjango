@@ -11,15 +11,15 @@ from .forms import PlatoForm, IngredienteForm, PlatoIngredienteForm
 # ==================== MIXINS ====================
 
 class AdminRequiredMixin(UserPassesTestMixin):
-    """Mixin para verificar que el usuario sea administrador"""
+    """Mixin to verify that the user is an administrator"""
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.rol == 'administrador'
+        return self.request.user.is_authenticated and self.request.user.rol == 'administrator'
     
     def handle_no_permission(self):
         return redirect('menu:lista')
 
 
-# ==================== VISTAS DE PLATOS ====================
+# ==================== DISH VIEWS ====================
 
 class ListaMenuView(ListView):
     model = Plato
@@ -47,7 +47,7 @@ class DetallePlatoView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Obtener ingredientes del plato
+        # Get dish ingredients
         context['plato_ingredientes'] = PlatoIngrediente.objects.filter(plato=self.object).select_related('ingrediente')
         return context
 
@@ -59,7 +59,7 @@ class CrearPlatoView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     success_url = reverse_lazy('menu:lista')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Plato "{form.instance.nombre}" creado exitosamente.')
+        messages.success(self.request, f'Dish "{form.instance.nombre}" created successfully.')
         return super().form_valid(form)
 
 
@@ -70,7 +70,7 @@ class EditarPlatoView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy('menu:lista')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Plato "{form.instance.nombre}" actualizado exitosamente.')
+        messages.success(self.request, f'Dish "{form.instance.nombre}" updated successfully.')
         return super().form_valid(form)
 
 
@@ -81,7 +81,7 @@ class EliminarPlatoView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         plato = self.get_object()
-        messages.success(request, f'Plato "{plato.nombre}" eliminado exitosamente.')
+        messages.success(request, f'Dish "{plato.nombre}" deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
 
@@ -109,7 +109,7 @@ class ListaPlatosAdminView(LoginRequiredMixin, AdminRequiredMixin, ListView):
         return context
 
 
-# ==================== VISTAS DE INGREDIENTES ====================
+# ==================== INGREDIENT VIEWS ====================
 
 class ListaIngredientesView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     model = Ingrediente
@@ -132,7 +132,7 @@ class CrearIngredienteView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     success_url = reverse_lazy('menu:ingredientes_lista')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Ingrediente "{form.instance.nombre}" creado exitosamente.')
+        messages.success(self.request, f'Ingredient "{form.instance.nombre}" created successfully.')
         return super().form_valid(form)
 
 
@@ -143,7 +143,7 @@ class EditarIngredienteView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy('menu:ingredientes_lista')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Ingrediente "{form.instance.nombre}" actualizado exitosamente.')
+        messages.success(self.request, f'Ingredient "{form.instance.nombre}" updated successfully.')
         return super().form_valid(form)
 
 
@@ -154,14 +154,14 @@ class EliminarIngredienteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView
 
     def delete(self, request, *args, **kwargs):
         ingrediente = self.get_object()
-        messages.success(request, f'Ingrediente "{ingrediente.nombre}" eliminado exitosamente.')
+        messages.success(request, f'Ingredient "{ingrediente.nombre}" deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
 
 @login_required
 def gestionar_ingredientes_plato(request, plato_id):
-    """Vista para gestionar los ingredientes de un plato específico"""
-    if request.user.rol != 'administrador':
+    """View to manage ingredients for a specific dish"""
+    if request.user.rol != 'administrator':
         return redirect('menu:lista')
     
     plato = get_object_or_404(Plato, pk=plato_id)
@@ -173,7 +173,7 @@ def gestionar_ingredientes_plato(request, plato_id):
             plato_ingrediente = form.save(commit=False)
             plato_ingrediente.plato = plato
             plato_ingrediente.save()
-            messages.success(request, f'Ingrediente agregado al plato "{plato.nombre}".')
+            messages.success(request, f'Ingredient added to dish "{plato.nombre}".')
             return redirect('menu:gestionar_ingredientes_plato', plato_id=plato.id)
     else:
         form = PlatoIngredienteForm()
@@ -188,12 +188,12 @@ def gestionar_ingredientes_plato(request, plato_id):
 
 @login_required
 def eliminar_ingrediente_plato(request, plato_ingrediente_id):
-    """Vista para eliminar un ingrediente de un plato"""
-    if request.user.rol != 'administrador':
+    """View to remove an ingredient from a dish"""
+    if request.user.rol != 'administrator':
         return redirect('menu:lista')
     
     plato_ingrediente = get_object_or_404(PlatoIngrediente, pk=plato_ingrediente_id)
     plato_id = plato_ingrediente.plato.id
     plato_ingrediente.delete()
-    messages.success(request, 'Ingrediente eliminado del plato.')
+    messages.success(request, 'Ingredient removed from dish.')
     return redirect('menu:gestionar_ingredientes_plato', plato_id=plato_id)

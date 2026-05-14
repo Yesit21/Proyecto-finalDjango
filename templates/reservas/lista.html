@@ -7,45 +7,40 @@
 
 {% block background %}
 <div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
-         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
     </div>
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-[4px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
+    <div class="absolute inset-0 bg-black/90"></div>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="relative z-10 max-w-7xl mx-auto py-10">
-        <!-- Header Principal -->
-        <div class="bg-gray-900/40 backdrop-blur-3xl p-10 md:p-14 rounded-[4rem] border border-white/10 mb-12 shadow-2xl overflow-hidden relative group">
-            <!-- Efecto de luz de fondo -->
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] group-hover:bg-amber-500/20 transition-all duration-700"></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
-                <div class="flex items-center gap-8">
-                    <div class="bg-amber-500 p-5 rounded-[2rem] shadow-2xl shadow-amber-500/40 transform rotate-3">
-                        <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+<div class="relative z-10 max-w-7xl mx-auto py-10 px-4">
+        <!-- Encabezado Principal -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-10 mb-16">
+            <div class="flex flex-col sm:flex-row items-center gap-8">
+                <div class="bg-amber-500 text-black p-6 shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)] transform rotate-3 border-4 border-black">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="space-y-3 text-center sm:text-left">
+                    <div class="bg-black text-white px-8 py-3 inline-block transform -rotate-1 border-4 border-amber-500 shadow-2xl">
+                        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter">MIS <span class="text-amber-500">RESERVAS</span></h1>
                     </div>
-                    <div>
-                        <h1 class="text-5xl md:text-6xl font-black text-white tracking-tighter mb-2">MIS <span class="text-amber-500">RESERVAS</span></h1>
-                        <p class="text-amber-200/60 text-lg font-medium tracking-[0.2em] uppercase">Tu agenda gastronómica exclusiva</p>
+                    <div class="bg-amber-500 text-black px-6 py-1 block transform rotate-1 border-2 border-black">
+                        <p class="font-black uppercase tracking-[0.3em] text-xs">Tu agenda gastronómica exclusiva</p>
                     </div>
                 </div>
-                
-                <a href="{% url 'reservas:crear' %}" class="bg-amber-600 hover:bg-amber-700 text-white px-10 py-5 rounded-[2rem] font-black transition-all shadow-2xl shadow-amber-600/30 flex items-center gap-4 group/btn transform hover:scale-105 active:scale-95">
-                    <span class="text-lg uppercase tracking-widest">Nueva Reserva</span>
-                    <svg class="w-6 h-6 transform group-hover/btn:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </a>
             </div>
+            
+            <a href="{% url 'reservas:crear' %}" class="group relative bg-amber-600 hover:bg-amber-500 text-white font-black py-6 px-12 text-xl shadow-2xl transition-all uppercase tracking-widest border-4 border-black">
+                <span class="relative z-10">Nueva Reserva</span>
+                <div class="absolute inset-0 bg-black transform translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+            </a>
         </div>
 
         {% if reservas %}
-        <!-- Grid de Reservas de Alta Gama -->
+        <!-- High-End Reservations Grid -->
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
             {% for reserva in reservas %}
             <div class="group relative bg-gray-900/60 backdrop-blur-2xl rounded-[3.5rem] border border-white/10 overflow-hidden hover:border-amber-500/40 transition-all duration-500 hover:-translate-y-4 shadow-2xl">
@@ -57,7 +52,7 @@
                     {% else %}bg-red-500{% endif %}">
                 </div>
 
-                <!-- Header de la Card -->
+                <!-- Card Header -->
                 <div class="relative p-10 pb-0">
                     <div class="flex justify-between items-start mb-10">
                         <div class="space-y-1">
@@ -73,14 +68,14 @@
                         </div>
                     </div>
 
-                    <!-- Detalles Visuales -->
+                    <!-- Visual Details -->
                     <div class="space-y-6 mb-10">
                         <div class="flex items-center gap-6">
                             <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 border border-white/10 group-hover:border-amber-500/30 transition-colors">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div>
-                                <p class="text-white/40 text-[10px] font-black uppercase tracking-widest">Hora programada</p>
+                                <p class="text-white/40 text-[10px] font-black uppercase tracking-widest">Horario Programado</p>
                                 <p class="text-xl font-bold text-white tracking-tight">{{ reserva.fecha_reserva|date:"H:i" }} <span class="text-sm font-medium opacity-40 uppercase">hrs</span></p>
                             </div>
                         </div>
@@ -91,7 +86,7 @@
                             </div>
                             <div>
                                 <p class="text-white/40 text-[10px] font-black uppercase tracking-widest">Comensales</p>
-                                <p class="text-xl font-bold text-white tracking-tight">{{ reserva.cantidad_personas }} <span class="text-sm font-medium opacity-40 uppercase">invitados</span></p>
+                                <p class="text-xl font-bold text-white tracking-tight">{{ reserva.cantidad_personas }} <span class="text-sm font-medium opacity-40 uppercase">personas</span></p>
                             </div>
                         </div>
 
@@ -109,7 +104,7 @@
                     </div>
                 </div>
 
-                <!-- Footer de la Card / Acciones -->
+                <!-- Pie de Tarjeta / Acciones -->
                 <div class="p-4 grid grid-cols-2 gap-4 bg-white/5 backdrop-blur-md">
                     <a href="{% url 'reservas:detalle' reserva.pk %}" 
                        class="flex-1 bg-white/5 hover:bg-white/10 text-white py-5 rounded-[2rem] text-center font-black text-xs uppercase tracking-[0.2em] transition-all border border-white/5">
@@ -145,4 +140,10 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+</style>
 {% endblock %}

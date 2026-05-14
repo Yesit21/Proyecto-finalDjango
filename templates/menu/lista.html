@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 :root {
     --font-serif: 'Playfair Display', serif;
@@ -190,6 +189,7 @@
     margin-bottom: 16px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -198,171 +198,146 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 16px;
 }
 
-.food-price-custom {
-    color: rgb(251, 146, 60);
+.food-price {
+    font-size: 20px;
     font-weight: 700;
-    font-size: 22px;
-    font-family: var(--font-serif);
+    color: rgb(251, 146, 60);
 }
 
-.btn-view-detail {
-    background-color: rgb(251, 146, 60);
-    color: rgb(15, 16, 17);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
+.add-btn {
+    background-color: rgba(251, 146, 60, 0.1);
+    color: rgb(251, 146, 60);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s;
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
+}
+
+.add-btn:hover {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
+}
+
+.pagination-container {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
     gap: 8px;
 }
 
-.btn-view-detail:hover {
-    background-color: rgb(224, 163, 106);
-    transform: translateY(-2px);
-}
-
-.empty-state-menu {
-    text-align: center;
-    padding: 80px 20px;
+.pagination-btn {
+    background-color: rgb(28, 29, 30);
     color: rgb(156, 163, 175);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.3s;
+    text-decoration: none;
 }
 
-.empty-state-menu i {
-    font-size: 64px;
-    margin-bottom: 24px;
-    opacity: 0.5;
-}
-
-.empty-state-menu h3 {
-    font-family: var(--font-serif);
-    font-size: 28px;
-    margin-bottom: 12px;
-    color: rgb(245, 245, 245);
-}
-
-@media (max-width: 768px) {
-    .hero-menu {
-        padding: 40px 24px;
-        min-height: 300px;
-    }
-    
-    .hero-menu h1 {
-        font-size: 42px;
-    }
-    
-    .menu-section-title {
-        font-size: 32px;
-    }
-    
-    .menu-grid-custom {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 20px;
-    }
+.pagination-btn:hover, .pagination-btn.active {
+    background-color: rgb(251, 146, 60);
+    color: rgb(15, 16, 17);
+    border-color: rgb(251, 146, 60);
 }
 </style>
 {% endblock %}
 
+{% block extra_js %}
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+{% endblock %}
+
 {% block content %}
-<!-- HERO SECTION -->
-<section class="hero-menu">
+<!-- Hero Section -->
+<div class="hero-menu">
     <div class="hero-menu-bg"></div>
-    <div class="hero-menu-content">
+    <div class="hero-menu-content text-white">
         <div class="badge-menu">
-            <i class="ph-fill ph-star"></i> 
-            RECOMENDADO POR EL CHEF
+            <i class="ph ph-sparkle"></i>
+            EXPERIENCIA EXCEPCIONAL
         </div>
-        <h1>Descubre Sabores Únicos</h1>
-        <p>
-            Explora nuestra carta cuidadosamente elaborada con ingredientes frescos y de la más alta calidad. 
-            Cada plato cuenta una historia de pasión culinaria.
-        </p>
+        <h1 class="text-white">Nuestra <br>Selección <span class="text-orange-500">Culinaria</span></h1>
+        <p class="text-gray-300">Descubre una colección única de sabores preparados con ingredientes frescos y la pasión de nuestros maestros chefs.</p>
     </div>
-</section>
+</div>
 
-<!-- MENU SECTION -->
-<section>
-    <div class="menu-section-header">
-        <h2 class="menu-section-title">
-            Explora Nuestra<br>
-            <span>Carta</span>
-        </h2>
-        <div class="filters-menu">
-            <a href="{% url 'menu:lista' %}" 
-               class="filter-btn-menu {% if not request.GET.categoria %}active{% endif %}">
-                Todos
-            </a>
-            {% for categoria_value, categoria_name in categorias %}
-            <a href="?categoria={{ categoria_value }}" 
-               class="filter-btn-menu {% if request.GET.categoria == categoria_value %}active{% endif %}">
-                {{ categoria_name }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="menu-grid-custom">
-        {% for plato in platos %}
-        <div class="food-card-custom">
-            {% if plato.imagen %}
-            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
-            {% else %}
-            <div class="no-image">
-                <i class="ph ph-fork-knife" style="font-size: 48px;"></i>
-            </div>
-            {% endif %}
-
-            <div class="food-info-custom">
-                <h3>{{ plato.nombre }}</h3>
-                <p class="description">{{ plato.descripcion }}</p>
-                <div class="food-footer">
-                    <span class="food-price-custom">${{ plato.precio }}</span>
-                    <a href="{% url 'menu:detalle' plato.pk %}" class="btn-view-detail">
-                        <i class="ph ph-eye"></i>
-                        Ver detalle
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="empty-state-menu" style="grid-column: 1 / -1;">
-            <i class="ph ph-fork-knife"></i>
-            <h3>No hay platos disponibles</h3>
-            <p>No se encontraron platos en esta categoría.</p>
-        </div>
+<!-- Menu Section -->
+<div class="menu-section-header">
+    <h2 class="menu-section-title text-gray-900 dark:text-white">Explora <span>Nuestros Platos</span></h2>
+    
+    <div class="filters-menu">
+        <a href="{% url 'menu:lista' %}" class="filter-btn-menu {% if not request.GET.categoria %}active{% endif %}">Todos</a>
+        {% for code, label in categorias %}
+            <a href="?categoria={{ code }}" class="filter-btn-menu {% if request.GET.categoria == code %}active{% endif %}">{{ label }}</a>
         {% endfor %}
     </div>
+</div>
 
-    <!-- Paginación -->
-    {% if is_paginated %}
-    <div class="flex justify-center mt-12">
-        <div class="flex gap-3">
-            {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
-               class="btn-ghost">
-                Anterior
-            </a>
-            {% endif %}
-
-            <span class="px-4 py-2 rounded-lg bg-amber-600 text-white font-semibold">
-                Página {{ page_obj.number }} de {{ paginator.num_pages }}
-            </span>
-
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
-               class="btn-ghost">
-                Siguiente
-            </a>
-            {% endif %}
+<!-- Grid de Platos -->
+<div class="menu-grid-custom">
+    {% for plato in platos %}
+    <div class="food-card-custom" data-url="{% url 'menu:detalle' plato.id %}" onclick="location.href=this.dataset.url">
+        {% if plato.imagen %}
+            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
+        {% else %}
+            <div class="no-image">
+                <i class="ph ph-image-square text-4xl"></i>
+            </div>
+        {% endif %}
+        
+        <div class="food-info-custom">
+            <h3 class="text-white">{{ plato.nombre }}</h3>
+            <p class="description text-gray-400">{{ plato.descripcion }}</p>
+            <div class="food-footer">
+                <span class="food-price">${{ plato.precio|floatformat:2 }}</span>
+                <a href="{% url 'pedidos:agregar_carrito' plato.id %}" class="add-btn" onclick="event.stopPropagation();">
+                    <i class="ph ph-plus-bold"></i>
+                </a>
+            </div>
         </div>
     </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center bg-gray-100 dark:bg-white/5 rounded-3xl border border-dashed border-gray-300 dark:border-white/10">
+        <i class="ph ph-cooking-pot text-6xl text-gray-400 mb-4"></i>
+        <p class="text-gray-500 dark:text-gray-400 text-xl">No se encontraron platos en esta categoría.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Paginación -->
+{% if is_paginated %}
+<div class="pagination-container">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">
+            <i class="ph ph-caret-left-bold"></i>
+        </a>
     {% endif %}
-</section>
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="pagination-btn active">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="pagination-btn">
+            <i class="ph ph-caret-right-bold"></i>
+        </a>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

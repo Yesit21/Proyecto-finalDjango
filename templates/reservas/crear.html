@@ -5,7 +5,10 @@
 
 {% block extra_css %}
 <style>
-    /* Forzar visibilidad de texto en inputs con fondo oscuro */
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+    /* Force visibility of text in inputs with dark background */
     input[type="datetime-local"],
     input[type="number"],
     select,
@@ -14,18 +17,18 @@
         background-color: rgba(0, 0, 0, 0.4) !important;
     }
 
-    /* Estilo para el icono del calendario en datetime-local */
+    /* Style for the calendar icon in datetime-local */
     input[type="datetime-local"]::-webkit-calendar-picker-indicator {
         filter: invert(1);
         cursor: pointer;
     }
 
-    /* Placeholder con mejor visibilidad */
+    /* Placeholder with better visibility */
     ::placeholder {
         color: rgba(255, 255, 255, 0.5) !important;
     }
 
-    /* Opciones del select */
+    /* Select options */
     select option {
         background-color: #1a1a1a;
         color: white;
@@ -37,8 +40,7 @@
 
 {% block background %}
 <div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
-         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
     </div>
     <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
     <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
@@ -47,7 +49,7 @@
 
 {% block content %}
 <div class="relative z-10 max-w-4xl mx-auto py-10">
-        <!-- Header con estilo -->
+        <!-- Styled Header -->
         <div class="text-center mb-12">
             <h1 class="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4 drop-shadow-2xl">
                 RESERVA TU <span class="text-amber-500">EXPERIENCIA</span>
@@ -56,7 +58,7 @@
         </div>
 
         <div class="grid lg:grid-cols-5 gap-8 items-start">
-            <!-- Columna del Formulario -->
+            <!-- Form Column -->
             <div class="lg:col-span-3">
                 <form method="post" class="bg-white/10 backdrop-blur-2xl rounded-[3rem] border border-white/20 p-8 md:p-12 shadow-2xl">
                     {% csrf_token %}
@@ -73,10 +75,10 @@
                     {% endif %}
 
                     <div class="space-y-8">
-                        <!-- Fecha y Hora -->
+                        <!-- Date and Time -->
                         <div class="group">
                             <label for="{{ form.fecha_reserva.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                {{ form.fecha_reserva.label }}
+                                Fecha y Hora
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
@@ -91,10 +93,10 @@
                             {% endif %}
                         </div>
 
-                        <!-- Cantidad de Personas -->
+                        <!-- Number of Guests -->
                         <div class="group">
                             <label for="{{ form.cantidad_personas.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                {{ form.cantidad_personas.label }}
+                                Cantidad de Personas
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
@@ -109,10 +111,10 @@
                             {% endif %}
                         </div>
 
-                        <!-- Mesa (Opcional) -->
+                        <!-- Table (Optional) -->
                         <div class="group">
                             <label for="{{ form.mesa.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                {{ form.mesa.label }} (Opcional)
+                                Mesa (Opcional)
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
@@ -130,7 +132,7 @@
                             </div>
                         </div>
 
-                        <!-- Observaciones -->
+                        <!-- Notes -->
                         <div class="group">
                             <label for="{{ form.observaciones.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
                                 Notas Especiales
@@ -152,7 +154,7 @@
                 </form>
             </div>
 
-            <!-- Columna de Información -->
+            <!-- Info Column -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-8">
                     <h3 class="text-2xl font-black text-white mb-6">¿Por qué reservar?</h3>
@@ -163,7 +165,7 @@
                             </div>
                             <div>
                                 <h4 class="text-white font-bold">Sin esperas</h4>
-                                <p class="text-white/60 text-sm">Tu mesa estará lista en cuanto llegues.</p>
+                                <p class="text-white/60 text-sm">Tu mesa estará lista tan pronto como llegues.</p>
                             </div>
                         </li>
                         <li class="flex gap-4">

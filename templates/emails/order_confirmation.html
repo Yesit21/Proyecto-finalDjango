@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación de Pedido</title>
+    <title>Order Confirmation</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -99,100 +99,76 @@
             font-weight: 500;
         }
         .total-amount {
-            font-size: 28px;
+            font-size: 24px;
             color: #d97706;
             font-weight: 700;
-            margin-top: 5px;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #fef3c7;
-            color: #92400e;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+            margin-left: 10px;
         }
         .footer {
-            background: #f9fafb;
-            padding: 25px;
+            background-color: #f9fafb;
+            padding: 20px;
             text-align: center;
-            color: #6b7280;
             font-size: 14px;
-        }
-        .footer p {
-            margin: 5px 0;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
         }
         .button {
             display: inline-block;
-            padding: 12px 30px;
-            background: #d97706;
+            padding: 12px 25px;
+            background-color: #d97706;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 5px;
             font-weight: 600;
-            margin: 20px 0;
-        }
-        .emoji {
-            font-size: 48px;
-            margin-bottom: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="emoji">✅</div>
-            <h1>¡Pedido Confirmado!</h1>
-            <p>Gracias por tu pedido</p>
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase</p>
         </div>
         
         <div class="content">
-            <p class="greeting">Hola <strong>{{ cliente.get_full_name|default:cliente.username }}</strong>,</p>
+            <p class="greeting">Hi {{ user.get_full_name|default:user.username }},</p>
             
-            <p>Tu pedido ha sido recibido exitosamente y está siendo procesado. Te notificaremos cuando haya actualizaciones.</p>
+            <p>We have received your order successfully. We are already working on its preparation.</p>
             
             <div class="info-box">
-                <strong>Número de Pedido:</strong> #{{ pedido.id }}<br>
-                <strong>Fecha:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}<br>
-                <strong>Estado:</strong> <span class="status-badge">{{ pedido.get_estado_display }}</span>
+                <p><strong>Order ID:</strong> #{{ order.id }}</p>
+                <p><strong>Date:</strong> {{ order.fecha_pedido|date:"d M Y H:i" }}</p>
             </div>
-            
+
             <div class="order-details">
-                <h2>📦 Detalles del Pedido</h2>
+                <h2>Order Summary</h2>
                 {% for item in items %}
                 <div class="item">
-                    <div>
-                        <span class="item-name">{{ item.nombre }}</span>
-                        <span class="item-quantity">x{{ item.cantidad }}</span>
-                    </div>
+                    <span class="item-name">
+                        {{ item.nombre }}
+                        <span class="item-quantity">x {{ item.cantidad }}</span>
+                    </span>
                     <span class="item-price">${{ item.subtotal }}</span>
                 </div>
                 {% endfor %}
             </div>
-            
+
             <div class="total">
-                <div class="total-label">Total a Pagar</div>
-                <div class="total-amount">${{ pedido.total }}</div>
+                <span class="total-label">Total:</span>
+                <span class="total-amount">${{ order.total }}</span>
             </div>
+
+            <p style="margin-top: 25px;">You will receive another email when your order is ready or its status changes.</p>
             
-            {% if pedido.notas %}
-            <div class="info-box">
-                <strong>Notas:</strong> {{ pedido.notas }}
-            </div>
-            {% endif %}
-            
-            <p style="margin-top: 30px; color: #6b7280;">
-                Puedes revisar el estado de tu pedido en cualquier momento desde tu cuenta.
-            </p>
+            <center>
+                <a href="{{ site_url }}{% url 'pedidos:mis_pedidos' %}" class="button">View My Orders</a>
+            </center>
         </div>
-        
+
         <div class="footer">
-            <p><strong>Restaurante</strong></p>
-            <p>Este es un email automático, por favor no respondas a este mensaje.</p>
-            <p style="margin-top: 15px; font-size: 12px;">
-                © {{ pedido.fecha_pedido|date:"Y" }} Restaurante. Todos los derechos reservados.
-            </p>
+            <p>© {% now "Y" %} Restaurant System. All rights reserved.</p>
+            <p>This is an automated email, please do not reply.</p>
         </div>
     </div>
 </body>

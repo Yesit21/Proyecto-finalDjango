@@ -29,8 +29,7 @@
         }
         .header h1 {
             margin: 0;
-            font-size: 28px;
-            font-weight: 600;
+            font-size: 28px;            font-weight: 600;
         }
         .header p {
             margin: 10px 0 0 0;
@@ -146,16 +145,16 @@
         <div class="header">
             <div class="emoji">✅</div>
             <h1>¡Reserva Confirmada!</h1>
-            <p>Te esperamos pronto</p>
+            <p>Esperamos verte pronto</p>
         </div>
         
         <div class="content">
             <p class="greeting">Hola <strong>{{ usuario.get_full_name|default:usuario.username }}</strong>,</p>
             
-            <p>Tu reserva ha sido registrada exitosamente. Estamos emocionados de recibirte en nuestro restaurante.</p>
+            <p>Tu reserva ha sido registrada con éxito. Estamos emocionados de recibirte en nuestro restaurante.</p>
             
             <div class="reservation-card">
-                <h2>📅 Detalles de tu Reserva</h2>
+                <h2>📅 Detalles de la Reserva</h2>
                 
                 <div class="reservation-detail">
                     <div class="detail-icon">🔢</div>
@@ -169,7 +168,7 @@
                     <div class="detail-icon">📆</div>
                     <div class="detail-content">
                         <div class="detail-label">Fecha y Hora</div>
-                        <div class="detail-value">{{ reserva.fecha_reserva|date:"l, d \d\e F \d\e Y" }}</div>
+                        <div class="detail-value">{{ reserva.fecha_reserva|date:"l, d de F de Y" }}</div>
                         <div style="color: #065f46; font-size: 16px; margin-top: 3px;">
                             {{ reserva.fecha_reserva|date:"H:i" }} hrs
                         </div>
@@ -197,21 +196,21 @@
             
             {% if reserva.observaciones %}
             <div class="info-box">
-                <p><strong>📝 Observaciones:</strong></p>
+                <p><strong>📝 Notas:</strong></p>
                 <p>{{ reserva.observaciones }}</p>
             </div>
             {% endif %}
             
             <div class="highlight-box">
                 <p><strong>⏰ Importante</strong></p>
-                <p>Por favor, llega 10 minutos antes de tu reserva.</p>
-                <p>Si necesitas cancelar o modificar, hazlo con al menos 2 horas de anticipación.</p>
+                <p>Por favor llega 10 minutos antes de tu reserva.</p>
+                <p>Si necesitas cancelar o modificar, por favor hazlo con al menos 2 horas de anticipación.</p>
             </div>
             
             <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <p style="margin: 0; color: #374151; text-align: center;">
                     <strong>📍 Dirección del Restaurante</strong><br>
-                    <span style="color: #6b7280;">Calle Principal #123, Ciudad</span>
+                    <span style="color: #6b7280;">Calle Principal 123, Ciudad</span>
                 </p>
                 <p style="margin: 15px 0 0 0; color: #374151; text-align: center;">
                     <strong>📞 Teléfono de Contacto</strong><br>
@@ -226,7 +225,7 @@
         
         <div class="footer">
             <p><strong>Restaurante</strong></p>
-            <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
             <p style="margin-top: 15px; font-size: 12px;">
                 © {{ reserva.created_at|date:"Y" }} Restaurante. Todos los derechos reservados.
             </p>

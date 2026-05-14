@@ -20,179 +20,179 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    # Solo administradores pueden ver el dashboard
-    if request.user.rol != 'administrador':
+    # Only administrators can view the dashboard
+    if request.user.rol != 'administrator':
         return redirect(reverse('menu:lista'))
     
     now = timezone.now()
-    fecha_inicio = now - timedelta(days=30)
+    start_date = now - timedelta(days=30)
 
-    pedidos_ultimos = Pedido.objects.filter(fecha_pedido__gte=fecha_inicio)
-    total_pedidos = pedidos_ultimos.count()
-    ingresos = pedidos_ultimos.aggregate(total=Sum('total'))['total'] or 0
-    promedio_por_pedido = pedidos_ultimos.aggregate(promedio=Avg('total'))['promedio'] or 0
-    pedidos_por_estado = Pedido.objects.values('estado').annotate(count=Count('id'))
-    productos_bajos = Producto.objects.filter(stock_actual__lte=F('alerta_stock')).count()
-    platos_vendidos = PedidoItem.objects.values('nombre').annotate(cantidad=Sum('cantidad')).order_by('-cantidad')[:5]
+    recent_orders = Pedido.objects.filter(fecha_pedido__gte=start_date)
+    total_orders = recent_orders.count()
+    revenue = recent_orders.aggregate(total=Sum('total'))['total'] or 0
+    avg_order_value = recent_orders.aggregate(promedio=Avg('total'))['promedio'] or 0
+    orders_by_status = Pedido.objects.values('estado').annotate(count=Count('id'))
+    low_stock_products = Producto.objects.filter(stock_actual__lte=F('alerta_stock')).count()
+    top_dishes = PedidoItem.objects.values('nombre').annotate(cantidad=Sum('cantidad')).order_by('-cantidad')[:5]
 
-    ventas_por_dia = (
-        pedidos_ultimos
+    sales_by_day = (
+        recent_orders
         .annotate(dia=TruncDate('fecha_pedido'))
         .values('dia')
         .annotate(total=Sum('total'))
         .order_by('dia')
     )
 
-    datos_ventas = json.dumps([item['total'] or 0 for item in ventas_por_dia])
-    etiquetas_ventas = json.dumps([item['dia'].strftime('%Y-%m-%d') for item in ventas_por_dia])
-    datos_pedidos = json.dumps([item['count'] for item in pedidos_por_estado])
-    etiquetas_pedidos = json.dumps([item['estado'] for item in pedidos_por_estado])
-    datos_platos = json.dumps([item['cantidad'] for item in platos_vendidos])
-    etiquetas_platos = json.dumps([item['nombre'] for item in platos_vendidos])
+    sales_data = json.dumps([item['total'] or 0 for item in sales_by_day])
+    sales_labels = json.dumps([item['dia'].strftime('%Y-%m-%d') for item in sales_by_day])
+    orders_data = json.dumps([item['count'] for item in orders_by_status])
+    orders_labels = json.dumps([item['estado'] for item in orders_by_status])
+    dishes_data = json.dumps([item['cantidad'] for item in top_dishes])
+    dishes_labels = json.dumps([item['nombre'] for item in top_dishes])
 
     context = {
-        'total_pedidos': total_pedidos,
-        'ingresos': ingresos,
-        'promedio_por_pedido': promedio_por_pedido,
-        'productos_bajos': productos_bajos,
-        'ventas_por_dia': ventas_por_dia,
-        'etiquetas_ventas': etiquetas_ventas,
-        'datos_ventas': datos_ventas,
-        'etiquetas_pedidos': etiquetas_pedidos,
-        'datos_pedidos': datos_pedidos,
-        'etiquetas_platos': etiquetas_platos,
-        'datos_platos': datos_platos,
+        'total_pedidos': total_orders,
+        'ingresos': revenue,
+        'promedio_por_pedido': avg_order_value,
+        'productos_bajos': low_stock_products,
+        'ventas_por_dia': sales_by_day,
+        'etiquetas_ventas': sales_labels,
+        'datos_ventas': sales_data,
+        'etiquetas_pedidos': orders_labels,
+        'datos_pedidos': orders_data,
+        'etiquetas_platos': dishes_labels,
+        'datos_platos': dishes_data,
     }
     return render(request, 'dashboard/home.html', context)
 
 
 @login_required
 def reporte_panel(request):
-    # Solo administradores pueden ver reportes
-    if request.user.rol != 'administrador':
+    # Only administrators can view reports
+    if request.user.rol != 'administrator':
         return redirect(reverse('dashboard:home'))
     
-    fecha_desde = request.GET.get('desde')
-    fecha_hasta = request.GET.get('hasta')
-    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
-    if fecha_desde:
-        pedidos = pedidos.filter(fecha_pedido__date__gte=fecha_desde)
-    if fecha_hasta:
-        pedidos = pedidos.filter(fecha_pedido__date__lte=fecha_hasta)
+    date_from = request.GET.get('desde')
+    date_to = request.GET.get('hasta')
+    orders = Pedido.objects.all().order_by('-fecha_pedido')
+    if date_from:
+        orders = orders.filter(fecha_pedido__date__gte=date_from)
+    if date_to:
+        orders = orders.filter(fecha_pedido__date__lte=date_to)
 
-    datos = {
-        'pedidos': pedidos,
-        'desde': fecha_desde,
-        'hasta': fecha_hasta,
+    data = {
+        'pedidos': orders,
+        'desde': date_from,
+        'hasta': date_to,
     }
-    return render(request, 'dashboard/reportes.html', datos)
+    return render(request, 'dashboard/reportes.html', data)
 
 
 
-# ==================== VISTAS DE REPORTES ====================
+# ==================== REPORT VIEWS ====================
 
 @login_required
 def reportes_view(request):
-    """Vista principal de reportes"""
-    if request.user.rol not in ['mesero', 'administrador']:
+    """Main reports view"""
+    if request.user.rol not in ['waiter', 'administrator']:
         return redirect(reverse('menu:lista'))
     
     context = {
-        'page_title': 'Reportes',
+        'page_title': 'Reports',
     }
     return render(request, 'dashboard/reportes_menu.html', context)
 
 
 @login_required
 def reporte_pedidos_pdf(request):
-    """Genera reporte de pedidos en PDF"""
-    if request.user.rol not in ['mesero', 'administrador']:
+    """Generates orders report in PDF"""
+    if request.user.rol not in ['waiter', 'administrator']:
         return redirect(reverse('menu:lista'))
     
     try:
-        # Obtener filtros
-        fecha_desde = request.GET.get('fecha_desde')
-        fecha_hasta = request.GET.get('fecha_hasta')
-        estado = request.GET.get('estado')
+        # Get filters
+        date_from = request.GET.get('fecha_desde')
+        date_to = request.GET.get('fecha_hasta')
+        status = request.GET.get('estado')
         
-        # Construir queryset
-        pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+        # Build queryset
+        orders = Pedido.objects.all().order_by('-fecha_pedido')
         
-        filtros = {}
-        if fecha_desde:
-            pedidos = pedidos.filter(fecha_pedido__date__gte=fecha_desde)
-            filtros['fecha_desde'] = fecha_desde
-        if fecha_hasta:
-            pedidos = pedidos.filter(fecha_pedido__date__lte=fecha_hasta)
-            filtros['fecha_hasta'] = fecha_hasta
-        if estado:
-            pedidos = pedidos.filter(estado=estado)
-            filtros['estado'] = estado
+        filters = {}
+        if date_from:
+            orders = orders.filter(fecha_pedido__date__gte=date_from)
+            filters['fecha_desde'] = date_from
+        if date_to:
+            orders = orders.filter(fecha_pedido__date__lte=date_to)
+            filters['fecha_hasta'] = date_to
+        if status:
+            orders = orders.filter(estado=status)
+            filters['estado'] = status
         
-        # Generar PDF
-        pdf_buffer = PDFService.generate_orders_report_pdf(pedidos, filtros, request.user)
+        # Generate PDF
+        pdf_buffer = PDFService.generate_orders_report_pdf(orders, filters, request.user)
         
-        # Registrar en log
-        logger.info(f"Reporte de pedidos generado por {request.user.username}")
+        # Log action
+        logger.info(f"Orders report generated by {request.user.username}")
         
-        # Preparar respuesta
+        # Prepare response
         response = HttpResponse(pdf_buffer, content_type='application/pdf')
-        filename = f"reporte_pedidos_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        filename = f"orders_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         
         return response
     
     except Exception as e:
-        logger.error(f"Error generando reporte de pedidos PDF: {str(e)}")
-        messages.error(request, 'Error al generar el reporte. Por favor, intenta nuevamente.')
+        logger.error(f"Error generating PDF orders report: {str(e)}")
+        messages.error(request, 'Error generating the report. Please try again.')
         return redirect(reverse('dashboard:reportes'))
 
 
 @login_required
 def reporte_pedidos_excel(request):
-    """Genera reporte de pedidos en Excel"""
-    if request.user.rol not in ['mesero', 'administrador']:
+    """Generates orders report in Excel"""
+    if request.user.rol not in ['waiter', 'administrator']:
         return redirect(reverse('menu:lista'))
     
     try:
-        # Obtener filtros
-        fecha_desde = request.GET.get('fecha_desde')
-        fecha_hasta = request.GET.get('fecha_hasta')
-        estado = request.GET.get('estado')
+        # Get filters
+        date_from = request.GET.get('fecha_desde')
+        date_to = request.GET.get('fecha_hasta')
+        status = request.GET.get('estado')
         
-        # Construir queryset
-        pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+        # Build queryset
+        orders = Pedido.objects.all().order_by('-fecha_pedido')
         
-        filtros = {}
-        if fecha_desde:
-            pedidos = pedidos.filter(fecha_pedido__date__gte=fecha_desde)
-            filtros['fecha_desde'] = fecha_desde
-        if fecha_hasta:
-            pedidos = pedidos.filter(fecha_pedido__date__lte=fecha_hasta)
-            filtros['fecha_hasta'] = fecha_hasta
-        if estado:
-            pedidos = pedidos.filter(estado=estado)
-            filtros['estado'] = estado
+        filters = {}
+        if date_from:
+            orders = orders.filter(fecha_pedido__date__gte=date_from)
+            filters['fecha_desde'] = date_from
+        if date_to:
+            orders = orders.filter(fecha_pedido__date__lte=date_to)
+            filters['fecha_hasta'] = date_to
+        if status:
+            orders = orders.filter(estado=status)
+            filters['estado'] = status
         
-        # Generar Excel
-        excel_buffer = ExcelService.generate_orders_report_excel(pedidos, filtros)
+        # Generate Excel
+        excel_buffer = ExcelService.generate_orders_report_excel(orders, filters)
         
-        # Registrar en log
-        logger.info(f"Reporte de pedidos Excel generado por {request.user.username}")
+        # Log action
+        logger.info(f"Excel orders report generated by {request.user.username}")
         
-        # Preparar respuesta
+        # Prepare response
         response = HttpResponse(
             excel_buffer,
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        filename = f"reporte_pedidos_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        filename = f"orders_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         
         return response
     
     except Exception as e:
-        logger.error(f"Error generando reporte de pedidos Excel: {str(e)}")
-        messages.error(request, 'Error al generar el reporte. Por favor, intenta nuevamente.')
+        logger.error(f"Error generating Excel orders report: {str(e)}")
+        messages.error(request, 'Error generating the report. Please try again.')
         return redirect(reverse('dashboard:reportes'))
 
 

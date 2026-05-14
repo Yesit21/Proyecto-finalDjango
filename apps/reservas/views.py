@@ -28,7 +28,7 @@ class CrearReservaView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.usuario = self.request.user
         
-        # Si seleccionó una mesa, marcarla como reservada
+        # If a table was selected, mark it as reserved
         if form.cleaned_data.get('mesa'):
             mesa = form.cleaned_data['mesa']
             mesa.estado = 'reservada'
@@ -36,14 +36,14 @@ class CrearReservaView(LoginRequiredMixin, CreateView):
             
         response = super().form_valid(form)
         
-        # Enviar email de confirmación
+        # Send confirmation email
         try:
             EmailService.send_reservation_confirmation(self.object)
-            logger.info(f"Email de confirmación enviado para reserva #{self.object.id}")
+            logger.info(f"Confirmation email sent for reservation #{self.object.id}")
         except Exception as e:
-            logger.error(f"Error enviando email de confirmación: {str(e)}")
+            logger.error(f"Error sending confirmation email: {str(e)}")
         
-        messages.success(self.request, 'Reserva creada exitosamente')
+        messages.success(self.request, 'Reservation created successfully')
         return response
 
 class ListaReservasView(LoginRequiredMixin, ListView):
@@ -97,15 +97,15 @@ class ActualizarReservaView(LoginRequiredMixin, UpdateView):
                 nueva_mesa.estado = 'reservada'
                 nueva_mesa.save()
         
-        # Enviar email solo si el estado cambió
+        # Send email only if status changed
         if estado_anterior_codigo != self.object.estado:
             try:
                 EmailService.send_reservation_status_change(self.object, estado_anterior_display)
-                logger.info(f"Email de cambio de estado enviado para reserva #{self.object.id}")
+                logger.info(f"Status change email sent for reservation #{self.object.id}")
             except Exception as e:
-                logger.error(f"Error enviando email de cambio de estado: {str(e)}")
+                logger.error(f"Error sending status change email: {str(e)}")
         
-        messages.success(self.request, 'Reserva actualizada exitosamente')
+        messages.success(self.request, 'Reservation updated successfully')
         return response
 
 class CancelarReservaView(LoginRequiredMixin, UpdateView):
@@ -119,10 +119,10 @@ class CancelarReservaView(LoginRequiredMixin, UpdateView):
         return Reserva.objects.filter(usuario=self.request.user, estado__in=['pendiente', 'confirmada'])
 
     def form_valid(self, form):
-        # Guardar estado anterior
+        # Save previous status
         estado_anterior = self.object.get_estado_display()
         
-        # Liberar la mesa si estaba asignada
+        # Release the table if it was assigned
         if self.object.mesa:
             mesa = self.object.mesa
             mesa.estado = 'disponible'
@@ -131,33 +131,33 @@ class CancelarReservaView(LoginRequiredMixin, UpdateView):
         form.instance.estado = 'cancelada'
         response = super().form_valid(form)
         
-        # Enviar email de cancelación
+        # Send cancellation email
         try:
             EmailService.send_reservation_status_change(self.object, estado_anterior)
-            logger.info(f"Email de cancelación enviado para reserva #{self.object.id}")
+            logger.info(f"Cancellation email sent for reservation #{self.object.id}")
         except Exception as e:
-            logger.error(f"Error enviando email de cancelación: {str(e)}")
+            logger.error(f"Error sending cancellation email: {str(e)}")
         
-        messages.warning(self.request, 'Reserva cancelada')
+        messages.warning(self.request, 'Reservation cancelled')
         return response
 
 
 # ============================================
-# VISTAS PARA GESTIÓN DE MESAS (STAFF)
+# VIEWS FOR TABLE MANAGEMENT (STAFF)
 # ============================================
 
 class StaffRequiredMixin(UserPassesTestMixin):
-    """Mixin para verificar que el usuario sea staff (mesero o administrador)"""
+    """Mixin to verify that the user is staff (waiter or administrator)"""
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.rol in ['mesero', 'administrador']
     
     def handle_no_permission(self):
-        messages.error(self.request, 'No tienes permisos para acceder a esta sección')
+        messages.error(self.request, 'You do not have permissions to access this section')
         return redirect('dashboard:home')
 
 
 class ListaMesasClienteView(LoginRequiredMixin, ListView):
-    """Vista para que los clientes vean las mesas disponibles"""
+    """View for clients to see available tables"""
     model = Mesa
     template_name = 'reservas/mesas/lista_cliente.html'
     context_object_name = 'mesas'
@@ -182,10 +182,11 @@ class ListaMesasView(StaffRequiredMixin, ListView):
         return queryset
     
     def get_context_data(self, **kwargs):
+        from core.constants.estados import ESTADOS_MESA
         context = super().get_context_data(**kwargs)
-        context['estados'] = Mesa.ESTADO_CHOICES
+        context['estados'] = ESTADOS_MESA
         
-        # Calcular estadísticas para la barra superior
+        # Calculate statistics for the top bar
         todas_las_mesas = Mesa.objects.all()
         context['total_mesas'] = todas_las_mesas.count()
         context['disponibles_count'] = todas_las_mesas.filter(estado='disponible').count()
@@ -203,7 +204,7 @@ class CrearMesaView(StaffRequiredMixin, CreateView):
     login_url = 'usuarios:login'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Mesa creada exitosamente')
+        messages.success(self.request, 'Table created successfully')
         return super().form_valid(form)
 
 
@@ -215,7 +216,7 @@ class EditarMesaView(StaffRequiredMixin, UpdateView):
     login_url = 'usuarios:login'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Mesa actualizada exitosamente')
+        messages.success(self.request, 'Table updated successfully')
         return super().form_valid(form)
 
 
@@ -226,10 +227,10 @@ class EliminarMesaView(StaffRequiredMixin, DeleteView):
     login_url = 'usuarios:login'
 
     def delete(self, request, *args, **kwargs):
-        messages.warning(self.request, 'Mesa eliminada')
+        messages.warning(self.request, 'Table deleted')
         return super().delete(request, *args, **kwargs)
 
-# VISTAS PARA GESTIÓN DE RESERVAS (STAF)
+# VIEWS FOR RESERVATION MANAGEMENT (STAFF)
 
 class ListaReservasStaffView(StaffRequiredMixin, ListView):
     model = Reserva
@@ -241,7 +242,7 @@ class ListaReservasStaffView(StaffRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Reserva.objects.select_related('usuario', 'mesa').all()
         
-        # Filtros
+        # Filters
         estado = self.request.GET.get('estado')
         if estado:
             queryset = queryset.filter(estado=estado)
@@ -257,8 +258,9 @@ class ListaReservasStaffView(StaffRequiredMixin, ListView):
         return queryset.order_by('-fecha_reserva')
     
     def get_context_data(self, **kwargs):
+        from core.constants.estados import ESTADOS_RESERVA
         context = super().get_context_data(**kwargs)
-        context['estados'] = Reserva.ESTADO_CHOICES
+        context['estados'] = ESTADOS_RESERVA
         return context
 
 
@@ -275,17 +277,17 @@ class AsignarMesaView(StaffRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        # Guardar estado anterior
+        # Save previous status
         estado_anterior = self.object.get_estado_display()
         estado_anterior_codigo = self.object.estado
         
-        # Si se asigna una mesa, actualizar su estado
+        # If a table is assigned, update its status
         if form.cleaned_data.get('mesa'):
             mesa = form.cleaned_data['mesa']
             mesa.estado = 'reservada'
             mesa.save()
             
-            # Si había una mesa anterior asignada, liberarla
+            # If there was a previous table assigned, release it
             if self.object.mesa and self.object.mesa != mesa:
                 mesa_anterior = self.object.mesa
                 mesa_anterior.estado = 'disponible'
@@ -293,7 +295,7 @@ class AsignarMesaView(StaffRequiredMixin, UpdateView):
         
         response = super().form_valid(form)
         
-        # Enviar email si el estado cambió
+        # Send email if status changed
         if estado_anterior_codigo != self.object.estado:
             try:
                 EmailService.send_reservation_status_change(self.object, estado_anterior)

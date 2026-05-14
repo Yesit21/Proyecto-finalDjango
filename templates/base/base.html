@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Restaurante{% endblock %}</title>
+    <title>{% block title %}Restaurant{% endblock %}</title>
     <script>
         (function () {
             try {
@@ -18,9 +18,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Cargar tema desde localStorage antes de que se renderice la página -->
+    <!-- Load theme from localStorage before page renders -->
     <script>
-        // Evitar el flash de contenido sin estilo
+        // Avoid flash of unstyled content
         (function() {
             const theme = localStorage.getItem('theme') || 'light';
             if (theme === 'dark') {
@@ -30,6 +30,11 @@
     </script>
     
     {% block extra_css %}{% endblock %}
+    <style>
+        .bg-auth-image {
+            background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+        }
+    </style>
 </head>
 {% with current_namespace=request.resolver_match.namespace current_url_name=request.resolver_match.url_name %}
 <body class="min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-200 {% block body_class %}{% if current_namespace != 'usuarios' %}bg-gray-50 dark:bg-gray-950{% endif %}{% endblock %}">
@@ -37,7 +42,7 @@
         {% if current_namespace == 'usuarios' %}
             {% if current_url_name == 'login' or current_url_name == 'registro' or current_url_name == 'password_reset' or current_url_name == 'password_reset_done' or current_url_name == 'password_reset_confirm' or current_url_name == 'password_reset_complete' %}
             <div class="fixed inset-0 -z-10">
-                <div class="absolute inset-0 bg-center bg-cover" style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');"></div>
+                <div class="absolute inset-0 bg-center bg-cover bg-auth-image"></div>
                 <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45 dark:from-black/65 dark:via-black/45 dark:to-black/70"></div>
                 <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/15 via-transparent to-amber-500/10"></div>
             </div>
@@ -49,17 +54,17 @@
     {% include 'partials/messages.html' %}
 
     {% if user.is_authenticated %}
-    <!-- Sidebar fijo -->
+    <!-- Fixed Sidebar -->
     <aside id="app-sidebar" class="fixed top-16 bottom-0 left-0 z-30 w-64 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 hidden md:block overflow-y-auto">
         <div class="p-4">
             {% include 'components/sidebar/main.html' %}
         </div>
     </aside>
 
-    <!-- Overlay para móvil -->
+    <!-- Mobile Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-gray-900/50 md:hidden"></div>
 
-    <!-- Sidebar móvil -->
+    <!-- Mobile Sidebar -->
     <aside id="app-sidebar-mobile" class="fixed top-0 bottom-0 left-0 z-50 w-72 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 hidden overflow-y-auto">
         <div class="p-4 pt-20">
             {% include 'components/sidebar/main.html' %}
@@ -67,9 +72,9 @@
     </aside>
     {% endif %}
 
-    <!-- Contenido principal -->
+    <!-- Main Content -->
     <main class="pt-16 {% if user.is_authenticated %}md:ml-64{% endif %}">
-        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
             <div class="space-y-6">
                 {% block content %}{% endblock %}
             </div>

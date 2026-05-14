@@ -6,16 +6,16 @@ from datetime import datetime
 
 
 class ExcelService:
-    """Servicio para generación de reportes en Excel"""
+    """Service for generating reports in Excel"""
     
-    # Colores del tema
+    # Theme colors
     COLOR_HEADER = 'D97706'  # Amber-600
     COLOR_ALERT = 'DC2626'   # Red-600
     COLOR_LIGHT = 'FEF3C7'   # Amber-100
     
     @staticmethod
     def _format_currency(value):
-        """Formatea valores monetarios"""
+        """Formats monetary values"""
         try:
             return float(value)
         except:
@@ -23,14 +23,14 @@ class ExcelService:
 
     @staticmethod
     def _format_date(date):
-        """Formatea fechas"""
+        """Formats dates"""
         if date:
             return date.strftime('%d/%m/%Y %H:%M')
         return "N/A"
 
     @staticmethod
     def _apply_header_style(ws, row=1):
-        """Aplica estilo al encabezado"""
+        """Applies style to the header"""
         header_fill = PatternFill(start_color=ExcelService.COLOR_HEADER, 
                                   end_color=ExcelService.COLOR_HEADER, 
                                   fill_type='solid')
@@ -44,7 +44,7 @@ class ExcelService:
 
     @staticmethod
     def _auto_adjust_columns(ws):
-        """Ajusta automáticamente el ancho de las columnas"""
+        """Automatically adjusts column widths"""
         for column in ws.columns:
             max_length = 0
             column_letter = get_column_letter(column[0].column)
@@ -61,7 +61,7 @@ class ExcelService:
 
     @staticmethod
     def _add_borders(ws, start_row=1, end_row=None):
-        """Agrega bordes a las celdas"""
+        """Adds borders to cells"""
         thin_border = Border(
             left=Side(style='thin'),
             right=Side(style='thin'),
@@ -78,63 +78,63 @@ class ExcelService:
 
     @staticmethod
     def generate_orders_report_excel(pedidos, filtros):
-        """Genera reporte de pedidos en Excel"""
+        """Generates orders report in Excel"""
         wb = Workbook()
         ws = wb.active
-        ws.title = "Reporte de Pedidos"
+        ws.title = "Orders Report"
         
-        # Título
-        ws['A1'] = 'REPORTE DE PEDIDOS'
+        # Title
+        ws['A1'] = 'ORDERS REPORT'
         ws['A1'].font = Font(bold=True, size=16, color=ExcelService.COLOR_HEADER)
         ws.merge_cells('A1:E1')
         
-        # Fecha de generación
-        ws['A2'] = f'Generado: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
+        # Generation date
+        ws['A2'] = f'Generated: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
         ws['A2'].font = Font(italic=True, size=9)
         ws.merge_cells('A2:E2')
         
-        # Filtros
+        # Filters
         row = 3
         if filtros:
-            filtros_text = "Filtros: "
+            filtros_text = "Filters: "
             if filtros.get('fecha_desde'):
-                filtros_text += f"Desde {filtros['fecha_desde']} "
+                filtros_text += f"From {filtros['fecha_desde']} "
             if filtros.get('fecha_hasta'):
-                filtros_text += f"Hasta {filtros['fecha_hasta']} "
+                filtros_text += f"To {filtros['fecha_hasta']} "
             if filtros.get('estado'):
-                filtros_text += f"Estado: {filtros['estado']} "
+                filtros_text += f"Status: {filtros['estado']} "
             
             ws[f'A{row}'] = filtros_text
             ws[f'A{row}'].font = Font(italic=True, size=9)
             ws.merge_cells(f'A{row}:E{row}')
             row += 1
         
-        # Resumen
+        # Summary
         row += 1
         total_pedidos = len(pedidos)
         total_ingresos = sum(p.total for p in pedidos)
         
-        ws[f'A{row}'] = 'Total de Pedidos:'
+        ws[f'A{row}'] = 'Total Orders:'
         ws[f'B{row}'] = total_pedidos
         ws[f'A{row}'].font = Font(bold=True)
         
         row += 1
-        ws[f'A{row}'] = 'Total de Ingresos:'
+        ws[f'A{row}'] = 'Total Income:'
         ws[f'B{row}'] = ExcelService._format_currency(total_ingresos)
         ws[f'B{row}'].number_format = '$#,##0.00'
         ws[f'A{row}'].font = Font(bold=True)
         
-        # Espacio
+        # Space
         row += 2
         
-        # Encabezados
-        headers = ['ID', 'Cliente', 'Fecha', 'Estado', 'Total']
+        # Headers
+        headers = ['ID', 'Customer', 'Date', 'Status', 'Total']
         for col, header in enumerate(headers, 1):
             ws.cell(row=row, column=col, value=header)
         
         ExcelService._apply_header_style(ws, row)
         
-        # Datos
+        # Data
         for pedido in pedidos:
             row += 1
             ws.cell(row=row, column=1, value=pedido.id)
@@ -144,11 +144,11 @@ class ExcelService:
             ws.cell(row=row, column=5, value=ExcelService._format_currency(pedido.total))
             ws.cell(row=row, column=5).number_format = '$#,##0.00'
         
-        # Ajustes finales
+        # Final adjustments
         ExcelService._auto_adjust_columns(ws)
         ExcelService._add_borders(ws, start_row=row - len(pedidos), end_row=row)
         
-        # Guardar en buffer
+        # Save to buffer
         buffer = BytesIO()
         wb.save(buffer)
         buffer.seek(0)
@@ -156,29 +156,29 @@ class ExcelService:
 
     @staticmethod
     def generate_sales_report_excel(datos_ventas, filtros):
-        """Genera reporte de ventas en Excel"""
+        """Generates sales report in Excel"""
         wb = Workbook()
         
-        # Hoja 1: Resumen
+        # Sheet 1: Summary
         ws1 = wb.active
-        ws1.title = "Resumen de Ventas"
+        ws1.title = "Sales Summary"
         
-        # Título
-        ws1['A1'] = 'REPORTE DE VENTAS'
+        # Title
+        ws1['A1'] = 'SALES REPORT'
         ws1['A1'].font = Font(bold=True, size=16, color=ExcelService.COLOR_HEADER)
         ws1.merge_cells('A1:B1')
         
-        # Período
-        ws1['A2'] = f"Período: {filtros.get('fecha_desde', 'Inicio')} - {filtros.get('fecha_hasta', 'Hoy')}"
+        # Period
+        ws1['A2'] = f"Period: {filtros.get('fecha_desde', 'Start')} - {filtros.get('fecha_hasta', 'Today')}"
         ws1['A2'].font = Font(italic=True, size=9)
         ws1.merge_cells('A2:B2')
         
-        # Métricas
+        # Metrics
         row = 4
         metrics = [
-            ('Total de Ingresos', ExcelService._format_currency(datos_ventas['total_ingresos']), '$#,##0.00'),
-            ('Cantidad de Pedidos', datos_ventas['cantidad_pedidos'], '0'),
-            ('Ticket Promedio', ExcelService._format_currency(datos_ventas['ticket_promedio']), '$#,##0.00'),
+            ('Total Income', ExcelService._format_currency(datos_ventas['total_ingresos']), '$#,##0.00'),
+            ('Orders Count', datos_ventas['cantidad_pedidos'], '0'),
+            ('Average Ticket', ExcelService._format_currency(datos_ventas['ticket_promedio']), '$#,##0.00'),
         ]
         
         for metric_name, metric_value, number_format in metrics:
@@ -194,21 +194,21 @@ class ExcelService:
                                              fill_type='solid')
             row += 1
         
-        # Hoja 2: Top Platos
-        ws2 = wb.create_sheet("Top Platos")
+        # Sheet 2: Top Dishes
+        ws2 = wb.create_sheet("Top Dishes")
         
-        ws2['A1'] = 'TOP 10 PLATOS MÁS VENDIDOS'
+        ws2['A1'] = 'TOP 10 BEST SELLING DISHES'
         ws2['A1'].font = Font(bold=True, size=14, color=ExcelService.COLOR_HEADER)
         ws2.merge_cells('A1:D1')
         
-        # Encabezados
-        headers = ['#', 'Plato', 'Cantidad', 'Ingresos']
+        # Headers
+        headers = ['#', 'Dish', 'Quantity', 'Income']
         for col, header in enumerate(headers, 1):
             ws2.cell(row=3, column=col, value=header)
         
         ExcelService._apply_header_style(ws2, 3)
         
-        # Datos
+        # Data
         row = 4
         for idx, plato in enumerate(datos_ventas['platos_mas_vendidos'][:10], 1):
             ws2.cell(row=row, column=1, value=idx)
@@ -218,12 +218,12 @@ class ExcelService:
             ws2.cell(row=row, column=4).number_format = '$#,##0.00'
             row += 1
         
-        # Ajustes
+        # Adjustments
         ExcelService._auto_adjust_columns(ws1)
         ExcelService._auto_adjust_columns(ws2)
         ExcelService._add_borders(ws2, start_row=3, end_row=row-1)
         
-        # Guardar
+        # Save
         buffer = BytesIO()
         wb.save(buffer)
         buffer.seek(0)
@@ -231,53 +231,53 @@ class ExcelService:
 
     @staticmethod
     def generate_inventory_report_excel(productos, filtros):
-        """Genera reporte de inventario en Excel"""
+        """Generates inventory report in Excel"""
         wb = Workbook()
         ws = wb.active
-        ws.title = "Reporte de Inventario"
+        ws.title = "Inventory Report"
         
-        # Título
-        ws['A1'] = 'REPORTE DE INVENTARIO'
+        # Title
+        ws['A1'] = 'INVENTORY REPORT'
         ws['A1'].font = Font(bold=True, size=16, color=ExcelService.COLOR_HEADER)
         ws.merge_cells('A1:E1')
         
-        # Fecha
-        ws['A2'] = f'Generado: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
+        # Date
+        ws['A2'] = f'Generated: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
         ws['A2'].font = Font(italic=True, size=9)
         ws.merge_cells('A2:E2')
         
-        # Resumen
+        # Summary
         row = 4
         total_productos = len(productos)
         productos_bajo_stock = sum(1 for p in productos if p.stock_actual <= p.alerta_stock)
         valor_total = sum(p.stock_actual * p.precio for p in productos)
         
-        ws[f'A{row}'] = 'Total de Productos:'
+        ws[f'A{row}'] = 'Total Products:'
         ws[f'B{row}'] = total_productos
         ws[f'A{row}'].font = Font(bold=True)
         
         row += 1
-        ws[f'A{row}'] = 'Productos con Stock Bajo:'
+        ws[f'A{row}'] = 'Low Stock Products:'
         ws[f'B{row}'] = productos_bajo_stock
         ws[f'A{row}'].font = Font(bold=True)
         
         row += 1
-        ws[f'A{row}'] = 'Valor Total del Inventario:'
+        ws[f'A{row}'] = 'Total Inventory Value:'
         ws[f'B{row}'] = ExcelService._format_currency(valor_total)
         ws[f'B{row}'].number_format = '$#,##0.00'
         ws[f'A{row}'].font = Font(bold=True)
         
-        # Espacio
+        # Space
         row += 2
         
-        # Encabezados
-        headers = ['Producto', 'Stock Actual', 'Alerta', 'Precio', 'Valor Total']
+        # Headers
+        headers = ['Product', 'Current Stock', 'Alert', 'Price', 'Total Value']
         for col, header in enumerate(headers, 1):
             ws.cell(row=row, column=col, value=header)
         
         ExcelService._apply_header_style(ws, row)
         
-        # Datos
+        # Data
         alert_font = Font(bold=True, color=ExcelService.COLOR_ALERT)
         alert_fill = PatternFill(start_color='FEE2E2', end_color='FEE2E2', fill_type='solid')
         
@@ -293,17 +293,17 @@ class ExcelService:
             ws.cell(row=row, column=5, value=ExcelService._format_currency(producto.stock_actual * producto.precio))
             ws.cell(row=row, column=5).number_format = '$#,##0.00'
             
-            # Resaltar productos con stock bajo
+            # Highlight low stock products
             if bajo_stock:
                 for col in range(1, 6):
                     ws.cell(row=row, column=col).font = alert_font
                     ws.cell(row=row, column=col).fill = alert_fill
         
-        # Ajustes
+        # Adjustments
         ExcelService._auto_adjust_columns(ws)
         ExcelService._add_borders(ws, start_row=row - len(productos), end_row=row)
         
-        # Guardar
+        # Save
         buffer = BytesIO()
         wb.save(buffer)
         buffer.seek(0)
@@ -311,62 +311,62 @@ class ExcelService:
 
     @staticmethod
     def generate_reservations_report_excel(reservas, filtros):
-        """Genera reporte de reservas en Excel"""
+        """Generates reservations report in Excel"""
         wb = Workbook()
         ws = wb.active
-        ws.title = "Reporte de Reservas"
+        ws.title = "Reservations Report"
         
-        # Título
-        ws['A1'] = 'REPORTE DE RESERVAS'
+        # Title
+        ws['A1'] = 'RESERVATIONS REPORT'
         ws['A1'].font = Font(bold=True, size=16, color=ExcelService.COLOR_HEADER)
         ws.merge_cells('A1:E1')
         
-        # Fecha
-        ws['A2'] = f'Generado: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
+        # Date
+        ws['A2'] = f'Generated: {datetime.now().strftime("%d/%m/%Y %H:%M")}'
         ws['A2'].font = Font(italic=True, size=9)
         ws.merge_cells('A2:E2')
         
-        # Filtros
+        # Filters
         row = 3
         if filtros:
-            filtros_text = "Filtros: "
+            filtros_text = "Filters: "
             if filtros.get('fecha_desde'):
-                filtros_text += f"Desde {filtros['fecha_desde']} "
+                filtros_text += f"From {filtros['fecha_desde']} "
             if filtros.get('fecha_hasta'):
-                filtros_text += f"Hasta {filtros['fecha_hasta']} "
+                filtros_text += f"To {filtros['fecha_hasta']} "
             if filtros.get('estado'):
-                filtros_text += f"Estado: {filtros['estado']} "
+                filtros_text += f"Status: {filtros['estado']} "
             
             ws[f'A{row}'] = filtros_text
             ws[f'A{row}'].font = Font(italic=True, size=9)
             ws.merge_cells(f'A{row}:E{row}')
             row += 1
         
-        # Resumen
+        # Summary
         row += 1
         total_reservas = len(reservas)
         total_personas = sum(r.cantidad_personas for r in reservas)
         
-        ws[f'A{row}'] = 'Total de Reservas:'
+        ws[f'A{row}'] = 'Total Reservations:'
         ws[f'B{row}'] = total_reservas
         ws[f'A{row}'].font = Font(bold=True)
         
         row += 1
-        ws[f'A{row}'] = 'Total de Personas:'
+        ws[f'A{row}'] = 'Total People:'
         ws[f'B{row}'] = total_personas
         ws[f'A{row}'].font = Font(bold=True)
         
-        # Espacio
+        # Space
         row += 2
         
-        # Encabezados
-        headers = ['ID', 'Cliente', 'Fecha', 'Personas', 'Estado']
+        # Headers
+        headers = ['ID', 'Customer', 'Date', 'People', 'Status']
         for col, header in enumerate(headers, 1):
             ws.cell(row=row, column=col, value=header)
         
         ExcelService._apply_header_style(ws, row)
         
-        # Datos
+        # Data
         for reserva in reservas:
             row += 1
             ws.cell(row=row, column=1, value=reserva.id)
@@ -375,11 +375,11 @@ class ExcelService:
             ws.cell(row=row, column=4, value=reserva.cantidad_personas)
             ws.cell(row=row, column=5, value=reserva.get_estado_display())
         
-        # Ajustes
+        # Adjustments
         ExcelService._auto_adjust_columns(ws)
         ExcelService._add_borders(ws, start_row=row - len(reservas), end_row=row)
         
-        # Guardar
+        # Save
         buffer = BytesIO()
         wb.save(buffer)
         buffer.seek(0)

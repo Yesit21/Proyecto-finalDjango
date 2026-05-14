@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actualización de Pedido</title>
+    <title>Order Update</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -98,90 +98,54 @@
             text-align: center;
             color: #6b7280;
             font-size: 14px;
+            border-top: 1px solid #e5e7eb;
         }
-        .footer p {
-            margin: 5px 0;
-        }
-        .emoji {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        .message-box {
-            background: #fef3c7;
-            border: 2px solid #fbbf24;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 500;
-            color: #92400e;
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="emoji">{{ emoji }}</div>
-            <h1>Actualización de Pedido</h1>
-            <p>Pedido #{{ pedido.id }}</p>
+            <h1>Order Update</h1>
+            <p>Your order has changed its status</p>
         </div>
         
         <div class="content">
-            <p class="greeting">Hola <strong>{{ cliente.get_full_name|default:cliente.username }}</strong>,</p>
+            <p class="greeting">Hi {{ user.get_full_name|default:user.username }},</p>
             
-            <p>Te informamos que el estado de tu pedido ha sido actualizado.</p>
-            
-            <div class="message-box">
-                {{ mensaje }}
-            </div>
+            <p>We inform you that your order <strong>#{{ order.id }}</strong> has been updated.</p>
             
             <div class="status-update">
-                <h3>📊 Cambio de Estado</h3>
+                <h3>New Status:</h3>
                 <div class="status-change">
-                    <span class="status-badge status-old">{{ estado_anterior }}</span>
+                    <span class="status-badge status-old">{{ old_status }}</span>
                     <span class="arrow">→</span>
-                    <span class="status-badge status-new">{{ estado_nuevo }}</span>
+                    <span class="status-badge status-new">{{ new_status }}</span>
                 </div>
             </div>
-            
+
             <div class="info-box">
-                <strong>Número de Pedido:</strong> #{{ pedido.id }}<br>
-                <strong>Fecha del Pedido:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}<br>
-                <strong>Total:</strong> ${{ pedido.total }}
+                <p><strong>Total Amount:</strong> ${{ order.total }}</p>
+                <p><strong>Date:</strong> {{ order.fecha_pedido|date:"d M Y H:i" }}</p>
             </div>
-            
-            {% if pedido.estado == 'listo' %}
-            <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                <p style="margin: 0; color: #065f46; font-weight: 600;">
-                    🎉 ¡Tu pedido está listo para recoger!
-                </p>
-            </div>
-            {% elif pedido.estado == 'entregado' %}
-            <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                <p style="margin: 0; color: #065f46; font-weight: 600;">
-                    🎊 ¡Gracias por tu compra! Esperamos que disfrutes tu pedido.
-                </p>
-            </div>
-            {% elif pedido.estado == 'cancelado' %}
-            <div style="background: #fee2e2; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                <p style="margin: 0; color: #991b1b; font-weight: 600;">
-                    Tu pedido ha sido cancelado. Si tienes dudas, contáctanos.
-                </p>
-            </div>
-            {% endif %}
-            
-            <p style="margin-top: 30px; color: #6b7280;">
-                Puedes revisar todos los detalles de tu pedido desde tu cuenta.
-            </p>
+
+            <center>
+                <a href="{{ site_url }}{% url 'pedidos:mis_pedidos' %}" class="button">Track Order</a>
+            </center>
         </div>
-        
+
         <div class="footer">
-            <p><strong>Restaurante</strong></p>
-            <p>Este es un email automático, por favor no respondas a este mensaje.</p>
-            <p style="margin-top: 15px; font-size: 12px;">
-                © {{ pedido.fecha_pedido|date:"Y" }} Restaurante. Todos los derechos reservados.
-            </p>
+            <p>© {% now "Y" %} Restaurant System. All rights reserved.</p>
+            <p>This is an automated email, please do not reply.</p>
         </div>
     </div>
 </body>

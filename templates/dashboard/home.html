@@ -7,12 +7,17 @@
 
 {% block background %}
 <div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
-         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
+    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
     </div>
     <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
     <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
 </div>
+
+<style>
+    .bg-image-blurred {
+        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
+    }
+</style>
 {% endblock %}
 
 {% block content %}

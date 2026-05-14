@@ -26,7 +26,7 @@ def _save_cart(request, cart):
 
 @login_required
 def lista_pedidos(request):
-    # Mostrar platos disponibles en lugar de productos
+    # Show available dishes instead of products
     platos = Plato.objects.filter(disponible=True).order_by('categoria', 'nombre')
     pedidos = Pedido.objects.filter(cliente=request.user) if not request.user.is_staff else Pedido.objects.all()
     return render(request, 'pedidos/lista.html', {
@@ -39,9 +39,9 @@ def lista_pedidos(request):
 def agregar_carrito(request, plato_id):
     plato = get_object_or_404(Plato, pk=plato_id)
     
-    # Validar que el plato esté disponible
+    # Validate that the dish is available
     if not plato.disponible:
-        messages.error(request, f'{plato.nombre} no está disponible en este momento.')
+        messages.error(request, f'{plato.nombre} is not available at this moment.')
         return redirect('pedidos:lista')
     
     cart = _get_cart(request)
@@ -49,13 +49,13 @@ def agregar_carrito(request, plato_id):
         'nombre': plato.nombre,
         'precio': str(plato.precio),
         'cantidad': 0,
-        'tipo': 'plato'  # Identificar que es un plato
+        'tipo': 'plato'  # Identify that it is a dish
     })
     
     item['cantidad'] += 1
     cart[str(plato.id)] = item
     _save_cart(request, cart)
-    messages.success(request, f'Agregado {plato.nombre} al carrito.')
+    messages.success(request, f'Added {plato.nombre} to the cart.')
     return redirect('pedidos:carrito')
 
 
@@ -64,7 +64,7 @@ def eliminar_carrito(request, item_id):
     cart = _get_cart(request)
     cart.pop(str(item_id), None)
     _save_cart(request, cart)
-    messages.success(request, 'Producto eliminado del carrito.')
+    messages.success(request, 'Product removed from the cart.')
     return redirect('pedidos:carrito')
 
 
@@ -84,7 +84,7 @@ def carrito(request):
             'subtotal': subtotal,
         })
 
-    # Mesas disponibles para el carrito
+    # Available tables for the cart
     mesas_disponibles = Mesa.objects.filter(activa=True, estado='disponible')
 
     return render(request, 'pedidos/carrito.html', {
@@ -101,10 +101,10 @@ def realizar_pedido(request):
         
     cart = _get_cart(request)
     if not cart:
-        messages.warning(request, 'El carrito está vacío.')
+        messages.warning(request, 'The cart is empty.')
         return redirect('pedidos:carrito')
 
-    # Datos de reserva si se incluyeron
+    # Reservation data if included
     quiere_reserva = request.POST.get('quiere_reserva') == 'on'
     reserva_obj = None
     
@@ -115,7 +115,7 @@ def realizar_pedido(request):
         observaciones = request.POST.get('observaciones_reserva', '')
         
         if not fecha_reserva or not cantidad_personas:
-            messages.error(request, 'Debes completar los datos de la reserva.')
+            messages.error(request, 'You must complete the reservation data.')
             return redirect('pedidos:carrito')
             
         try:
@@ -132,17 +132,17 @@ def realizar_pedido(request):
                 estado='pendiente'
             )
             
-            # Si el cliente seleccionó una mesa, marcarla como reservada
+            # If the client selected a table, mark it as reserved
             if mesa_obj:
                 mesa_obj.estado = 'reservada'
                 mesa_obj.save()
                 
-            messages.info(request, 'Se ha creado tu solicitud de reserva de mesa.')
+            messages.info(request, 'Your table reservation request has been created.')
         except Exception as e:
-            logger.error(f"Error creando reserva desde pedido: {str(e)}")
-            messages.error(request, 'Hubo un error al crear la reserva de mesa.')
+            logger.error(f"Error creating reservation from order: {str(e)}")
+            messages.error(request, 'There was an error creating the table reservation.')
 
-    # Crear el pedido
+    # Create the order
     pedido = Pedido.objects.create(
         cliente=request.user,
         reserva=reserva_obj
@@ -154,7 +154,7 @@ def realizar_pedido(request):
         precio = Decimal(item['precio'])
         subtotal = precio * cantidad
 
-        # Crear el item del pedido
+        # Create the order item
         pedido_item = PedidoItem.objects.create(
             pedido=pedido,
             nombre=item['nombre'],
@@ -162,7 +162,7 @@ def realizar_pedido(request):
             precio_unitario=precio,
         )
         
-        # Vincular con el plato si es un plato
+        # Link with the dish if it is a dish
         if item.get('tipo') == 'plato':
             plato = Plato.objects.filter(pk=int(item_id)).first()
             if plato:
@@ -175,22 +175,22 @@ def realizar_pedido(request):
     pedido.save(update_fields=['total'])
     request.session.pop(CART_SESSION_KEY, None)
     
-    # Enviar email de confirmación del pedido
+    # Send order confirmation email
     try:
         EmailService.send_order_confirmation(pedido)
-        logger.info(f"Email de confirmación enviado para pedido #{pedido.id}")
+        logger.info(f"Confirmation email sent for order #{pedido.id}")
     except Exception as e:
-        logger.error(f"Error enviando email de confirmación de pedido: {str(e)}")
+        logger.error(f"Error sending order confirmation email: {str(e)}")
         
-    # Si hubo reserva, enviar email de reserva
+    # If there was a reservation, send reservation email
     if reserva_obj:
         try:
             EmailService.send_reservation_confirmation(reserva_obj)
-            logger.info(f"Email de confirmación enviado para reserva #{reserva_obj.id}")
+            logger.info(f"Confirmation email sent for reservation #{reserva_obj.id}")
         except Exception as e:
-            logger.error(f"Error enviando email de confirmación de reserva: {str(e)}")
+            logger.error(f"Error sending reservation confirmation email: {str(e)}")
     
-    messages.success(request, f'Pedido #{pedido.id} realizado con éxito.')
+    messages.success(request, f'Order #{pedido.id} placed successfully.')
     return redirect('pedidos:mis_pedidos')
 
 

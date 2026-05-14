@@ -18,7 +18,7 @@
         <div class="flex h-16 items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 {% if user.is_authenticated %}
-                <button id="sidebar-toggle" type="button" class="btn-ghost px-3 md:hidden" aria-label="Abrir menú">
+                <button id="sidebar-toggle" type="button" class="btn-ghost px-3 md:hidden" aria-label="Open menu">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -39,31 +39,31 @@
                 {% if user.is_authenticated %}
                 <div class="hidden items-center gap-4 md:flex">
                     
-                    {# MENÚ PARA CLIENTES #}
+                    {# CLIENT MENU #}
                     {% if user.rol == 'cliente' %}
                         {% if menu_lista_url %}<a href="{{ menu_lista_url }}" class="nav-link {% if current_namespace == 'menu' %}nav-link-active{% endif %}">Menú</a>{% endif %}
                         {% if pedidos_carrito_url %}<a href="{{ pedidos_carrito_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'carrito' %}nav-link-active{% endif %}">Carrito</a>{% endif %}
-                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'mis_pedidos' %}nav-link-active{% endif %}">Mis pedidos</a>{% endif %}
-                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' and current_url_name == 'lista' %}nav-link-active{% endif %}">Mis reservas</a>{% endif %}
+                        {% if pedidos_mis_pedidos_url %}<a href="{{ pedidos_mis_pedidos_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'mis_pedidos' %}nav-link-active{% endif %}">Mis Pedidos</a>{% endif %}
+                        {% if reservas_lista_url %}<a href="{{ reservas_lista_url }}" class="nav-link {% if current_namespace == 'reservas' and current_url_name == 'lista' %}nav-link-active{% endif %}">Mis Reservas</a>{% endif %}
                         <a href="{% url 'reservas:mesas_disponibles' %}" class="nav-link {% if current_url_name == 'mesas_disponibles' %}nav-link-active{% endif %}">Mesas</a>
                     {% endif %}
 
-                    {# MENÚ PARA MESEROS (Solo Gestión Operativa) #}
+                    {# WAITER MENU #}
                     {% if user.rol == 'mesero' and not user.is_superuser and user.rol != 'administrador' %}
                         {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'lista' %}nav-link-active{% endif %}">Gestión Pedidos</a>{% endif %}
                         <a href="{% url 'reservas:staff_lista' %}" class="nav-link {% if current_url_name == 'staff_lista' %}nav-link-active{% endif %}">Gestión Reservas</a>
                         <a href="{% url 'reservas:mesas_lista' %}" class="nav-link {% if current_url_name == 'mesas_lista' %}nav-link-active{% endif %}">Gestión Mesas</a>
                     {% endif %}
 
-                    {# MENÚ PARA ADMINISTRADORES (Acceso Total) #}
+                    {# ADMINISTRATOR MENU #}
                     {% if user.is_superuser or user.rol == 'administrador' %}
                         {% if user.rol != 'cliente' %}
-                            {# Secciones Operativas #}
+                            {# Operational Sections #}
                             {% if pedidos_lista_url %}<a href="{{ pedidos_lista_url }}" class="nav-link {% if current_namespace == 'pedidos' and current_url_name == 'lista' %}nav-link-active{% endif %}">Gestión Pedidos</a>{% endif %}
                             <a href="{% url 'reservas:staff_lista' %}" class="nav-link {% if current_url_name == 'staff_lista' %}nav-link-active{% endif %}">Gestión Reservas</a>
                             <a href="{% url 'reservas:mesas_lista' %}" class="nav-link {% if current_url_name == 'mesas_lista' %}nav-link-active{% endif %}">Gestión Mesas</a>
                             
-                            {# Secciones Administrativas #}
+                            {# Administrative Sections #}
                             {% if inventario_lista_url %}<a href="{{ inventario_lista_url }}" class="nav-link {% if current_namespace == 'inventario' %}nav-link-active{% endif %}">Inventario</a>{% endif %}
                             {% if dashboard_reportes_url %}<a href="{{ dashboard_reportes_url }}" class="nav-link {% if current_namespace == 'dashboard' %}nav-link-active{% endif %}">Reportes</a>{% endif %}
                         {% endif %}
@@ -80,12 +80,12 @@
                     <a href="{% if usuarios_logout_url %}{{ usuarios_logout_url }}{% else %}#{% endif %}" class="btn-primary">Salir</a>
                 {% else %}
                     {% if current_namespace != 'usuarios' or current_url_name != 'login' and current_url_name != 'registro' %}
-                        <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Iniciar sesión</a>
+                        <a href="{% if usuarios_login_url %}{{ usuarios_login_url }}{% else %}#{% endif %}" class="btn-ghost">Ingresar</a>
                         <a href="{% if usuarios_registro_url %}{{ usuarios_registro_url }}{% else %}#{% endif %}" class="btn-primary">Registrarse</a>
                     {% endif %}
                 {% endif %}
 
-                <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Cambiar tema">
+                <button id="theme-toggle" type="button" class="btn-ghost px-3" aria-label="Toggle theme">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                     </svg>
