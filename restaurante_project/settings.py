@@ -1,22 +1,22 @@
 from pathlib import Path
 import os
 from decouple import config
+import importlib.util
 from dj_database_url import parse as db_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-vxa(a(jyvv9babg@+fhr(q3$u%!#p0rra$%fp)xm5)vo2d9)z#')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production')
 
-DEBUG = True
-print(f"DEBUG IS ENABLED: {DEBUG}")
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.up.railway.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000'
-]
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [s.strip() for s in v.split(',') if s.strip()],
+)
+if DEBUG and '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('*')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -32,14 +32,12 @@ INSTALLED_APPS = [
     'apps.reservas',
     'apps.inventario',
     'apps.dashboard',
-    'apps.reportes',
     
     'core',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,6 +46,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.security.SecurityHeadersMiddleware',
 ]
+
+_has_whitenoise = importlib.util.find_spec('whitenoise') is not None
+if _has_whitenoise:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'restaurante_project.urls'
 
@@ -75,7 +77,7 @@ DATABASES = {
     'default': config(
         'DATABASE_URL',
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        cast=db_url
+        cast=db_url,
     )
 }
 
@@ -94,32 +96,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.StaticFilesStorage",
-    },
-}
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if _has_whitenoise:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 LOGIN_URL = 'usuarios:login'
-LOGIN_REDIRECT_URL = 'dashboard:home'
+LOGIN_REDIRECT_URL = 'usuarios:perfil'
 LOGOUT_REDIRECT_URL = 'usuarios:login'
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = config(
+    'EMAIL_BACKEND',
+    default='django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend',
+)
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@restaurante.com')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@restaurante.local')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

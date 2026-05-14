@@ -1,108 +1,91 @@
 {% extends 'base/base.html' %}
-{% load static %}
 
 {% block title %}Gestión de Usuarios{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-fixed bg-cover bg-center py-8 px-4" 
-     style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1556740734-7f95cb93e3e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
-    
-    <div class="max-w-7xl mx-auto space-y-8">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10">
-            <div class="flex items-center gap-4 text-center md:text-left">
-                <div class="bg-amber-600 p-4 rounded-2xl shadow-xl text-white">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-4xl font-black text-white tracking-tight">Usuarios</h1>
-                    <p class="text-amber-200 font-medium">Control de personal y accesos</p>
-                </div>
-            </div>
-            <a href="{% url 'usuarios:crear' %}" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-2xl font-black transition-all shadow-xl shadow-amber-600/20 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                Nuevo Usuario
-            </a>
-        </div>
+<div class="max-w-7xl mx-auto">
+    {% include 'components/ui/page_header.html' with title='Gestión de Usuarios' subtitle='Administración de usuarios del sistema' %}
 
-        <!-- Tabla de Usuarios -->
-        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50/50 dark:bg-gray-800/50">
-                        <tr>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Usuario</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Email</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Rol</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Estado</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                        {% for usuario in usuarios %}
-                        <tr class="hover:bg-amber-50/30 dark:hover:bg-amber-900/10 transition-colors">
-                            <td class="px-8 py-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="flex-shrink-0 h-12 w-12">
-                                        {% if usuario.foto %}
-                                            <img class="h-12 w-12 rounded-2xl object-cover shadow-md" src="{{ usuario.foto.url }}" alt="">
-                                        {% else %}
-                                            <div class="h-12 w-12 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 font-black text-xl">
-                                                {{ usuario.username.0|upper }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        <div class="font-black text-gray-900 dark:text-white leading-none mb-1">{{ usuario.get_full_name|default:usuario.username }}</div>
-                                        <div class="text-xs text-gray-400 font-medium">@{{ usuario.username }}</div>
-                                    </div>
+    <div class="mt-4 flex justify-end">
+        <a href="{% url 'usuarios:crear' %}" class="btn-primary">+ Nuevo Usuario</a>
+    </div>
+    
+    {% if usuarios %}
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Usuario</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rol</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for usuario in usuarios %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    {% if usuario.foto %}
+                                        <img class="h-10 w-10 rounded-full object-cover" src="{{ usuario.foto.url }}" alt="">
+                                    {% else %}
+                                        <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                            <span class="text-gray-600 dark:text-gray-300 font-semibold">{{ usuario.username.0|upper }}</span>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            </td>
-                            <td class="px-8 py-6">
-                                <span class="text-gray-500 font-bold">{{ usuario.email }}</span>
-                            </td>
-                            <td class="px-8 py-6">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
-                                    {% if usuario.rol == 'administrador' %}bg-red-100 text-red-700
-                                    {% elif usuario.rol == 'mesero' %}bg-blue-100 text-blue-700
-                                    {% else %}bg-green-100 text-green-700{% endif %}">
-                                    {{ usuario.get_rol_display }}
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium">{{ usuario.nombre_completo }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">@{{ usuario.username }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ usuario.email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {% if usuario.rol == 'administrador' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                {% elif usuario.rol == 'mesero' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                {% else %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% endif %}">
+                                {{ usuario.get_rol_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if usuario.activo %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                    Activo
                                 </span>
-                            </td>
-                            <td class="px-8 py-6">
-                                {% if usuario.is_active %}
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase">Activo</span>
-                                {% else %}
-                                    <span class="px-3 py-1 bg-gray-100 text-gray-400 rounded-full text-[10px] font-black uppercase">Inactivo</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-8 py-6 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <a href="{% url 'usuarios:editar' usuario.id %}" class="bg-gray-100 dark:bg-gray-800 hover:bg-amber-600 hover:text-white text-gray-700 dark:text-gray-300 p-2 rounded-xl transition-all" title="Editar">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </a>
-                                    <a href="{% url 'usuarios:eliminar' usuario.id %}" class="bg-red-50 hover:bg-red-600 text-red-600 hover:text-white p-2 rounded-xl transition-all" title="Eliminar">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="px-8 py-20 text-center">
-                                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                </div>
-                                <h3 class="text-xl font-bold text-gray-400">No hay usuarios registrados</h3>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                    Inactivo
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <a href="{% url 'usuarios:editar' usuario.id %}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400">Editar</a>
+                            <a href="{% url 'usuarios:toggle_activo' usuario.id %}" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400">
+                                {% if usuario.activo %}Desactivar{% else %}Activar{% endif %}
+                            </a>
+                            <a href="{% url 'usuarios:eliminar' usuario.id %}" class="text-red-600 hover:text-red-900 dark:text-red-400">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            No hay usuarios registrados
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+    {% else %}
+        <div class="mt-6">
+            {% include 'components/ui/empty_state.html' with title='No hay usuarios registrados' description='Cuando crees usuarios, aparecerán aquí para su gestión.' %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

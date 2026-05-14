@@ -62,12 +62,12 @@ class UsuarioAdmin(BaseUserAdmin):
     rol_badge.short_description = 'Rol'
     
     def activo_badge(self, obj):
-        color = '#16a34a' if obj.activo else '#dc2626'
-        texto = '✓ Activo' if obj.activo else '✗ Inactivo'
+        if obj.activo:
+            return format_html(
+                '<span style="color: #16a34a;">✓ Activo</span>'
+            )
         return format_html(
-            '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px; font-size: 11px;">{}</span>',
-            color,
-            texto
+            '<span style="color: #dc2626;">✗ Inactivo</span>'
         )
     activo_badge.short_description = 'Estado'
     

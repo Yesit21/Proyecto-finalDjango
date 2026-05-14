@@ -1,181 +1,54 @@
 {% extends 'base/base.html' %}
-{% load static %}
-
-{% block title %}Modificar Reserva #{{ object.id }} | Gastronomía Premium{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* Forzar visibilidad de texto en inputs con fondo oscuro */
-    input[type="datetime-local"],
-    input[type="number"],
-    select,
-    textarea {
-        color: white !important;
-        background-color: rgba(0, 0, 0, 0.4) !important;
-    }
-
-    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-        cursor: pointer;
-    }
-
-    ::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    select option {
-        background-color: #1a1a1a;
-        color: white;
-    }
-</style>
-{% endblock %}
-
-{% block body_class %}{% endblock %}
-
-{% block background %}
-<div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center" 
-         style="background-image: url('{% static 'images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg' %}');">
-    </div>
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-[3px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
-</div>
-{% endblock %}
+{% block title %}Actualizar reserva{% endblock %}
 
 {% block content %}
-<div class="relative z-10 max-w-4xl mx-auto py-10">
-        <!-- Breadcrumb Premium -->
-        <nav class="mb-10">
-            <ol class="flex items-center gap-3 text-white/40 text-xs font-black uppercase tracking-[0.3em]">
-                <li><a href="{% url 'reservas:lista' %}" class="hover:text-amber-500 transition-colors">Mis Reservas</a></li>
-                <li class="text-white/10">/</li>
-                <li><a href="{% url 'reservas:detalle' object.pk %}" class="hover:text-amber-500 transition-colors">Reserva #{{ object.id }}</a></li>
-                <li class="text-white/10">/</li>
-                <li class="text-amber-500">Actualizar</li>
-            </ol>
-        </nav>
+<div class="space-y-6 max-w-3xl">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-semibold">Actualizar reserva</h1>
+        <a href="{% url 'reservas:lista' %}" class="btn-secondary">Volver</a>
+    </div>
 
-        <!-- Header con Estilo -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4 drop-shadow-2xl">
-                REFINAR <span class="text-amber-500">DETALLES</span>
-            </h1>
-            <p class="text-amber-200 text-xl font-medium tracking-wide uppercase">Modifica tu reserva #{{ object.id }}</p>
-        </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
 
-        <div class="grid lg:grid-cols-5 gap-8 items-start">
-            <!-- Columna del Formulario -->
-            <div class="lg:col-span-3">
-                <form method="post" class="bg-white/10 backdrop-blur-2xl rounded-[3rem] border border-white/20 p-8 md:p-12 shadow-2xl">
-                    {% csrf_token %}
-
-                    {% if form.non_field_errors %}
-                    <div class="mb-8 p-4 bg-red-500/20 backdrop-blur-md border border-red-500/50 text-red-100 rounded-2xl text-sm">
-                        {% for error in form.non_field_errors %}
-                        <p class="flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            {{ error }}
-                        </p>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <div class="space-y-8">
-                        <!-- Fecha y Hora -->
-                        <div class="group">
-                            <label for="{{ form.fecha_reserva.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                {{ form.fecha_reserva.label }}
-                            </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <input type="datetime-local" name="{{ form.fecha_reserva.name }}" id="{{ form.fecha_reserva.id_for_label }}" 
-                                       class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all placeholder-white/20"
-                                       value="{{ form.fecha_reserva.value|date:'Y-m-d\TH:i' }}">
-                            </div>
-                            {% if form.fecha_reserva.errors %}
-                            <p class="mt-2 text-red-400 text-xs font-bold">{{ form.fecha_reserva.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <!-- Cantidad de Personas -->
-                        <div class="group">
-                            <label for="{{ form.cantidad_personas.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                {{ form.cantidad_personas.label }}
-                            </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/50 group-focus-within:text-amber-500 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                </div>
-                                <input type="number" name="{{ form.cantidad_personas.name }}" id="{{ form.cantidad_personas.id_for_label }}" 
-                                       class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
-                                       placeholder="¿Cuántos vendrán?" value="{{ form.cantidad_personas.value }}">
-                            </div>
-                            {% if form.cantidad_personas.errors %}
-                            <p class="mt-2 text-red-400 text-xs font-bold">{{ form.cantidad_personas.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <!-- Observaciones -->
-                        <div class="group">
-                            <label for="{{ form.observaciones.id_for_label }}" class="block text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">
-                                Notas Especiales
-                            </label>
-                            <textarea name="{{ form.observaciones.name }}" id="{{ form.observaciones.id_for_label }}" rows="3"
-                                      class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
-                                      placeholder="Alergias, cumpleaños, preferencias...">{{ form.observaciones.value|default:'' }}</textarea>
-                        </div>
-
-                        <!-- Botones -->
-                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                            <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-amber-600/20 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
-                                GUARDAR CAMBIOS
-                            </button>
-                            <a href="{% url 'reservas:detalle' object.pk %}" class="flex-1 bg-white/5 hover:bg-white/10 text-white font-black py-4 rounded-2xl text-center border border-white/10 transition-all">
-                                CANCELAR
-                            </a>
-                        </div>
-                    </div>
-                </form>
+            <div>
+                <label class="block text-sm font-medium mb-1">Mesa</label>
+                {{ form.mesa }}
+                {% if form.mesa.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.mesa.errors|striptags }}</p>
+                {% endif %}
             </div>
 
-            <!-- Columna de Información -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-8">
-                    <h3 class="text-2xl font-black text-white mb-6 uppercase tracking-tighter">Recordatorios</h3>
-                    <ul class="space-y-6">
-                        <li class="flex gap-4">
-                            <div class="bg-blue-500/20 p-2 rounded-xl h-fit">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold">Cambios de fecha</h4>
-                                <p class="text-white/40 text-sm">Al cambiar la fecha, tu mesa podría ser reasignada según disponibilidad.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-4">
-                            <div class="bg-amber-500/20 p-2 rounded-xl h-fit">
-                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold">Política de tiempo</h4>
-                                <p class="text-white/40 text-sm">Mantenemos tu mesa por 15 minutos después de la hora pactada.</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-gradient-to-br from-amber-600 to-orange-700 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl">
-                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-                    <h3 class="text-2xl font-black mb-4 relative z-10 uppercase tracking-tighter">¿Necesitas ayuda?</h3>
-                    <p class="text-amber-100/80 mb-6 relative z-10 text-sm">Si tienes problemas para modificar tu reserva, contáctanos directamente por teléfono.</p>
-                    <a href="#" class="inline-block bg-white text-amber-600 font-black px-8 py-3 rounded-xl shadow-lg relative z-10 hover:scale-105 transition-transform text-xs uppercase tracking-widest">
-                        Soporte Directo
-                    </a>
-                </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Fecha</label>
+                {{ form.fecha_reserva }}
+                {% if form.fecha_reserva.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.fecha_reserva.errors|striptags }}</p>
+                {% endif %}
             </div>
-        </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Cantidad de personas</label>
+                {{ form.cantidad_personas }}
+                {% if form.cantidad_personas.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.cantidad_personas.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Observaciones</label>
+                {{ form.observaciones }}
+                {% if form.observaciones.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.observaciones.errors|striptags }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a href="{% url 'reservas:lista' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

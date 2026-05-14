@@ -1,156 +1,43 @@
 {% extends 'base/base.html' %}
-{% load static %}
-
 {% block title %}Ingredientes{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-fixed bg-cover bg-center py-8 px-4" 
-     style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1543339308-43e59d6b73a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
-    
-    <div class="max-w-7xl mx-auto space-y-8">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10">
-            <div class="flex items-center gap-4">
-                <div class="bg-amber-600 p-4 rounded-2xl shadow-xl text-white">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-4xl font-black text-white tracking-tight">Ingredientes</h1>
-                    <p class="text-amber-200 font-medium">Gestión de componentes gastronómicos</p>
-                </div>
-            </div>
-            <a href="{% url 'menu:ingredientes_crear' %}" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-4 rounded-2xl font-black transition-all shadow-xl shadow-amber-600/20 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Nuevo Ingrediente
-            </a>
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 class="text-3xl font-semibold">Ingredientes</h1>
+        <div class="flex gap-3">
+            <a href="{% url 'menu:ingredientes_crear' %}" class="btn-primary">Nuevo ingrediente</a>
         </div>
+    </div>
 
-        <!-- Búsqueda -->
-        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20">
-            <form method="get" class="flex flex-wrap gap-4 items-center">
-                <div class="flex-1 relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </span>
-                    <input type="text" name="buscar" placeholder="Buscar ingrediente por nombre..." 
-                           value="{{ request.GET.buscar }}"
-                           class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-500 text-gray-900 dark:text-white font-bold">
-                </div>
-                <button type="submit" class="bg-gray-900 dark:bg-amber-600 text-white font-black px-8 py-3 rounded-2xl hover:bg-gray-800 dark:hover:bg-amber-700 transition-all">
-                    Buscar
-                </button>
-                {% if request.GET.buscar %}
-                <a href="{% url 'menu:ingredientes_lista' %}" class="text-gray-500 hover:text-amber-600 font-bold px-4 py-3 transition-all">
-                    Limpiar
-                </a>
-                {% endif %}
-            </form>
-        </div>
-
-        <!-- Lista de ingredientes -->
-        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50/50 dark:bg-gray-800/50">
-                        <tr>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Ingrediente</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Unidad</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Stock Actual</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Stock Mín.</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Precio Unit.</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Estado</th>
-                            <th class="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                        {% for ingrediente in ingredientes %}
-                        <tr class="hover:bg-amber-50/30 dark:hover:bg-amber-900/10 transition-colors">
-                            <td class="px-8 py-6">
-                                <span class="font-black text-gray-900 dark:text-white">{{ ingrediente.nombre }}</span>
-                            </td>
-                            <td class="px-8 py-6">
-                                <span class="text-gray-500 font-bold">{{ ingrediente.get_unidad_medida_display }}</span>
-                            </td>
-                            <td class="px-8 py-6 text-center">
-                                <span class="px-4 py-1 rounded-full font-black text-sm
-                                    {% if ingrediente.stock_bajo %}bg-red-100 text-red-600
-                                    {% else %}bg-green-100 text-green-600{% endif %}">
-                                    {{ ingrediente.stock_actual }}
-                                </span>
-                            </td>
-                            <td class="px-8 py-6 text-center text-gray-400 font-bold">
-                                {{ ingrediente.stock_minimo }}
-                            </td>
-                            <td class="px-8 py-6 text-right font-black text-amber-600">
-                                ${{ ingrediente.precio_unitario }}
-                            </td>
-                            <td class="px-8 py-6 text-center">
-                                <div class="flex flex-col gap-1 items-center">
-                                    {% if ingrediente.activo %}
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase">Activo</span>
-                                    {% else %}
-                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-[10px] font-black uppercase">Inactivo</span>
-                                    {% endif %}
-                                    {% if ingrediente.stock_bajo %}
-                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase">Stock Bajo</span>
-                                    {% endif %}
-                                </div>
-                            </td>
-                            <td class="px-8 py-6 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <a href="{% url 'menu:ingredientes_editar' ingrediente.pk %}" 
-                                       class="bg-gray-100 dark:bg-gray-800 hover:bg-amber-600 hover:text-white text-gray-700 dark:text-gray-300 p-2 rounded-xl transition-all">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </a>
-                                    <a href="{% url 'menu:ingredientes_eliminar' ingrediente.pk %}" 
-                                       class="bg-red-50 hover:bg-red-600 text-red-600 hover:text-white p-2 rounded-xl transition-all">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="px-8 py-12 text-center text-gray-500 font-medium">
-                                No hay ingredientes registrados.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Paginación -->
-        {% if is_paginated %}
-        <div class="flex justify-center mt-10">
-            <nav class="flex items-center gap-2">
-                {% if page_obj.has_previous %}
-                <a href="?page=1{% if request.GET.buscar %}&buscar={{ request.GET.buscar }}{% endif %}" 
-                   class="px-4 py-2 bg-white/10 text-white border border-white/10 rounded-xl font-bold hover:bg-white/20 transition-all">Primera</a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.buscar %}&buscar={{ request.GET.buscar }}{% endif %}" 
-                   class="px-4 py-2 bg-white/10 text-white border border-white/10 rounded-xl font-bold hover:bg-white/20 transition-all">Anterior</a>
-                {% endif %}
-                
-                <span class="px-6 py-2 bg-amber-600 text-white rounded-xl font-black shadow-lg shadow-amber-600/20">
-                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                </span>
-                
-                {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.buscar %}&buscar={{ request.GET.buscar }}{% endif %}" 
-                   class="px-4 py-2 bg-white/10 text-white border border-white/10 rounded-xl font-bold hover:bg-white/20 transition-all">Siguiente</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.buscar %}&buscar={{ request.GET.buscar }}{% endif %}" 
-                   class="px-4 py-2 bg-white/10 text-white border border-white/10 rounded-xl font-bold hover:bg-white/20 transition-all">Última</a>
-                {% endif %}
-            </nav>
-        </div>
-        {% endif %}
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
+                <tr>
+                    <th class="px-4 py-3">Nombre</th>
+                    <th class="px-4 py-3">Unidad</th>
+                    <th class="px-4 py-3">Activo</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for ingrediente in ingredientes %}
+                <tr>
+                    <td class="px-4 py-4">{{ ingrediente.nombre }}</td>
+                    <td class="px-4 py-4">{{ ingrediente.unidad|default:"-" }}</td>
+                    <td class="px-4 py-4">{% if ingrediente.activo %}Sí{% else %}No{% endif %}</td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <a href="{% url 'menu:ingredientes_editar' ingrediente.id %}" class="btn-secondary">Editar</a>
+                        <a href="{% url 'menu:ingredientes_eliminar' ingrediente.id %}" class="btn-secondary">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-4 py-4">No hay ingredientes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

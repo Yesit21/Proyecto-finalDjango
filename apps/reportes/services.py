@@ -14,10 +14,10 @@ class PDFReportService:
         elements = []
         styles = getSampleStyleSheet()
 
-        elements.append(Paragraph('Orders Report', styles['Title']))
+        elements.append(Paragraph('Reporte de Pedidos', styles['Title']))
         elements.append(Spacer(1, 0.2 * inch))
 
-        data = [['ID', 'Client', 'Date', 'Status', 'Total']]
+        data = [['ID', 'Cliente', 'Fecha', 'Estado', 'Total']]
         for pedido in pedidos:
             cliente = pedido.cliente.username if hasattr(pedido.cliente, 'username') else str(pedido.cliente)
             data.append([

@@ -33,22 +33,6 @@
                     <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{{ plato.descripcion }}</p>
                 </div>
 
-                {% if plato_ingredientes %}
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-3">Ingredientes</h2>
-                    <ul class="space-y-2">
-                        {% for pi in plato_ingredientes %}
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ pi.ingrediente.nombre }} - {{ pi.cantidad }} {{ pi.ingrediente.get_unidad_medida_display }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <span class="{% if plato.disponible %}text-green-600{% else %}text-red-600{% endif %} font-medium">
@@ -62,10 +46,9 @@
                             ← Volver al menú
                         </a>
                         {% if plato.disponible %}
-                        <a href="{% url 'pedidos:agregar_carrito' plato.id %}" 
-                           class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                        <button class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
                             Agregar al pedido
-                        </a>
+                        </button>
                         {% endif %}
                     </div>
                 </div>

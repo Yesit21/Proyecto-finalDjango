@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% block title %}Eliminar precio{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl space-y-6">
+    <h1 class="text-3xl font-semibold">Eliminar precio</h1>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-4">
+        <p>¿Seguro que deseas eliminar este precio <span class="font-semibold">${{ object.precio }}</span>?</p>
+
+        <form method="post" class="flex gap-3">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">Sí, eliminar</button>
+            <a href="{% url 'menu:precios_lista' object.plato_id %}" class="btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

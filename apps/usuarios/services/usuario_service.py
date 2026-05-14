@@ -4,27 +4,15 @@ from apps.usuarios.models import Usuario
 class UsuarioService:
     @staticmethod
     def get_all_usuarios():
-        """Returns all active users"""
         return Usuario.objects.all().order_by('-fecha_creacion')
-
+    
     @staticmethod
-    def get_usuarios_by_rol(rol):
-        """Returns users by role"""
-        return Usuario.objects.filter(rol=rol, activo=True)
-
+    def get_usuarios_activos():
+        return Usuario.objects.filter(activo=True)
+    
     @staticmethod
-    def create_usuario(data):
-        """Creates a new user"""
-        return Usuario.objects.create_user(**data)
-
-    @staticmethod
-    def update_usuario(usuario_id, data):
-        """Updates user information"""
-        usuario = Usuario.objects.get(id=usuario_id)
-        for key, value in data.items():
-            setattr(usuario, key, value)
-        usuario.save()
-        return usuario
+    def get_usuarios_por_rol(rol):
+        return Usuario.objects.filter(rol=rol)
     
     @staticmethod
     def buscar_usuarios(query):

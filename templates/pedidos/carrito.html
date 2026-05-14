@@ -1,256 +1,42 @@
 {% extends 'base/base.html' %}
-{% load static %}
-
-{% block title %}My Order - Cart{% endblock %}
-
-{% block body_class %}{% endblock %}
-
-{% block background %}
-<div class="fixed inset-0 -z-10">
-    <div class="absolute inset-0 bg-fixed bg-cover bg-center bg-image-blurred">
-    </div>
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-[4px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-transparent to-amber-500/10"></div>
-</div>
-{% endblock %}
+{% block title %}Carrito{% endblock %}
 
 {% block content %}
-<div class="relative z-10 max-w-5xl mx-auto py-12 px-4">
-    <div class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-gray-900/40 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-2xl">
-            <div class="flex items-center gap-6">
-                <div class="bg-amber-600 p-5 rounded-[2rem] shadow-2xl shadow-amber-600/30 text-white transform -rotate-3">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-5xl font-black text-white tracking-tighter">My Order</h1>
-                    <p class="text-amber-200 font-bold uppercase tracking-[0.2em] text-xs mt-1">Selection Review</p>
-                </div>
-            </div>
-            <a href="{% url 'pedidos:lista' %}" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-black backdrop-blur-md transition-all border border-white/10 flex items-center gap-3 group">
-                <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Continue Ordering
-            </a>
-        </div>
-        
-        {% if items %}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column: Items -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden">
-                    <div class="p-8">
-                        <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 flex items-center gap-3">
-                            <span class="w-2 h-8 bg-amber-600 rounded-full"></span>
-                            Selected Dishes
-                        </h2>
-                        
-                        <div class="space-y-6">
-                            {% for item in items %}
-                            <div class="group flex items-center gap-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-3xl border border-transparent hover:border-amber-500/30 transition-all duration-300">
-                                <div class="w-24 h-24 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 font-black text-3xl shadow-inner flex-shrink-0">
-                                    {{ item.cantidad }}
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-black text-xl text-gray-900 dark:text-white truncate">{{ item.nombre }}</h3>
-                                    <p class="text-gray-500 dark:text-gray-400 font-bold">${{ item.precio }} per unit</p>
-                                </div>
-                                <div class="text-right flex flex-col items-end gap-3">
-                                    <span class="text-2xl font-black text-amber-600">${{ item.subtotal }}</span>
-                                    <a href="{% url 'pedidos:eliminar_carrito' item.producto_id %}" 
-                                       class="text-gray-400 hover:text-red-500 transition-colors p-1"
-                                       onclick="return confirm('Do you want to remove this dish?')">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Reservation Section -->
-                <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden">
-                    <form action="{% url 'pedidos:realizar_pedido' %}" method="POST" id="order-form">
-                        {% csrf_token %}
-                        <div class="p-8">
-                            <div class="flex items-start gap-4 mb-8">
-                                <div class="pt-1">
-                                    <input type="checkbox" id="quiere_reserva" name="quiere_reserva" 
-                                           class="w-8 h-8 text-amber-600 bg-white border-2 border-gray-200 rounded-xl focus:ring-amber-500 cursor-pointer"
-                                           onchange="toggleReservaFields()">
-                                </div>
-                                <div>
-                                    <label for="quiere_reserva" class="text-2xl font-black text-gray-900 dark:text-white cursor-pointer block">
-                                        Will you eat at the restaurant?
-                                    </label>
-                                    <p class="text-gray-500 dark:text-gray-400 font-medium">Activate this option to reserve your favorite table right now.</p>
-                                </div>
-                            </div>
-                            
-                            <div id="reserva_fields" class="hidden space-y-8 animate-fadeIn">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class="space-y-2">
-                                        <label class="block text-xs font-black text-amber-600 uppercase tracking-widest">Arrival Time</label>
-                                        <input type="datetime-local" name="fecha_reserva" 
-                                               class="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-gray-900 dark:text-white font-bold transition-all">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="block text-xs font-black text-amber-600 uppercase tracking-widest">Number of Guests</label>
-                                        <input type="number" name="cantidad_personas" min="1" max="20" value="2"
-                                               class="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-gray-900 dark:text-white font-bold transition-all">
-                                    </div>
-                                    <div class="md:col-span-2 space-y-2">
-                                        <label class="block text-xs font-black text-amber-600 uppercase tracking-widest">Select Table</label>
-                                        <select name="mesa_reserva" class="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-gray-900 dark:text-white font-bold transition-all appearance-none">
-                                            <option value="">Any available table</option>
-                                            {% for mesa in mesas_disponibles %}
-                                                <option value="{{ mesa.id }}">Table {{ mesa.numero }} - {{ mesa.capacidad }} guests ({{ mesa.ubicacion }})</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="md:col-span-2 space-y-2">
-                                        <label class="block text-xs font-black text-amber-600 uppercase tracking-widest">Notes or Preferences</label>
-                                        <textarea name="observaciones_reserva" rows="2" 
-                                                  placeholder="E.g.: Allergies, terrace table, etc..."
-                                                  class="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-gray-900 dark:text-white font-bold transition-all"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Right Column: Summary -->
-            <div class="lg:col-span-1">
-                <div class="sticky top-24 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-[2.5rem] shadow-2xl border border-white/20 p-8">
-                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8">Summary</h2>
-                    
-                    <div class="space-y-4 mb-8">
-                        <div class="flex justify-between items-center text-gray-500 dark:text-gray-400 font-bold">
-                            <span>Subtotal</span>
-                            <span>${{ total }}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-gray-500 dark:text-gray-400 font-bold">
-                            <span>Service</span>
-                            <span class="text-green-500 uppercase text-xs">Free</span>
-                        </div>
-                        <div class="pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                            <span class="text-xl font-black text-gray-900 dark:text-white">Total</span>
-                            <span class="text-4xl font-black text-amber-600">${{ total }}</span>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" form="order-form" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-6 rounded-[2rem] shadow-2xl shadow-amber-600/40 transition-all duration-300 transform hover:-translate-y-2 flex items-center justify-center gap-3 text-xl group">
-                        Confirm Order
-                        <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </button>
-                    
-                    <p class="text-center text-gray-400 dark:text-gray-500 text-[10px] font-black uppercase tracking-widest mt-6">
-                        100% Secure Transaction
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        {% else %}
-        <!-- Empty State -->
-        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-[3rem] shadow-2xl border border-white/20 p-20 text-center relative overflow-hidden">
-            <div class="absolute -top-20 -left-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
-            
-            <div class="relative z-10">
-                <div class="w-40 h-40 bg-amber-50 dark:bg-amber-900/20 rounded-[3rem] flex items-center justify-center mx-auto mb-10 transform rotate-12 shadow-inner">
-                    <svg class="w-20 h-20 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                    </svg>
-                </div>
-                <h2 class="text-4xl font-black text-gray-900 dark:text-white mb-4">Hungry for something amazing?</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-xl mb-12 max-w-md mx-auto">Your cart is empty. It's the perfect time to discover our signature dishes.</p>
-                <a href="{% url 'pedidos:lista' %}" class="inline-flex items-center gap-4 bg-amber-600 hover:bg-amber-700 text-white font-black py-5 px-12 rounded-[2rem] shadow-2xl shadow-amber-600/30 transition-all duration-300 transform hover:-translate-y-1 text-lg">
-                    View Full Menu
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="mt-12 flex flex-wrap justify-center gap-10 opacity-50">
-            <div class="flex items-center gap-3 text-white font-black uppercase tracking-widest text-[10px]">
-                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                Gourmet Guarantee
-            </div>
-            <div class="flex items-center gap-3 text-white font-black uppercase tracking-widest text-[10px]">
-                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Express Service
-            </div>
-        </div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+    <h1 class="text-3xl font-semibold mb-4">Carrito</h1>
+    {% if items %}
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-900">
+                <tr>
+                    <th class="px-4 py-3 text-left">Producto</th>
+                    <th class="px-4 py-3 text-right">Cantidad</th>
+                    <th class="px-4 py-3 text-right">Precio</th>
+                    <th class="px-4 py-3 text-right">Subtotal</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for item in items %}
+                <tr class="text-gray-700 dark:text-gray-200">
+                    <td class="px-4 py-4">{{ item.nombre }}</td>
+                    <td class="px-4 py-4 text-right">{{ item.cantidad }}</td>
+                    <td class="px-4 py-4 text-right">${{ item.precio }}</td>
+                    <td class="px-4 py-4 text-right cart-subtotal">${{ item.subtotal }}</td>
+                    <td class="px-4 py-4 text-right">
+                        <a href="{% url 'pedidos:eliminar_carrito' item.producto_id %}" class="text-red-500 hover:underline cart-remove">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    <div class="mt-6 flex justify-between items-center">
+        <div class="text-lg font-semibold">Total: <span id="cart-total">${{ total }}</span></div>
+        <a href="{% url 'pedidos:pago' %}" class="btn-primary">Pagar (simulado)</a>
+    </div>
+    {% else %}
+    <p>Tu carrito está vacío. Agrega productos desde la sección de pedidos.</p>
+    {% endif %}
 </div>
-
-<script>
-    function toggleReservaFields() {
-        const checkbox = document.getElementById('quiere_reserva');
-        const fields = document.getElementById('reserva_fields');
-        if (checkbox.checked) {
-            fields.classList.remove('hidden');
-            fields.classList.add('animate-fadeIn');
-        } else {
-            fields.classList.add('hidden');
-        }
-    }
-</script>
-
-<style>
-    .bg-image-blurred {
-        background-image: url('{% static "images/blurred-restaurant-scene-with-empty-tabletop-free-photo.jpg" %}');
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeIn {
-        animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-    select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23D97706'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1.5rem center;
-        background-size: 1.5rem;
-    }
-    
-    /* Force visibility of text in inputs with dark background */
-    input[type="datetime-local"],
-    input[type="number"],
-    select,
-    textarea {
-        color: white !important;
-        background-color: rgba(0, 0, 0, 0.4) !important;
-    }
-
-    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-        cursor: pointer;
-    }
-
-    ::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    select option {
-        background-color: #1a1a1a;
-        color: white;
-    }
-</style>
 {% endblock %}

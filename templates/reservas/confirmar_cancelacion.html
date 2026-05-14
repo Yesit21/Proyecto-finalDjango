@@ -1,103 +1,22 @@
 {% extends 'base/base.html' %}
-{% load static %}
-
-{% block title %}Cancelar Reserva #{{ object.id }} | Gastronomía Premium{% endblock %}
+{% block title %}Cancelar reserva{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-fixed bg-cover bg-center py-20 px-4 relative" 
-     style="background-image: url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
-    
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+<div class="max-w-2xl space-y-6">
+    <h1 class="text-3xl font-semibold">Cancelar reserva</h1>
 
-    <div class="relative z-10 max-w-3xl mx-auto">
-        <!-- Breadcrumb Premium -->
-        <nav class="mb-10">
-            <ol class="flex items-center gap-3 text-white/40 text-xs font-black uppercase tracking-[0.3em]">
-                <li><a href="{% url 'reservas:lista' %}" class="hover:text-amber-500 transition-colors">Mis Reservas</a></li>
-                <li class="text-white/10">/</li>
-                <li><a href="{% url 'reservas:detalle' object.pk %}" class="hover:text-amber-500 transition-colors">Reserva #{{ object.id }}</a></li>
-                <li class="text-white/10">/</li>
-                <li class="text-red-500">Cancelar</li>
-            </ol>
-        </nav>
-
-        <div class="bg-white/10 backdrop-blur-3xl rounded-[4rem] border border-white/20 overflow-hidden shadow-2xl">
-            <!-- Header de Advertencia -->
-            <div class="p-12 md:p-16 bg-gradient-to-br from-red-500/20 to-transparent border-b border-white/10 relative overflow-hidden text-center">
-                <div class="absolute -top-24 -left-24 w-64 h-64 bg-red-500/10 rounded-full blur-[80px]"></div>
-                
-                <div class="relative z-10 inline-flex items-center justify-center w-24 h-24 bg-red-500/20 rounded-[2rem] border-2 border-red-500/50 mb-8 text-red-500 shadow-2xl shadow-red-500/20">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                </div>
-                
-                <h1 class="text-5xl font-black text-white tracking-tighter mb-4 uppercase">¿Confirmar <span class="text-red-500">Cancelación?</span></h1>
-                <p class="text-red-200/60 font-medium tracking-widest uppercase text-xs">Esta acción es definitiva y no podrá deshacerse.</p>
-            </div>
-
-            <div class="p-12 md:p-16">
-                <!-- Detalles de la Reserva (Estilo Resumen) -->
-                <div class="bg-white/5 border border-white/10 rounded-[3rem] p-10 mb-12">
-                    <h3 class="text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 text-center">Resumen de la Visita</h3>
-                    
-                    <div class="grid md:grid-cols-2 gap-10">
-                        <div class="flex items-center gap-6">
-                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 border border-white/10">
-                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-white/30 text-[10px] font-black uppercase tracking-widest">Fecha y Hora</p>
-                                <p class="text-lg font-bold text-white tracking-tight">{{ object.fecha_reserva|date:"l, d F • H:i" }} hrs</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-6">
-                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 border border-white/10">
-                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-white/30 text-[10px] font-black uppercase tracking-widest">Invitados</p>
-                                <p class="text-lg font-bold text-white tracking-tight">{{ object.cantidad_personas }} comensales</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Advertencias Finales -->
-                <div class="bg-red-500/5 border border-red-500/20 rounded-[2.5rem] p-8 mb-12">
-                    <div class="flex items-start gap-6">
-                        <div class="text-red-500 mt-1">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div class="space-y-4">
-                            <p class="text-red-200/80 font-bold text-sm uppercase tracking-widest">Nota importante:</p>
-                            <ul class="text-white/40 text-xs space-y-2 list-disc list-inside font-medium tracking-wide">
-                                <li>Recibirás un email de confirmación de la cancelación.</li>
-                                <li>Tu mesa será liberada inmediatamente para otros clientes.</li>
-                                <li>Para futuras visitas, deberás generar una nueva reserva.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Formulario de Acción -->
-                <form method="post" class="flex flex-col sm:flex-row gap-6">
-                    {% csrf_token %}
-                    <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-6 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] transition-all transform hover:scale-105 active:scale-95 shadow-2xl shadow-red-600/20">
-                        Sí, Cancelar Reserva
-                    </button>
-                    <a href="{% url 'reservas:detalle' object.pk %}" class="flex-1 bg-white/5 hover:bg-white/10 text-white py-6 rounded-[2.5rem] font-black text-center text-xs uppercase tracking-[0.3em] transition-all border border-white/10">
-                        No, Volver Atrás
-                    </a>
-                </form>
-            </div>
-
-            <!-- Footer con Estilo -->
-            <div class="p-12 border-t border-white/5 text-center">
-                <p class="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">Gastronomía Premium • Experiencia Exclusiva</p>
-            </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm space-y-4">
+        <p>¿Seguro que deseas cancelar esta reserva?</p>
+        <div class="text-sm text-gray-700 dark:text-gray-200">
+            <div><span class="font-semibold">Fecha:</span> {{ object.fecha_reserva|date:'d M Y H:i' }}</div>
+            <div><span class="font-semibold">Mesa:</span> {% if object.mesa %}{{ object.mesa.numero }}{% else %}-{% endif %}</div>
         </div>
+
+        <form method="post" class="flex gap-3">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">Sí, cancelar</button>
+            <a href="{% url 'reservas:lista' %}" class="btn-secondary">Volver</a>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -7,9 +7,9 @@ class ExcelService:
     def export_orders(pedidos):
         wb = Workbook()
         ws = wb.active
-        ws.title = "Orders"
+        ws.title = "Pedidos"
         
-        headers = ['ID', 'Client', 'Date', 'Status', 'Total']
+        headers = ['ID', 'Cliente', 'Fecha', 'Estado', 'Total']
         ws.append(headers)
         
         header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")

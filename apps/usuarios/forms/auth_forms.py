@@ -7,14 +7,14 @@ class LoginForm(forms.Form):
         max_length=150,
         widget=forms.TextInput(attrs={
             'class': 'input-field',
-            'placeholder': 'Username',
+            'placeholder': 'Usuario',
             'autofocus': True
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'input-field',
-            'placeholder': 'Password'
+            'placeholder': 'Contraseña'
         })
     )
     remember_me = forms.BooleanField(
@@ -37,7 +37,7 @@ class RegistroForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'input-field',
-            'placeholder': 'First Name'
+            'placeholder': 'Nombre'
         })
     )
     last_name = forms.CharField(
@@ -45,7 +45,7 @@ class RegistroForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'input-field',
-            'placeholder': 'Last Name'
+            'placeholder': 'Apellido'
         })
     )
     telefono = forms.CharField(
@@ -53,7 +53,7 @@ class RegistroForm(UserCreationForm):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'input-field',
-            'placeholder': 'Phone'
+            'placeholder': 'Teléfono'
         })
     )
     
@@ -61,30 +61,30 @@ class RegistroForm(UserCreationForm):
         model = Usuario
         fields = ['username', 'email', 'first_name', 'last_name', 'telefono', 'password1', 'password2']
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Username'}),
+            'username': forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Usuario'}),
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Password'})
-        self.fields['password2'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Confirm password'})
+        self.fields['password1'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Contraseña'})
+        self.fields['password2'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Confirmar contraseña'})
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if Usuario.objects.filter(email=email).exists():
-            raise forms.ValidationError('This email is already registered')
+            raise forms.ValidationError('Este email ya está registrado')
         return email
 
 class RecuperarPasswordForm(PasswordResetForm):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'input-field',
-            'placeholder': 'Registered email'
+            'placeholder': 'Email registrado'
         })
     )
 
 class CambiarPasswordForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['new_password1'].widget.attrs.update({'class': 'input-field', 'placeholder': 'New password'})
-        self.fields['new_password2'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Confirm password'})
+        self.fields['new_password1'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Nueva contraseña'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'input-field', 'placeholder': 'Confirmar contraseña'})

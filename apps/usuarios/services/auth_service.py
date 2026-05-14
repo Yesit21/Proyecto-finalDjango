@@ -11,52 +11,23 @@ logger = logging.getLogger(__name__)
 class AuthService:
     @staticmethod
     def send_welcome_email(user):
-        """Sends welcome email to a new user"""
+        """Envía email de bienvenida al usuario"""
         try:
-            subject = 'Welcome to the Restaurant System'
-            html_message = render_to_string('emails/welcome.html', {
-                'nombre': user.nombre_completo,
-                'user': user
-            })
-            from django.utils.html import strip_tags
-            plain_message = strip_tags(html_message)
-            
-            send_mail(
-                subject,
-                plain_message,
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                html_message=html_message,
-                fail_silently=True
-            )
-            logger.info(f"Welcome email sent to {user.email}")
-        except Exception as e:
-            logger.error(f"Error sending welcome email: {str(e)}")
-
-    @staticmethod
-    def send_order_confirmation(user, order):
-        """Sends order confirmation email"""
-        try:
-            subject = f'Order Confirmation #{order.id}'
-            html_message = render_to_string('emails/order_confirmation.html', {
+            subject = 'Bienvenido al Sistema de Restaurante'
+            message = render_to_string('emails/welcome.html', {
                 'user': user,
-                'order': order,
-                'items': order.items.all()
+                'nombre': user.nombre_completo
             })
-            from django.utils.html import strip_tags
-            plain_message = strip_tags(html_message)
-            
             send_mail(
                 subject,
-                plain_message,
+                message,
                 settings.DEFAULT_FROM_EMAIL,
                 [user.email],
-                html_message=html_message,
-                fail_silently=True
+                fail_silently=False
             )
-            logger.info(f"Order confirmation email sent to {user.email}")
+            logger.info(f'Email de bienvenida enviado a {user.email}')
         except Exception as e:
-            logger.error(f"Error sending order confirmation email: {str(e)}")
+            logger.error(f'Error enviando email de bienvenida a {user.email}: {str(e)}')
     
     @staticmethod
     def send_password_reset_email(user, request):
