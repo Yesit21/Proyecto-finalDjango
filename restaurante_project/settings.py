@@ -140,7 +140,7 @@ LOGOUT_REDIRECT_URL = 'usuarios:login'
 
 EMAIL_BACKEND = config(
     'EMAIL_BACKEND',
-    default='django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend',
+    default='django.core.mail.backends.console.EmailBackend'
 )
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
