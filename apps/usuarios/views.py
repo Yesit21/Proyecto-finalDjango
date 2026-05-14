@@ -7,6 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.permissions.base import AdminRequiredMixin
 from core.permissions.decorators import admin_required
+from core.constants.roles import CLIENTE
 from .models import Usuario
 from .forms import LoginForm, RegistroForm, UsuarioCreateForm, UsuarioUpdateForm
 from .services.auth_service import AuthService
@@ -55,13 +56,13 @@ def registro_view(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.rol = 'cliente'
+            user.rol = CLIENTE
             user.save()
             
             AuthService.send_welcome_email(user)
             
             login(request, user)
-            messages.success(request, 'Registro exitoso. Bienvenido!')
+            messages.success(request, 'Registro exitoso. ¡Bienvenido!')
             return redirect('usuarios:perfil')
     else:
         form = RegistroForm()
@@ -108,12 +109,12 @@ def usuario_editar(request, pk):
         form = UsuarioUpdateForm(request.POST, request.FILES, instance=usuario)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Usuario {usuario.username} actualizado')
+            messages.success(request, f'User {usuario.username} updated successfully')
             return redirect('usuarios:lista')
     else:
         form = UsuarioUpdateForm(instance=usuario)
     
-    return render(request, 'usuarios/form.html', {'form': form, 'titulo': 'Editar Usuario', 'usuario': usuario})
+    return render(request, 'usuarios/form.html', {'form': form, 'titulo': 'Edit User', 'usuario': usuario})
 
 @login_required
 @admin_required
@@ -121,13 +122,13 @@ def usuario_eliminar(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     
     if request.user.id == usuario.id:
-        messages.error(request, 'No puedes eliminar tu propia cuenta')
+        messages.error(request, 'You cannot delete your own account')
         return redirect('usuarios:lista')
     
     if request.method == 'POST':
         username = usuario.username
         usuario.delete()
-        messages.success(request, f'Usuario {username} eliminado')
+        messages.success(request, f'User {username} deleted successfully')
         return redirect('usuarios:lista')
     
     return render(request, 'usuarios/confirmar_eliminar.html', {'usuario': usuario})
@@ -138,13 +139,13 @@ def usuario_toggle_activo(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     
     if request.user.id == usuario.id:
-        messages.error(request, 'No puedes desactivar tu propia cuenta')
+        messages.error(request, 'You cannot deactivate your own account')
         return redirect('usuarios:lista')
     
     usuario.activo = not usuario.activo
     usuario.save()
     
-    estado = 'activado' if usuario.activo else 'desactivado'
-    messages.success(request, f'Usuario {usuario.username} {estado}')
+    status = 'activated' if usuario.activo else 'deactivated'
+    messages.success(request, f'User {usuario.username} {status}')
     
     return redirect('usuarios:lista')

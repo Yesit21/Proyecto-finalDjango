@@ -1,31 +1,175 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            background: #fef3c7;
+            border-left: 4px solid #d97706;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .info-box strong {
+            color: #92400e;
+        }
+        .order-details {
+            margin: 25px 0;
+        }
+        .order-details h2 {
+            color: #1f2937;
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d97706;
+            padding-bottom: 10px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        .item-name {
+            font-weight: 500;
+            color: #374151;
+        }
+        .item-quantity {
+            color: #6b7280;
+            margin-left: 10px;
+        }
+        .item-price {
+            font-weight: 600;
+            color: #d97706;
+        }
+        .total {
+            background: #f9fafb;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: right;
+        }
+        .total-label {
+            font-size: 18px;
+            color: #374151;
+            font-weight: 500;
+        }
+        .total-amount {
+            font-size: 24px;
+            color: #d97706;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #d97706;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #ef4444;">Confirmación de Pedido</h1>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase</p>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hi {{ user.get_full_name|default:user.username }},</p>
+            
+            <p>We have received your order successfully. We are already working on its preparation.</p>
+            
+            <div class="info-box">
+                <p><strong>Order ID:</strong> #{{ order.id }}</p>
+                <p><strong>Date:</strong> {{ order.fecha_pedido|date:"d M Y H:i" }}</p>
+            </div>
 
-        <p>Hola {{ pedido.cliente.username }},</p>
+            <div class="order-details">
+                <h2>Order Summary</h2>
+                {% for item in items %}
+                <div class="item">
+                    <span class="item-name">
+                        {{ item.nombre }}
+                        <span class="item-quantity">x {{ item.cantidad }}</span>
+                    </span>
+                    <span class="item-price">${{ item.subtotal }}</span>
+                </div>
+                {% endfor %}
+            </div>
 
-        <p>Tu pedido <strong>#{{ pedido.id }}</strong> fue recibido correctamente.</p>
+            <div class="total">
+                <span class="total-label">Total:</span>
+                <span class="total-amount">${{ order.total }}</span>
+            </div>
 
-        <p><strong>Resumen</strong></p>
-        <ul>
-            {% for item in pedido.items.all %}
-            <li>{{ item.cantidad }} x {{ item.nombre }} — ${{ item.precio_unitario }}</li>
-            {% endfor %}
-        </ul>
+            <p style="margin-top: 25px;">You will receive another email when your order is ready or its status changes.</p>
+            
+            <center>
+                <a href="{{ site_url }}{% url 'pedidos:mis_pedidos' %}" class="button">View My Orders</a>
+            </center>
+        </div>
 
-        <p><strong>Total:</strong> ${{ pedido.total }}</p>
-        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
-
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-        <p style="font-size: 12px; color: #666;">
-            Este es un email automático, por favor no respondas a este mensaje.
-        </p>
+        <div class="footer">
+            <p>© {% now "Y" %} Restaurant System. All rights reserved.</p>
+            <p>This is an automated email, please do not reply.</p>
+        </div>
     </div>
 </body>
 </html>

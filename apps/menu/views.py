@@ -1,10 +1,25 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from core.permissions.base import AdminRequiredMixin
-from .forms import IngredienteForm, PlatoForm, PlatoIngredienteForm, PrecioPlatoForm
-from .models import Ingrediente, Plato, PlatoIngrediente, PrecioPlato
+from .models import Plato, Ingrediente, PlatoIngrediente
+from .forms import PlatoForm, IngredienteForm, PlatoIngredienteForm
+
+
+# ==================== MIXINS ====================
+
+class AdminRequiredMixin(UserPassesTestMixin):
+    """Mixin to verify that the user is an administrator"""
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.rol == 'administrator'
+    
+    def handle_no_permission(self):
+        return redirect('menu:lista')
+
+
+# ==================== DISH VIEWS ====================
 
 class ListaMenuView(ListView):
     model = Plato
@@ -24,183 +39,161 @@ class ListaMenuView(ListView):
         context['categorias'] = Plato.CATEGORIA_CHOICES
         return context
 
+
 class DetallePlatoView(DetailView):
     model = Plato
     template_name = 'menu/detalle.html'
     context_object_name = 'plato'
 
-
-class IngredienteListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
-    model = Ingrediente
-    template_name = "menu/ingredientes/lista.html"
-    context_object_name = "ingredientes"
-    paginate_by = 20
-    raise_exception = True
-
-
-class IngredienteCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
-    model = Ingrediente
-    form_class = IngredienteForm
-    template_name = "menu/ingredientes/form.html"
-    success_url = reverse_lazy("menu:ingredientes_lista")
-    raise_exception = True
-
-
-class IngredienteUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
-    model = Ingrediente
-    form_class = IngredienteForm
-    template_name = "menu/ingredientes/form.html"
-    success_url = reverse_lazy("menu:ingredientes_lista")
-    raise_exception = True
-
-
-class IngredienteDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = Ingrediente
-    template_name = "menu/ingredientes/confirmar_eliminar.html"
-    success_url = reverse_lazy("menu:ingredientes_lista")
-    raise_exception = True
-
-
-class PlatoAdminListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
-    model = Plato
-    template_name = "menu/platos/lista_admin.html"
-    context_object_name = "platos"
-    paginate_by = 20
-    raise_exception = True
-
-
-class PlatoCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
-    model = Plato
-    form_class = PlatoForm
-    template_name = "menu/platos/form.html"
-    success_url = reverse_lazy("menu:platos_admin")
-    raise_exception = True
-
-
-class PlatoUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
-    model = Plato
-    form_class = PlatoForm
-    template_name = "menu/platos/form.html"
-    success_url = reverse_lazy("menu:platos_admin")
-    raise_exception = True
-
-
-class PlatoDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = Plato
-    template_name = "menu/platos/confirmar_eliminar.html"
-    success_url = reverse_lazy("menu:platos_admin")
-    raise_exception = True
-
-
-class PlatoIngredienteListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
-    model = PlatoIngrediente
-    template_name = "menu/recetas/lista.html"
-    context_object_name = "items"
-    raise_exception = True
-
-    def get_queryset(self):
-        return (
-            PlatoIngrediente.objects
-            .select_related("plato", "ingrediente")
-            .filter(plato_id=self.kwargs["plato_id"])
-            .order_by("ingrediente__nombre")
-        )
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["plato"] = get_object_or_404(Plato, pk=self.kwargs["plato_id"])
+        # Get dish ingredients
+        context['plato_ingredientes'] = PlatoIngrediente.objects.filter(plato=self.object).select_related('ingrediente')
         return context
 
 
-class PlatoIngredienteCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
-    model = PlatoIngrediente
-    form_class = PlatoIngredienteForm
-    template_name = "menu/recetas/form.html"
-    raise_exception = True
+class CrearPlatoView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
+    model = Plato
+    form_class = PlatoForm
+    template_name = 'menu/platos/form.html'
+    success_url = reverse_lazy('menu:lista')
 
     def form_valid(self, form):
-        form.instance.plato = get_object_or_404(Plato, pk=self.kwargs["plato_id"])
+        messages.success(self.request, f'Dish "{form.instance.nombre}" created successfully.')
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy("menu:receta_lista", kwargs={"plato_id": self.kwargs["plato_id"]})
+
+class EditarPlatoView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = Plato
+    form_class = PlatoForm
+    template_name = 'menu/platos/form.html'
+    success_url = reverse_lazy('menu:lista')
+
+    def form_valid(self, form):
+        messages.success(self.request, f'Dish "{form.instance.nombre}" updated successfully.')
+        return super().form_valid(form)
 
 
-class PlatoIngredienteUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
-    model = PlatoIngrediente
-    form_class = PlatoIngredienteForm
-    template_name = "menu/recetas/form.html"
-    raise_exception = True
+class EliminarPlatoView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = Plato
+    template_name = 'menu/platos/confirmar_eliminar.html'
+    success_url = reverse_lazy('menu:lista')
 
-    def get_success_url(self):
-        return reverse_lazy("menu:receta_lista", kwargs={"plato_id": self.object.plato_id})
-
-
-class PlatoIngredienteDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = PlatoIngrediente
-    template_name = "menu/recetas/confirmar_eliminar.html"
-    raise_exception = True
-
-    def get_success_url(self):
-        return reverse_lazy("menu:receta_lista", kwargs={"plato_id": self.object.plato_id})
+    def delete(self, request, *args, **kwargs):
+        plato = self.get_object()
+        messages.success(request, f'Dish "{plato.nombre}" deleted successfully.')
+        return super().delete(request, *args, **kwargs)
 
 
-class PrecioPlatoListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
-    model = PrecioPlato
-    template_name = "menu/precios/lista.html"
-    context_object_name = "precios"
-    raise_exception = True
+class ListaPlatosAdminView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Plato
+    template_name = 'menu/platos/lista_admin.html'
+    context_object_name = 'platos'
+    paginate_by = 20
 
     def get_queryset(self):
-        return PrecioPlato.objects.filter(plato_id=self.kwargs["plato_id"]).order_by("-fecha_inicio")
+        queryset = Plato.objects.all().order_by('categoria', 'nombre')
+        buscar = self.request.GET.get('buscar')
+        categoria = self.request.GET.get('categoria')
+        
+        if buscar:
+            queryset = queryset.filter(nombre__icontains=buscar)
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
+        
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["plato"] = get_object_or_404(Plato, pk=self.kwargs["plato_id"])
+        context['categorias'] = Plato.CATEGORIA_CHOICES
         return context
 
 
-class PrecioPlatoCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
-    model = PrecioPlato
-    form_class = PrecioPlatoForm
-    template_name = "menu/precios/form.html"
-    raise_exception = True
+# ==================== INGREDIENT VIEWS ====================
+
+class ListaIngredientesView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+    model = Ingrediente
+    template_name = 'menu/ingredientes/lista.html'
+    context_object_name = 'ingredientes'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Ingrediente.objects.all().order_by('nombre')
+        buscar = self.request.GET.get('buscar')
+        if buscar:
+            queryset = queryset.filter(nombre__icontains=buscar)
+        return queryset
+
+
+class CrearIngredienteView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
+    model = Ingrediente
+    form_class = IngredienteForm
+    template_name = 'menu/ingredientes/form.html'
+    success_url = reverse_lazy('menu:ingredientes_lista')
 
     def form_valid(self, form):
-        plato = get_object_or_404(Plato, pk=self.kwargs["plato_id"])
-        form.instance.plato = plato
-        PrecioPlato.objects.filter(plato=plato, activo=True).update(activo=False)
-        response = super().form_valid(form)
-        plato.precio = form.instance.precio
-        plato.save(update_fields=["precio"])
-        return response
-
-    def get_success_url(self):
-        return reverse_lazy("menu:precios_lista", kwargs={"plato_id": self.kwargs["plato_id"]})
+        messages.success(self.request, f'Ingredient "{form.instance.nombre}" created successfully.')
+        return super().form_valid(form)
 
 
-class PrecioPlatoUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
-    model = PrecioPlato
-    form_class = PrecioPlatoForm
-    template_name = "menu/precios/form.html"
-    raise_exception = True
+class EditarIngredienteView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
+    model = Ingrediente
+    form_class = IngredienteForm
+    template_name = 'menu/ingredientes/form.html'
+    success_url = reverse_lazy('menu:ingredientes_lista')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        if form.instance.activo:
-            PrecioPlato.objects.filter(plato=form.instance.plato).exclude(pk=form.instance.pk).update(activo=False)
-            form.instance.plato.precio = form.instance.precio
-            form.instance.plato.save(update_fields=["precio"])
-        return response
-
-    def get_success_url(self):
-        return reverse_lazy("menu:precios_lista", kwargs={"plato_id": self.object.plato_id})
+        messages.success(self.request, f'Ingredient "{form.instance.nombre}" updated successfully.')
+        return super().form_valid(form)
 
 
-class PrecioPlatoDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = PrecioPlato
-    template_name = "menu/precios/confirmar_eliminar.html"
-    raise_exception = True
+class EliminarIngredienteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    model = Ingrediente
+    template_name = 'menu/ingredientes/confirmar_eliminar.html'
+    success_url = reverse_lazy('menu:ingredientes_lista')
 
-    def get_success_url(self):
-        return reverse_lazy("menu:precios_lista", kwargs={"plato_id": self.object.plato_id})
+    def delete(self, request, *args, **kwargs):
+        ingrediente = self.get_object()
+        messages.success(request, f'Ingredient "{ingrediente.nombre}" deleted successfully.')
+        return super().delete(request, *args, **kwargs)
+
+
+@login_required
+def gestionar_ingredientes_plato(request, plato_id):
+    """View to manage ingredients for a specific dish"""
+    if request.user.rol != 'administrator':
+        return redirect('menu:lista')
+    
+    plato = get_object_or_404(Plato, pk=plato_id)
+    plato_ingredientes = PlatoIngrediente.objects.filter(plato=plato).select_related('ingrediente')
+    
+    if request.method == 'POST':
+        form = PlatoIngredienteForm(request.POST)
+        if form.is_valid():
+            plato_ingrediente = form.save(commit=False)
+            plato_ingrediente.plato = plato
+            plato_ingrediente.save()
+            messages.success(request, f'Ingredient added to dish "{plato.nombre}".')
+            return redirect('menu:gestionar_ingredientes_plato', plato_id=plato.id)
+    else:
+        form = PlatoIngredienteForm()
+    
+    context = {
+        'plato': plato,
+        'plato_ingredientes': plato_ingredientes,
+        'form': form,
+    }
+    return render(request, 'menu/ingredientes/gestionar_plato.html', context)
+
+
+@login_required
+def eliminar_ingrediente_plato(request, plato_ingrediente_id):
+    """View to remove an ingredient from a dish"""
+    if request.user.rol != 'administrator':
+        return redirect('menu:lista')
+    
+    plato_ingrediente = get_object_or_404(PlatoIngrediente, pk=plato_ingrediente_id)
+    plato_id = plato_ingrediente.plato.id
+    plato_ingrediente.delete()
+    messages.success(request, 'Ingredient removed from dish.')
+    return redirect('menu:gestionar_ingredientes_plato', plato_id=plato_id)

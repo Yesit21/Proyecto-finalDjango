@@ -24,9 +24,9 @@ def crear_producto(request):
     form = ProductoForm(request.POST or None)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Producto creado correctamente.')
+        messages.success(request, 'Product created successfully.')
         return redirect('inventario:lista')
-    return render(request, 'inventario/producto_form.html', {'form': form, 'titulo': 'Crear Producto'})
+    return render(request, 'inventario/producto_form.html', {'form': form, 'titulo': 'Create Product'})
 
 
 @login_required
@@ -36,9 +36,9 @@ def editar_producto(request, pk):
     form = ProductoForm(request.POST or None, instance=producto)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Producto actualizado correctamente.')
+        messages.success(request, 'Product updated successfully.')
         return redirect('inventario:lista')
-    return render(request, 'inventario/producto_form.html', {'form': form, 'titulo': 'Editar Producto'})
+    return render(request, 'inventario/producto_form.html', {'form': form, 'titulo': 'Edit Product'})
 
 
 @login_required
@@ -59,7 +59,7 @@ def crear_movimiento(request):
     form = MovimientoInventarioForm(request.POST or None)
     if form.is_valid():
         form.save()
-        messages.success(request, 'Movimiento de inventario registrado.')
+        messages.success(request, 'Inventory movement recorded.')
         return redirect('inventario:historial')
     return render(request, 'inventario/movimiento_form.html', {'form': form})
 

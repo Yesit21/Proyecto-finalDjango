@@ -5,25 +5,25 @@
 {% block content %}
 <style>
     /* Forzar estilos en modo oscuro */
-    .dark input[type="text"],
-    .dark input[type="password"],
-    .dark input[type="email"] {
-        background-color: #1f2937 !important;
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        background-color: rgba(0, 0, 0, 0.4) !important;
         color: #ffffff !important;
-        border-color: #4b5563 !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
     }
     
-    .dark input[type="text"]::placeholder,
-    .dark input[type="password"]::placeholder,
-    .dark input[type="email"]::placeholder {
-        color: #9ca3af !important;
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder,
+    input[type="email"]::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
     }
     
-    .dark input:-webkit-autofill,
-    .dark input:-webkit-autofill:hover,
-    .dark input:-webkit-autofill:focus {
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
         -webkit-text-fill-color: #ffffff !important;
-        -webkit-box-shadow: 0 0 0 1000px #1f2937 inset !important;
+        -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.6) inset !important;
         transition: background-color 5000s ease-in-out 0s;
     }
 </style>

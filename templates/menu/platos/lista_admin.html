@@ -1,47 +1,64 @@
 {% extends 'base/base.html' %}
-{% block title %}Platos{% endblock %}
+{% load static %}
+
+{% block title %}Gestión de Platos{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <h1 class="text-3xl font-semibold">Platos</h1>
-        <div class="flex gap-3">
-            <a href="{% url 'menu:platos_crear' %}" class="btn-primary">Nuevo plato</a>
-        </div>
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Gestión de Platos</h1>
+        <a href="{% url 'menu:platos_crear' %}" class="btn-primary">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Nuevo Plato
+        </a>
     </div>
 
-    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-100 dark:bg-gray-900 text-left">
-                <tr>
-                    <th class="px-4 py-3">Nombre</th>
-                    <th class="px-4 py-3">Categoría</th>
-                    <th class="px-4 py-3">Precio</th>
-                    <th class="px-4 py-3">Disponible</th>
-                    <th class="px-4 py-3"></th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                {% for plato in platos %}
-                <tr>
-                    <td class="px-4 py-4">{{ plato.nombre }}</td>
-                    <td class="px-4 py-4">{{ plato.get_categoria_display }}</td>
-                    <td class="px-4 py-4">${{ plato.precio }}</td>
-                    <td class="px-4 py-4">{% if plato.disponible %}Sí{% else %}No{% endif %}</td>
-                    <td class="px-4 py-4 text-right space-x-2">
-                        <a href="{% url 'menu:receta_lista' plato.id %}" class="btn-secondary">Receta</a>
-                        <a href="{% url 'menu:precios_lista' plato.id %}" class="btn-secondary">Precios</a>
-                        <a href="{% url 'menu:platos_editar' plato.id %}" class="btn-secondary">Editar</a>
-                        <a href="{% url 'menu:platos_eliminar' plato.id %}" class="btn-secondary">Eliminar</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="px-4 py-4">No hay platos registrados.</td>
-                </tr>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" name="buscar" placeholder="Buscar plato..." value="{{ request.GET.buscar }}" class="input-field">
+            <select name="categoria" class="input-field">
+                <option value="">Todas las categorías</option>
+                {% for value, label in categorias %}
+                <option value="{{ value }}" {% if request.GET.categoria == value %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
-            </tbody>
-        </table>
+            </select>
+            <div class="flex gap-2">
+                <button type="submit" class="btn-primary flex-1">Buscar</button>
+                <a href="{% url 'menu:platos_admin' %}" class="btn-secondary">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for plato in platos %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            {% if plato.imagen %}
+            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" class="w-full h-48 object-cover">
+            {% else %}
+            <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                <span class="text-gray-400">Sin imagen</span>
+            </div>
+            {% endif %}
+            <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">{{ plato.nombre }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{{ plato.get_categoria_display }}</p>
+                <p class="text-2xl font-bold text-amber-600 mb-4">${{ plato.precio }}</p>
+                <div class="flex gap-2">
+                    <a href="{% url 'menu:platos_editar' plato.pk %}" class="btn-secondary flex-1 text-center">Editar</a>
+                    <a href="{% url 'menu:gestionar_ingredientes_plato' plato.pk %}" class="btn-secondary flex-1 text-center">Ingredientes</a>
+                    <a href="{% url 'menu:platos_eliminar' plato.pk %}" class="text-red-600 hover:text-red-800 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12 text-gray-500">No hay platos registrados.</div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

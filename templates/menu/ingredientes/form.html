@@ -1,51 +1,105 @@
 {% extends 'base/base.html' %}
-{% block title %}{% if object %}Editar ingrediente{% else %}Crear ingrediente{% endif %}{% endblock %}
+{% load static %}
+
+{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Ingrediente{% endblock %}
 
 {% block content %}
-<div class="space-y-6 max-w-3xl">
-    <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-semibold">{% if object %}Editar ingrediente{% else %}Crear ingrediente{% endif %}</h1>
-        <a href="{% url 'menu:ingredientes_lista' %}" class="btn-secondary">Volver</a>
-    </div>
+<div class="min-h-screen bg-fixed bg-cover bg-center py-12 px-4" 
+     style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1466633364843-559bb610d7d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+    
+    <div class="max-w-2xl mx-auto">
+        <!-- Back Link -->
+        <a href="{% url 'menu:ingredientes_lista' %}" class="inline-flex items-center gap-2 text-amber-200 hover:text-white font-bold mb-8 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver a ingredientes
+        </a>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <form method="post" class="space-y-5">
-            {% csrf_token %}
+        <!-- Header -->
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-t-3xl border border-white/10">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-3 rounded-2xl shadow-lg text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black text-white tracking-tight">
+                        {% if object %}Editar Ingrediente{% else %}Nuevo Ingrediente{% endif %}
+                    </h1>
+                    <p class="text-amber-200 text-sm font-bold uppercase tracking-widest">Componentes de tus platos</p>
+                </div>
+            </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Nombre</label>
-                {{ form.nombre }}
-                {% if form.nombre.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.nombre.errors|striptags }}</p>
+        <!-- Form Card -->
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-8 rounded-b-3xl shadow-2xl border border-white/10">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="p-4 bg-red-100 border border-red-200 text-red-700 rounded-2xl font-bold text-sm">
+                    {{ form.non_field_errors }}
+                </div>
                 {% endif %}
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Unidad</label>
-                {{ form.unidad }}
-                {% if form.unidad.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.unidad.errors|striptags }}</p>
-                {% endif %}
-            </div>
+                {% for field in form %}
+                <div class="space-y-2">
+                    <label for="{{ field.id_for_label }}" class="block text-xs font-black text-amber-600 uppercase tracking-widest">
+                        {{ field.label }}
+                    </label>
+                    <div class="relative">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-600 font-bold">{{ field.errors.0 }}</p>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="mt-1 text-xs text-gray-500 italic">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Producto de inventario</label>
-                {{ form.producto_inventario }}
-                {% if form.producto_inventario.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.producto_inventario.errors|striptags }}</p>
-                {% endif %}
-            </div>
-
-            <div class="flex items-center gap-2">
-                {{ form.activo }}
-                <label class="text-sm">Activo</label>
-            </div>
-
-            <div class="flex gap-3">
-                <button type="submit" class="btn-primary">Guardar</button>
-                <a href="{% url 'menu:ingredientes_lista' %}" class="btn-secondary">Cancelar</a>
-            </div>
-        </form>
+                <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" 
+                            class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-amber-600/20 transition-all duration-300 transform hover:-translate-y-1">
+                        {% if object %}Actualizar Ingrediente{% else %}Crear Ingrediente{% endif %}
+                    </button>
+                    <a href="{% url 'menu:ingredientes_lista' %}" 
+                       class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-black py-4 rounded-2xl text-center transition-all">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<style>
+    input[type="text"], input[type="number"], select, textarea {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background-color: rgba(249, 250, 251, 1);
+        border: 1px solid rgba(243, 244, 246, 1);
+        border-radius: 1rem;
+        font-weight: 700;
+        color: #111827;
+        transition: all 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #D97706;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+        background-color: white;
+    }
+    .dark input, .dark select, .dark textarea {
+        background-color: rgba(31, 41, 55, 1);
+        border-color: rgba(55, 65, 81, 1);
+        color: white;
+    }
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+        background-color: rgba(17, 24, 39, 1);
+    }
+</style>
 {% endblock %}
